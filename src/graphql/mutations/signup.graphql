@@ -1,0 +1,9 @@
+mutation Signup($input: CreateUserInput!, $autoLogin: Boolean) {
+    signup(signupInput: $input, autoLogin: $autoLogin) {
+        id
+        email
+        username
+        accessToken
+        refreshToken
+    }
+}
