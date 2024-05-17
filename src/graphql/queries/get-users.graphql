@@ -1,0 +1,30 @@
+query GetUsers {
+    users {
+        id
+        username
+        email
+        phone
+        emailVerified
+        phoneVerified
+        orders {
+            id
+            products {
+                id
+                title
+                salePrice
+                retailPrice
+            }
+        }
+        profile {
+            id
+            firstName
+            lastName
+            addressOne
+            city
+            state
+            country
+            zipcode
+            profileImage
+        }
+    }
+}
