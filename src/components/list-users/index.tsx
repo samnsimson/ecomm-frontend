@@ -1,5 +1,5 @@
 'use client';
-import { useGetUsersQuery } from '@/graphql/generated';
+import { useGetProductsQuery } from '@/graphql/generated';
 import { FC, HTMLAttributes } from 'react';
 
 interface ListUsersProps extends HTMLAttributes<HTMLDivElement> {
@@ -7,9 +7,18 @@ interface ListUsersProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export const ListUsers: FC<ListUsersProps> = ({ ...props }) => {
-    const { data, loading } = useGetUsersQuery();
+    const { data, loading } = useGetProductsQuery();
 
     if (loading) return <p>Loaging...</p>;
 
-    return <div {...props}>{data?.users.map((user) => <p key={user.id}>{user.username}</p>)}</div>;
+    return (
+        <div {...props}>
+            {data?.products.map((product) => (
+                <div key={product.id}>
+                    <h1>{product.title}</h1>
+                    <p>{product.description}</p>
+                </div>
+            ))}
+        </div>
+    );
 };
