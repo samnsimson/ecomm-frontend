@@ -20,7 +20,7 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <body className={cn(montserrat.className)}>
+            <body className={cn(montserrat.className)} suppressHydrationWarning>
                 <Providers>
                     <div className="bg-hero bg-cover bg-center flex flex-col min-h-screen">
                         <Header />

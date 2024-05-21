@@ -1,14 +1,11 @@
-import { ApolloClient, InMemoryCache } from '@apollo/client';
-import { getCookie, getCookies } from 'cookies-next';
-
-const getToken = () => {
-    const tokens = getCookies();
-    console.log('🚀 ~ getToken ~ tokens:', tokens);
-    return getCookie('accessToken');
-};
+import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client';
+import { getCookie } from 'cookies-next';
 
 export const apolloClient = new ApolloClient({
-    uri: String(process.env.NEXT_PUBLIC_GRAPHQL_URL),
     cache: new InMemoryCache(),
-    headers: { authorization: `Bearer ${getToken}` },
+    link: new HttpLink({
+        uri: String(process.env.NEXT_PUBLIC_GRAPHQL_URL),
+        headers: { authorization: `Bearer ${getCookie('accessToken')}` },
+        credentials: 'include',
+    }),
 });
