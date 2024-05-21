@@ -35,7 +35,11 @@ export const authConfig: NextAuthConfig = {
         authorized: ({ auth, request: { nextUrl } }) => {
             const isLoggedIn = !!auth?.user;
             const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
-            if (isOnDashboard && !isLoggedIn) return false;
+            const isOnAccount = nextUrl.pathname.startsWith('/account');
+            const isAdmin = auth?.user.role === 'admin';
+            const isUser = auth?.user.role === 'user';
+            if (isOnDashboard && (!isLoggedIn || !isAdmin)) return false;
+            if (isOnAccount && (!isLoggedIn || !isUser)) return false;
             return true;
         },
     },
