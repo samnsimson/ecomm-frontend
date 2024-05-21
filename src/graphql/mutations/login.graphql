@@ -2,6 +2,9 @@ mutation Login($input: LoginInput!) {
     login(credentials: $input) {
         id
         username
+        email
+        name
+        role
         authenticated
         accessToken
         refreshToken

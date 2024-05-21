@@ -109,7 +109,9 @@ export type LoginResponse = {
   __typename?: 'LoginResponse';
   accessToken: Scalars['String']['output'];
   authenticated: Scalars['Boolean']['output'];
+  email: Scalars['String']['output'];
   id: Scalars['String']['output'];
+  name: Scalars['String']['output'];
   refreshToken: Scalars['String']['output'];
   role: Scalars['Float']['output'];
   username: Scalars['String']['output'];
@@ -598,7 +600,7 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponse', id: string, username: string, authenticated: boolean, accessToken: string, refreshToken: string } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponse', id: string, username: string, email: string, name: string, role: number, authenticated: boolean, accessToken: string, refreshToken: string } };
 
 export type SignupMutationVariables = Exact<{
   input: CreateUserInput;
@@ -624,6 +626,9 @@ export const LoginDocument = gql`
   login(credentials: $input) {
     id
     username
+    email
+    name
+    role
     authenticated
     accessToken
     refreshToken
