@@ -26,8 +26,11 @@ export const authConfig: NextAuthConfig = {
         }),
     ],
     callbacks: {
+        jwt: ({ token, user }) => {
+            return { ...token, ...user };
+        },
         session: ({ session, token }) => {
-            if (token['sub']) session.user.id = token.sub;
+            session.user = token as any;
             return session;
         },
         authorized: ({ auth, request: { nextUrl } }) => {
@@ -39,5 +42,6 @@ export const authConfig: NextAuthConfig = {
     },
     pages: {
         signIn: '/sign-in',
+        newUser: '/sign-up',
     },
 };
