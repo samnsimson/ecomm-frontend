@@ -17,8 +17,7 @@ export const authConfig: NextAuthConfig = {
                     const { username, password } = await signInSchema.parseAsync(credentials);
                     const variables: LoginMutationVariables = { input: { username, password } };
                     const { data } = await gql.request<LoginMutation, LoginMutationVariables>(LoginDocument, variables);
-                    const { accessToken, refreshToken, ...rest } = data.login;
-                    return rest;
+                    return data.login;
                 } catch (error: any) {
                     return null;
                 }
