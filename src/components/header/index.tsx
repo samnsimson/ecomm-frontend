@@ -13,7 +13,7 @@ interface HeaderProps extends HTMLAttributes<HTMLDivElement> {
 export const Header: FC<HeaderProps> = ({ ...props }) => {
     const { data } = useSession();
     return (
-        <div className="flex min-h-20 flex-col justify-center border-b border-default bg-white py-3" {...props}>
+        <div className="border-default flex min-h-20 flex-col justify-center border-b bg-white py-3" {...props}>
             <Container className="flex h-full items-center justify-between">
                 <Logo />
                 {!!data?.user && (

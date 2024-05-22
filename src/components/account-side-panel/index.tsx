@@ -9,7 +9,7 @@ import { signOut } from 'next-auth/react';
 export const AccountSidePanel = () => {
     const [selected, setSelected] = useState('profile');
     return (
-        <div className="flex flex-col divide-y-[1px] rounded border border-default bg-white p-3">
+        <div className="border-default flex flex-col divide-y-[1px] rounded border bg-white p-3">
             <Link
                 href="/account/profile"
                 className={cn(buttonVariants({ size: 'lg', variant: 'ghost' }), 'h-auto justify-start p-3 hover:bg-primary hover:text-primary-foreground')}
