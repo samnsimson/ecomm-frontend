@@ -12,7 +12,7 @@ const Logo = () => {
                 <Button radius="full" isIconOnly color="danger" disabled disableAnimation disableRipple className="ring ring-primary ring-offset-2">
                     <StarIcon strokeWidth={2} size={32} className="fill-primary stroke-white" />
                 </Button>
-                <p className={cn(font.className, 'text-[42px] text-primary inset-4')}>Meridian</p>
+                <p className={cn(font.className, 'inset-4 text-[42px] text-primary')}>Meridian</p>
             </span>
         </span>
     );

@@ -7,7 +7,7 @@ interface SignInPageProps extends HTMLAttributes<HTMLDivElement> {
 
 const SignInPage: FC<SignInPageProps> = ({ ...props }) => {
     return (
-        <div {...props} className="h-full flex flex-col items-center justify-center max-w-xl w-full">
+        <div {...props} className="flex h-full w-full max-w-xl flex-col items-center justify-center">
             <LoginForm />
         </div>
     );

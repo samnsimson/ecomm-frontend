@@ -8,7 +8,7 @@ interface HeaderProps extends HTMLAttributes<HTMLDivElement> {
 
 export const Header: FC<HeaderProps> = ({ ...props }) => {
     return (
-        <div className="min-h-20 py-3 bg-transparent flex flex-col justify-center" {...props}>
+        <div className="flex min-h-20 flex-col justify-center bg-transparent py-3" {...props}>
             <Container className="h-full">
                 <Logo />
             </Container>

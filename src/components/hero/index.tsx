@@ -9,9 +9,9 @@ interface HeroProps extends HTMLAttributes<HTMLDivElement> {
 
 export const Hero: FC<HeroProps> = ({ ...props }) => {
     return (
-        <div {...props} className="flex-grow flex relative">
-            <Container className="text-white realtive">
-                <div className="w-1/3 space-y-6 absolute top-1/4">
+        <div {...props} className="relative flex">
+            <Container className="realtive text-white">
+                <div className="w-1/2 space-y-6">
                     <h1 className="text-[76px] font-black leading-[70px] tracking-wider">
                         <span className="text-warning">Still not</span> buying?
                     </h1>

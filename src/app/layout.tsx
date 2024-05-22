@@ -3,6 +3,7 @@ import { Montserrat } from 'next/font/google';
 import './globals.css';
 import { cn } from '@/libs/utils/cn';
 import Providers from '@/providers';
+import { Header } from '@/components/header';
 
 const montserrat = Montserrat({ subsets: ['latin'] });
 
@@ -15,7 +16,12 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     return (
         <html lang="en">
             <body className={cn(montserrat.className)} suppressHydrationWarning>
-                <Providers>{children}</Providers>
+                <Providers>
+                    <section className="flex min-h-screen flex-col">
+                        <Header />
+                        <main className="flex flex-1 flex-col">{children}</main>
+                    </section>
+                </Providers>
             </body>
         </html>
     );
