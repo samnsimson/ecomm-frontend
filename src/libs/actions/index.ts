@@ -14,7 +14,9 @@ const formDataToObject = (data: FormData) => {
 
 export const authenticate = async (_: string | undefined, formData: FormData) => {
     try {
-        await signIn('credentials', formData);
+        const username = formData.get('username');
+        const password = formData.get('password');
+        await signIn('credentials', { username, password, redirectTo: '/' });
     } catch (error) {
         if (error instanceof AuthError) {
             switch (error.type) {

@@ -1,4 +1,3 @@
-import { ListUsers } from '../components/list-users';
 import { Hero } from '@/components/hero';
 
 export default function Home() {
