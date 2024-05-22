@@ -1,5 +1,5 @@
-import { signOut } from '@/auth';
-import { Button } from '@nextui-org/react';
+import { Button } from '@/components/ui/button';
+import { signOut } from '@/lib/auth';
 import { FC, HTMLAttributes } from 'react';
 
 interface DashboardProps extends HTMLAttributes<HTMLDivElement> {

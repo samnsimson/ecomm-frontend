@@ -9,33 +9,40 @@ import { signOut } from 'next-auth/react';
 export const AccountSidePanel = () => {
     const [selected, setSelected] = useState('profile');
     return (
-        <div className="border-default flex flex-col divide-y-[1px] rounded border bg-white p-3">
-            <Link
-                href="/account/profile"
-                className={cn(buttonVariants({ size: 'lg', variant: 'ghost' }), 'h-auto justify-start p-3 hover:bg-primary hover:text-primary-foreground')}
-            >
-                <span className="flex items-center space-x-3">
-                    <User />
-                    <span className="flex flex-col">
-                        <span className="font-bold">Profile</span>
-                        <span className="text-sm">Manage Profile</span>
+        <div className="space-y-6">
+            <div className="flex flex-col divide-y-[1px] rounded border border-default bg-white p-3">
+                <Link
+                    href="/account/profile"
+                    className={cn(buttonVariants({ size: 'lg', variant: 'ghost' }), 'h-auto justify-start p-3 hover:bg-primary hover:text-primary-foreground')}
+                >
+                    <span className="flex items-center space-x-3">
+                        <User />
+                        <span className="flex flex-col">
+                            <span className="font-bold">Profile</span>
+                            <span className="text-xs">Manage Profile</span>
+                        </span>
                     </span>
-                </span>
-            </Link>
-            <Link
-                href="/account/orders"
-                className={cn(buttonVariants({ size: 'lg', variant: 'ghost' }), 'h-auto justify-start p-3 hover:bg-primary hover:text-primary-foreground')}
-            >
-                <span className="flex items-center space-x-3">
-                    <BoxIcon />
-                    <span className="flex flex-col">
-                        <span className="font-bold">Orders</span>
-                        <span className="text-sm">Manage Orders</span>
+                </Link>
+                <Link
+                    href="/account/orders"
+                    className={cn(buttonVariants({ size: 'lg', variant: 'ghost' }), 'h-auto justify-start p-3 hover:bg-primary hover:text-primary-foreground')}
+                >
+                    <span className="flex items-center space-x-3">
+                        <BoxIcon />
+                        <span className="flex flex-col">
+                            <span className="font-bold">Orders</span>
+                            <span className="text-xs">Manage Orders</span>
+                        </span>
                     </span>
-                </span>
-            </Link>
-            <div className="py-3">
-                <Button variant="ghost" size="lg" onClick={() => signOut()} className="flex w-full items-center space-x-3">
+                </Link>
+            </div>
+            <div className="flex flex-col divide-y-[1px] rounded border border-default bg-white p-3">
+                <Button
+                    variant="secondary"
+                    size="lg"
+                    onClick={() => signOut({ callbackUrl: '/', redirect: true })}
+                    className="flex w-full items-center space-x-3"
+                >
                     <LogOutIcon className="rotate-180" />
                     <span>Sign out</span>
                 </Button>

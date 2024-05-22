@@ -1,5 +1,5 @@
 'use server';
-import { signIn } from '@/auth';
+import { signIn } from '@/lib/auth';
 import { AuthError } from 'next-auth';
 import { gql } from '../graphql-client';
 import { SignupDocument, SignupMutation, SignupMutationVariables } from '@/graphql/generated';
@@ -16,7 +16,7 @@ export const authenticate = async (_: string | undefined, formData: FormData) =>
     try {
         const username = formData.get('username');
         const password = formData.get('password');
-        await signIn('credentials', { username, password, redirectTo: '/' });
+        await signIn('credentials', { username, password, redirect: true });
     } catch (error) {
         if (error instanceof AuthError) {
             switch (error.type) {

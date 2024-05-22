@@ -5,7 +5,7 @@ export const gql = {
     request: async <TData, TVariables>(document: DocumentNode, variables?: TVariables): Promise<{ data: TData }> => {
         try {
             const url = String(process.env.NEXT_PUBLIC_GRAPHQL_URL);
-            const accessToken = true;
+            const accessToken = {};
             const headers = { ...(accessToken && { authorization: `Bearer ${accessToken}` }) };
             const response = await axios.post(url, { query: print(document), variables }, { headers });
             const { data, errors } = response.data;

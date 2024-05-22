@@ -5,6 +5,7 @@ import { Container } from '../container';
 import { useSession } from 'next-auth/react';
 import { User, User2Icon } from 'lucide-react';
 import { Avatar, AvatarFallback } from '../ui/avatar';
+import Link from 'next/link';
 
 interface HeaderProps extends HTMLAttributes<HTMLDivElement> {
     [x: string]: any;
@@ -13,15 +14,17 @@ interface HeaderProps extends HTMLAttributes<HTMLDivElement> {
 export const Header: FC<HeaderProps> = ({ ...props }) => {
     const { data } = useSession();
     return (
-        <div className="border-default flex min-h-20 flex-col justify-center border-b bg-white py-3" {...props}>
+        <div className="flex min-h-20 flex-col justify-center border-b border-default bg-white py-3" {...props}>
             <Container className="flex h-full items-center justify-between">
                 <Logo />
                 {!!data?.user && (
-                    <Avatar className="ring ring-primary ring-offset-2">
-                        <AvatarFallback>
-                            <User2Icon />
-                        </AvatarFallback>
-                    </Avatar>
+                    <Link href="/account/profile">
+                        <Avatar className="ring ring-primary ring-offset-2">
+                            <AvatarFallback>
+                                <User2Icon />
+                            </AvatarFallback>
+                        </Avatar>
+                    </Link>
                 )}
             </Container>
         </div>

@@ -13,7 +13,7 @@ export const Hero: FC<HeroProps> = ({ ...props }) => {
             <Container className="realtive text-white">
                 <div className="w-1/2 space-y-6">
                     <h1 className="text-[76px] font-black leading-[70px] tracking-wider">
-                        <span className="text-warning">Still not</span> buying?
+                        <span className="text-amber-500">Still not</span> buying?
                     </h1>
                     <div className="space-y-2">
                         <h2 className="text-[46px] font-bold">We are your best options</h2>
@@ -22,7 +22,7 @@ export const Hero: FC<HeroProps> = ({ ...props }) => {
                             praesentium odit molestiae perferendis porro ea repellat dolore eos, facere eveniet. Animi, ipsa aut.
                         </p>
                     </div>
-                    <Button size="lg" color="warning" className="flex items-center space-x-3 font-bold">
+                    <Button size="lg" variant="secondary" className="flex items-center space-x-3 bg-amber-500 font-bold">
                         <span>Shop now</span> <ArrowRightIcon />
                     </Button>
                 </div>
