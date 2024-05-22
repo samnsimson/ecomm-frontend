@@ -1,4 +1,4 @@
-import { cn } from '@/libs/utils/cn';
+import { cn } from '@/lib/utils';
 import { FC, HTMLAttributes } from 'react';
 
 interface ContainerProps extends HTMLAttributes<HTMLDivElement> {

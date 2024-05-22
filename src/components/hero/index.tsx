@@ -1,7 +1,7 @@
 import { FC, HTMLAttributes } from 'react';
 import { Container } from '../container';
-import { Button } from '@nextui-org/react';
 import { ArrowRightIcon } from 'lucide-react';
+import { Button } from '../ui/button';
 
 interface HeroProps extends HTMLAttributes<HTMLDivElement> {
     [x: string]: any;
@@ -22,8 +22,8 @@ export const Hero: FC<HeroProps> = ({ ...props }) => {
                             praesentium odit molestiae perferendis porro ea repellat dolore eos, facere eveniet. Animi, ipsa aut.
                         </p>
                     </div>
-                    <Button endContent={<ArrowRightIcon />} size="lg" color="warning" radius="full" className="font-bold">
-                        Shop now
+                    <Button size="lg" color="warning" className="flex items-center space-x-3 font-bold">
+                        <span>Shop now</span> <ArrowRightIcon />
                     </Button>
                 </div>
             </Container>

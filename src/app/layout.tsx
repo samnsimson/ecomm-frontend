@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Montserrat } from 'next/font/google';
 import './globals.css';
-import { cn } from '@/libs/utils/cn';
+import { cn } from '@/lib/utils';
 import Providers from '@/providers';
 import { Header } from '@/components/header';
 
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
     return (
         <html lang="en">
-            <body className={cn('bg-default-100', montserrat.className)} suppressHydrationWarning>
+            <body className={cn('bg-slate-50', montserrat.className)} suppressHydrationWarning>
                 <Providers>
                     <section className="flex min-h-screen flex-col">
                         <Header />

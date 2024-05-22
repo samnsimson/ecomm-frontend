@@ -1,47 +1,45 @@
 'use client';
-import { Listbox, ListboxItem } from '@nextui-org/react';
-import { BoxIcon, ChevronRight, User2Icon } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { Button, buttonVariants } from '../ui/button';
+import { BoxIcon, LogOutIcon, User } from 'lucide-react';
+import { signOut } from 'next-auth/react';
 
 export const AccountSidePanel = () => {
-    const [selected, setSelected] = useState(new Set(['profile']));
-    const router = useRouter();
-
-    useEffect(() => {
-        const key = Array.from(selected).pop();
-        if (!key) return;
-        switch (key) {
-            case 'profile':
-                router.push('/account/profile');
-                break;
-            case 'orders':
-                router.push('/account/orders');
-                break;
-            default:
-                break;
-        }
-    }, [selected, router]);
-
+    const [selected, setSelected] = useState('profile');
     return (
-        <Listbox
-            variant="solid"
-            color="primary"
-            className="rounded border border-default bg-white p-3"
-            itemClasses={{ description: '' }}
-            selectionMode="single"
-            label="account section"
-            selectedKeys={selected}
-            onSelectionChange={setSelected as any}
-            disallowEmptySelection
-        >
-            <ListboxItem key="profile" description="Manage your profile" startContent={<User2Icon />}>
-                Profile
-            </ListboxItem>
-            <ListboxItem key="orders" description="Manage your orders" startContent={<BoxIcon />}>
-                Orders
-            </ListboxItem>
-        </Listbox>
+        <div className="flex flex-col divide-y-[1px] rounded border border-default bg-white p-3">
+            <Link
+                href="/account/profile"
+                className={cn(buttonVariants({ size: 'lg', variant: 'ghost' }), 'h-auto justify-start p-3 hover:bg-primary hover:text-primary-foreground')}
+            >
+                <span className="flex items-center space-x-3">
+                    <User />
+                    <span className="flex flex-col">
+                        <span className="font-bold">Profile</span>
+                        <span className="text-sm">Manage Profile</span>
+                    </span>
+                </span>
+            </Link>
+            <Link
+                href="/account/orders"
+                className={cn(buttonVariants({ size: 'lg', variant: 'ghost' }), 'h-auto justify-start p-3 hover:bg-primary hover:text-primary-foreground')}
+            >
+                <span className="flex items-center space-x-3">
+                    <BoxIcon />
+                    <span className="flex flex-col">
+                        <span className="font-bold">Orders</span>
+                        <span className="text-sm">Manage Orders</span>
+                    </span>
+                </span>
+            </Link>
+            <div className="py-3">
+                <Button variant="ghost" size="lg" onClick={() => signOut()} className="flex w-full items-center space-x-3">
+                    <LogOutIcon className="rotate-180" />
+                    <span>Sign out</span>
+                </Button>
+            </div>
+        </div>
     );
 };
