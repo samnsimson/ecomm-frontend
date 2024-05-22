@@ -3,7 +3,8 @@ import { signIn } from '@/lib/auth';
 import { AuthError } from 'next-auth';
 import { gql } from '../graphql-client';
 import { SignupDocument, SignupMutation, SignupMutationVariables } from '@/graphql/generated';
-import { signupSchema } from '../zod/schemas';
+import { signInSchema, signupSchema } from '../zod/schemas';
+import { z } from 'zod';
 
 const formDataToObject = (data: FormData) => {
     return Array.from(data.entries()).reduce((obj: Record<string, any>, [key, value]) => {
@@ -12,10 +13,8 @@ const formDataToObject = (data: FormData) => {
     }, {});
 };
 
-export const authenticate = async (_: string | undefined, formData: FormData) => {
+export const authenticate = async ({ username, password }: z.infer<typeof signInSchema>) => {
     try {
-        const username = formData.get('username');
-        const password = formData.get('password');
         await signIn('credentials', { username, password, redirect: true });
     } catch (error) {
         if (error instanceof AuthError) {

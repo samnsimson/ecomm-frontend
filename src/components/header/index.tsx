@@ -3,7 +3,7 @@ import { FC, HTMLAttributes } from 'react';
 import Logo from '../logo';
 import { Container } from '../container';
 import { useSession } from 'next-auth/react';
-import { User, User2Icon } from 'lucide-react';
+import { User2Icon } from 'lucide-react';
 import { Avatar, AvatarFallback } from '../ui/avatar';
 import Link from 'next/link';
 
