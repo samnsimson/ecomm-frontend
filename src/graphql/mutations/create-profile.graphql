@@ -1,0 +1,14 @@
+mutation CreateProfile($userId: String!, $input: CreateProfileInput!) {
+    createProfile(userId: $userId, createProfileInput: $input) {
+        id
+        firstName
+        lastName
+        profileImage
+        addressOne
+        addressTwo
+        city
+        state
+        country
+        zipcode
+    }
+}

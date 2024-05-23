@@ -3,11 +3,12 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { useSignupMutation } from '@/graphql/generated';
 import { cn } from '@/lib/utils';
 import { signupSchema } from '@/lib/zod/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
-import { FC, HTMLAttributes, useState } from 'react';
+import { FC, HTMLAttributes, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -19,10 +20,19 @@ type SignupSchema = z.infer<typeof signupSchema>;
 
 export const SingupForm: FC<SingupFormProps> = ({ ...props }) => {
     const [viewPassword, setViewPassword] = useState(false);
+    const [mutation] = useSignupMutation();
     const form = useForm<SignupSchema>({ resolver: zodResolver(signupSchema), defaultValues: { username: '', email: '', phone: '', password: '' } });
-    const signUp = async (data: SignupSchema) => {
-        console.log(data);
+
+    const signUp = async (input: SignupSchema) => {
+        try {
+            const { data, errors } = await mutation({ variables: { input } });
+            console.log('🚀 ~ signUp ~ errors:', errors);
+            console.log('🚀 ~ signUp ~ data:', data);
+        } catch (error) {
+            console.log('🚀 ~ signUp ~ error:', error);
+        }
     };
+
     return (
         <Card className="w-full divide-y-[1px]" {...props}>
             <CardHeader className="bg-secondary">

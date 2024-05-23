@@ -1,15 +1,15 @@
 'use client';
-import { useGetUserQuery } from '@/graphql/generated';
-import { useSession } from 'next-auth/react';
 import { FC, HTMLAttributes } from 'react';
+import { ProfileForm } from '../form/profile';
 
 interface ProfileComponentProps extends HTMLAttributes<HTMLDivElement> {
     [x: string]: any;
 }
 
 export const ProfileComponent: FC<ProfileComponentProps> = ({ ...props }) => {
-    const { data: session } = useSession();
-    const { data } = useGetUserQuery({ variables: { id: session?.user.id || '' } });
-    console.log(data);
-    return <div {...props}>ProfileComponent</div>;
+    return (
+        <div {...props} className="py-1">
+            <ProfileForm />
+        </div>
+    );
 };

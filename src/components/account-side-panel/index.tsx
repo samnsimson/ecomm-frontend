@@ -41,10 +41,10 @@ export const AccountSidePanel = () => {
                     variant="secondary"
                     size="lg"
                     onClick={() => signOut({ callbackUrl: '/', redirect: true })}
-                    className="flex w-full items-center space-x-3"
+                    className="w-full"
+                    startContent={<LogOutIcon className="rotate-180" />}
                 >
-                    <LogOutIcon className="rotate-180" />
-                    <span>Sign out</span>
+                    Sign out
                 </Button>
             </div>
         </div>
