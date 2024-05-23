@@ -4,7 +4,7 @@ import './globals.css';
 import { cn } from '@/lib/utils';
 import Providers from '@/providers';
 import { Header } from '@/components/header';
-import { Toaster } from '@/components/ui/toaster';
+import { Toaster } from 'sonner';
 
 const montserrat = Montserrat({ subsets: ['latin'] });
 
@@ -23,7 +23,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
                         <main className="flex flex-1 flex-col">{children}</main>
                     </section>
                 </Providers>
-                <Toaster />
+                <Toaster richColors />
             </body>
         </html>
     );

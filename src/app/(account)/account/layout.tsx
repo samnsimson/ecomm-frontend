@@ -8,7 +8,7 @@ const AccountLayout: FC<PropsWithChildren> = ({ children }) => {
             <div className="w-1/4">
                 <AccountSidePanel />
             </div>
-            <div className="border-default w-3/4 rounded border bg-white px-3 py-2">{children}</div>
+            <div className="w-3/4">{children}</div>
         </Container>
     );
 };

@@ -5,13 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
-import { useToast } from '@/components/ui/use-toast';
 import { useCreateProfileMutation, useGetUserQuery, useUpdateProfileMutation } from '@/graphql/generated';
 import { ProfileSchema } from '@/lib/zod/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useSession } from 'next-auth/react';
 import { FC, HTMLAttributes, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { z } from 'zod';
 
 interface ProfileFormProps extends HTMLAttributes<HTMLDivElement> {
@@ -26,7 +26,6 @@ export const ProfileForm: FC<ProfileFormProps> = ({ ...props }) => {
     const [createProfile] = useCreateProfileMutation();
     const [updateProfile] = useUpdateProfileMutation();
     const [updating, setUpdating] = useState(false);
-    const { toast } = useToast();
 
     const form = useForm<ProfileType>({ resolver: zodResolver(ProfileSchema) });
 
@@ -38,13 +37,13 @@ export const ProfileForm: FC<ProfileFormProps> = ({ ...props }) => {
             if (!userId) return;
             if (userData.user.profile) await updateProfile({ variables: { input: { id: userData.user.profile.id, ...input } } });
             else await createProfile({ variables: { userId, input } });
+            refetchUser();
         } catch (error) {
             console.log('🚀 ~ handleSubmit ~ error:', error);
+            toast.error('Oops!', { description: 'Something went wrong.' });
         } finally {
-            refetchUser();
             setUpdating(false);
-            const data = toast({ title: 'Success' });
-            console.log('🚀 ~ handleSubmit ~ data:', data);
+            toast.success('Success!', { description: 'Profile updated successfully!' });
         }
     };
 
@@ -101,12 +100,36 @@ export const ProfileForm: FC<ProfileFormProps> = ({ ...props }) => {
                     <Separator className="col-span-2" />
                     <FormField
                         control={form.control}
+                        name="firstName"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>First Name</FormLabel>
+                                <FormControl>
+                                    <Input type="text" {...field} />
+                                </FormControl>
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="lastName"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Last Name</FormLabel>
+                                <FormControl>
+                                    <Input type="text" {...field} />
+                                </FormControl>
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
                         name="addressOne"
-                        render={({ field: { value, ...rest } }) => (
+                        render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Address line one</FormLabel>
                                 <FormControl>
-                                    <Input value={value} {...rest} />
+                                    <Input type="text" {...field} />
                                 </FormControl>
                             </FormItem>
                         )}
@@ -118,7 +141,7 @@ export const ProfileForm: FC<ProfileFormProps> = ({ ...props }) => {
                             <FormItem>
                                 <FormLabel>Address line two</FormLabel>
                                 <FormControl>
-                                    <Input value={value ?? ''} {...rest} />
+                                    <Input type="text" value={value ?? ''} {...rest} />
                                 </FormControl>
                             </FormItem>
                         )}
@@ -126,11 +149,11 @@ export const ProfileForm: FC<ProfileFormProps> = ({ ...props }) => {
                     <FormField
                         control={form.control}
                         name="city"
-                        render={({ field: { value, ...rest } }) => (
+                        render={({ field }) => (
                             <FormItem>
                                 <FormLabel>City</FormLabel>
                                 <FormControl>
-                                    <Input value={value ?? ''} {...rest} />
+                                    <Input type="text" {...field} />
                                 </FormControl>
                             </FormItem>
                         )}
@@ -138,11 +161,11 @@ export const ProfileForm: FC<ProfileFormProps> = ({ ...props }) => {
                     <FormField
                         control={form.control}
                         name="state"
-                        render={({ field: { value, ...rest } }) => (
+                        render={({ field }) => (
                             <FormItem>
                                 <FormLabel>State</FormLabel>
                                 <FormControl>
-                                    <Input value={value ?? ''} {...rest} />
+                                    <Input type="text" {...field} />
                                 </FormControl>
                             </FormItem>
                         )}
@@ -150,11 +173,11 @@ export const ProfileForm: FC<ProfileFormProps> = ({ ...props }) => {
                     <FormField
                         control={form.control}
                         name="country"
-                        render={({ field: { value, ...rest } }) => (
+                        render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Country</FormLabel>
                                 <FormControl>
-                                    <Input value={value ?? ''} {...rest} />
+                                    <Input type="text" {...field} />
                                 </FormControl>
                             </FormItem>
                         )}
@@ -162,11 +185,11 @@ export const ProfileForm: FC<ProfileFormProps> = ({ ...props }) => {
                     <FormField
                         control={form.control}
                         name="zipcode"
-                        render={({ field: { value, ...rest } }) => (
+                        render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Zipcode</FormLabel>
                                 <FormControl>
-                                    <Input value={value ?? ''} {...rest} />
+                                    <Input type="text" {...field} />
                                 </FormControl>
                             </FormItem>
                         )}

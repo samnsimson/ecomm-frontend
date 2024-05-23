@@ -1,9 +1,9 @@
-import { ProfileComponent } from '@/components/profile';
+import { ProfileForm } from '@/components/form/profile';
 
 const ProfilePage = async () => {
     return (
-        <div>
-            <ProfileComponent />
+        <div className="rounded border border-default bg-white p-4">
+            <ProfileForm />
         </div>
     );
 };

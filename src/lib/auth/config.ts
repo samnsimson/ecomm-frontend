@@ -16,7 +16,7 @@ export const authConfig: NextAuthConfig = {
                 try {
                     const { username, password } = await signInSchema.parseAsync(credentials);
                     const variables: LoginMutationVariables = { input: { username, password } };
-                    const { data } = await gql.request<LoginMutation, LoginMutationVariables>(LoginDocument, variables);
+                    const { data } = await gql.auth<LoginMutation, LoginMutationVariables>(LoginDocument, variables);
                     return data.login;
                 } catch (error: any) {
                     return null;
@@ -32,16 +32,6 @@ export const authConfig: NextAuthConfig = {
             session.user = token as any;
             return session;
         },
-        // authorized: ({ auth, request: { nextUrl } }) => {
-        //     const isLoggedIn = !!auth?.user;
-        //     const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
-        //     const isOnAccount = nextUrl.pathname.startsWith('/account');
-        //     const isAdmin = auth?.user.role === 'admin';
-        //     const isUser = auth?.user.role === 'user';
-        //     if (isOnDashboard && (!isLoggedIn || !isAdmin)) return false;
-        //     if (isOnAccount && (!isLoggedIn || !isUser)) return false;
-        //     return true;
-        // },
     },
     pages: {
         signIn: '/sign-in',
