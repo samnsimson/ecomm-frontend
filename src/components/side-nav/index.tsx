@@ -1,39 +1,22 @@
 'use client';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
-import { useState } from 'react';
+import { FC, HTMLAttributes, useState } from 'react';
 import { Button, buttonVariants } from '../ui/button';
-import { BookmarkIcon, BoxIcon, LogOutIcon, User } from 'lucide-react';
+import { LogOutIcon } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import { SideNavList } from '@/lib/types';
 
-const linkList: Array<SideNavList> = [
-    {
-        name: 'Profile',
-        description: 'Manage your profile',
-        link: '/account/profile',
-        icon: <User />,
-    },
-    {
-        name: 'Orders',
-        description: 'Manage your orders',
-        link: '/account/orders',
-        icon: <BoxIcon />,
-    },
-    {
-        name: 'Wishlist',
-        description: 'View wishlisted items',
-        link: '/account/wishlist',
-        icon: <BookmarkIcon />,
-    },
-];
+interface SideNavProps extends HTMLAttributes<HTMLDivElement> {
+    navs: Array<SideNavList>;
+}
 
-export const SideNav = () => {
+export const SideNav: FC<SideNavProps> = ({ navs }) => {
     const [selected, setSelected] = useState('profile');
     return (
         <div className="space-y-6">
             <div className="flex flex-col divide-y-[1px] rounded border border-default bg-white p-3">
-                {linkList.map((list, key) => (
+                {navs.map((list, key) => (
                     <Link
                         key={key}
                         href={list.link}

@@ -69,6 +69,8 @@ export type CreatePaymentInput = {
 
 export type CreateProductInput = {
   description: Scalars['String']['input'];
+  retailPrice: Scalars['Int']['input'];
+  salePrice: Scalars['Int']['input'];
   title: Scalars['String']['input'];
 };
 
@@ -337,9 +339,9 @@ export type Product = {
   description?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   orders?: Maybe<Array<Order>>;
-  retailPrice: Scalars['Float']['output'];
+  retailPrice: Scalars['Int']['output'];
   reviews?: Maybe<Array<Review>>;
-  salePrice: Scalars['Float']['output'];
+  salePrice: Scalars['Int']['output'];
   slug?: Maybe<Scalars['String']['output']>;
   title: Scalars['String']['output'];
   updatedAt: Scalars['DateTime']['output'];
@@ -545,6 +547,8 @@ export type UpdatePaymentInput = {
 export type UpdateProductInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['ID']['input'];
+  retailPrice?: InputMaybe<Scalars['Int']['input']>;
+  salePrice?: InputMaybe<Scalars['Int']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -595,6 +599,13 @@ export enum UserRole {
   User = 'USER'
 }
 
+export type CreateProductMutationVariables = Exact<{
+  input: CreateProductInput;
+}>;
+
+
+export type CreateProductMutation = { __typename?: 'Mutation', createProduct: { __typename?: 'Product', id: string, title: string, description?: string | null, slug?: string | null, salePrice: number, retailPrice: number, createdAt: any } };
+
 export type CreateProfileMutationVariables = Exact<{
   userId: Scalars['String']['input'];
   input: CreateProfileInput;
@@ -630,7 +641,10 @@ export type GetOrdersQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetOrdersQuery = { __typename?: 'Query', orders: Array<{ __typename?: 'Order', id: string, total: number, quantity: number, createdAt: any, status: OrderStatus, payment: { __typename?: 'Payment', id: string, provider: PaymentProvider, status: PaymentStatus, amount: number, type: PaymentType }, products: Array<{ __typename?: 'Product', id: string, title: string, description?: string | null }> }> };
 
-export type GetProductsQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetProductsQueryVariables = Exact<{
+  take?: InputMaybe<Scalars['Int']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+}>;
 
 
 export type GetProductsQuery = { __typename?: 'Query', products: Array<{ __typename?: 'Product', id: string, title: string, description?: string | null, slug?: string | null, salePrice: number, retailPrice: number, categories?: Array<{ __typename?: 'Category', id: string, title: string, description?: string | null }> | null, reviews?: Array<{ __typename?: 'Review', id: string, review: string, rating: number }> | null }> };
@@ -648,6 +662,45 @@ export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
 export type GetUsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', id: string, username: string, email: string, phone: string, emailVerified?: boolean | null, phoneVerified?: boolean | null, orders?: Array<{ __typename?: 'Order', id: string, products: Array<{ __typename?: 'Product', id: string, title: string, salePrice: number, retailPrice: number }> }> | null, profile?: { __typename?: 'Profile', id: string, firstName: string, lastName?: string | null, addressOne: string, city: string, state: string, country: string, zipcode: string, profileImage?: string | null } | null }> };
 
 
+export const CreateProductDocument = gql`
+    mutation CreateProduct($input: CreateProductInput!) {
+  createProduct(createProductInput: $input) {
+    id
+    title
+    description
+    slug
+    salePrice
+    retailPrice
+    createdAt
+  }
+}
+    `;
+export type CreateProductMutationFn = Apollo.MutationFunction<CreateProductMutation, CreateProductMutationVariables>;
+
+/**
+ * __useCreateProductMutation__
+ *
+ * To run a mutation, you first call `useCreateProductMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateProductMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createProductMutation, { data, loading, error }] = useCreateProductMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateProductMutation(baseOptions?: Apollo.MutationHookOptions<CreateProductMutation, CreateProductMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateProductMutation, CreateProductMutationVariables>(CreateProductDocument, options);
+      }
+export type CreateProductMutationHookResult = ReturnType<typeof useCreateProductMutation>;
+export type CreateProductMutationResult = Apollo.MutationResult<CreateProductMutation>;
+export type CreateProductMutationOptions = Apollo.BaseMutationOptions<CreateProductMutation, CreateProductMutationVariables>;
 export const CreateProfileDocument = gql`
     mutation CreateProfile($userId: String!, $input: CreateProfileInput!) {
   createProfile(userId: $userId, createProfileInput: $input) {
@@ -867,8 +920,8 @@ export type GetOrdersLazyQueryHookResult = ReturnType<typeof useGetOrdersLazyQue
 export type GetOrdersSuspenseQueryHookResult = ReturnType<typeof useGetOrdersSuspenseQuery>;
 export type GetOrdersQueryResult = Apollo.QueryResult<GetOrdersQuery, GetOrdersQueryVariables>;
 export const GetProductsDocument = gql`
-    query GetProducts {
-  products {
+    query GetProducts($take: Int, $page: Int) {
+  products(take: $take, skip: $page) {
     id
     title
     description
@@ -901,6 +954,8 @@ export const GetProductsDocument = gql`
  * @example
  * const { data, loading, error } = useGetProductsQuery({
  *   variables: {
+ *      take: // value for 'take'
+ *      page: // value for 'page'
  *   },
  * });
  */
