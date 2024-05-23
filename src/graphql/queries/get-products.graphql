@@ -6,6 +6,12 @@ query GetProducts($take: Int, $page: Int) {
         slug
         salePrice
         retailPrice
+        brand
+        dimensions {
+            width
+            height
+            depth
+        }
         categories {
             id
             title

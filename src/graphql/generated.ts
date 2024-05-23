@@ -68,7 +68,9 @@ export type CreatePaymentInput = {
 };
 
 export type CreateProductInput = {
+  brand: Scalars['String']['input'];
   description: Scalars['String']['input'];
+  dimensions?: InputMaybe<Dimensions>;
   retailPrice: Scalars['Int']['input'];
   salePrice: Scalars['Int']['input'];
   title: Scalars['String']['input'];
@@ -100,6 +102,19 @@ export type CreateUserInput = {
 export type DeltedUser = {
   __typename?: 'DeltedUser';
   id: Scalars['ID']['output'];
+};
+
+export type Dimensions = {
+  depth?: InputMaybe<Scalars['Int']['input']>;
+  height?: InputMaybe<Scalars['Int']['input']>;
+  width?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type DimensionsResponse = {
+  __typename?: 'DimensionsResponse';
+  depth: Scalars['Float']['output'];
+  height: Scalars['Float']['output'];
+  width: Scalars['Float']['output'];
 };
 
 export type LoginInput = {
@@ -333,16 +348,19 @@ export enum PaymentType {
 
 export type Product = {
   __typename?: 'Product';
+  brand?: Maybe<Scalars['String']['output']>;
   carts?: Maybe<Array<Cart>>;
   categories?: Maybe<Array<Category>>;
   createdAt: Scalars['DateTime']['output'];
   description?: Maybe<Scalars['String']['output']>;
+  dimensions: DimensionsResponse;
   id: Scalars['ID']['output'];
   orders?: Maybe<Array<Order>>;
   retailPrice: Scalars['Int']['output'];
   reviews?: Maybe<Array<Review>>;
   salePrice: Scalars['Int']['output'];
   slug?: Maybe<Scalars['String']['output']>;
+  stock: Scalars['Int']['output'];
   title: Scalars['String']['output'];
   updatedAt: Scalars['DateTime']['output'];
 };
@@ -545,7 +563,9 @@ export type UpdatePaymentInput = {
 };
 
 export type UpdateProductInput = {
+  brand?: InputMaybe<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
+  dimensions?: InputMaybe<Dimensions>;
   id: Scalars['ID']['input'];
   retailPrice?: InputMaybe<Scalars['Int']['input']>;
   salePrice?: InputMaybe<Scalars['Int']['input']>;
@@ -647,7 +667,7 @@ export type GetProductsQueryVariables = Exact<{
 }>;
 
 
-export type GetProductsQuery = { __typename?: 'Query', products: Array<{ __typename?: 'Product', id: string, title: string, description?: string | null, slug?: string | null, salePrice: number, retailPrice: number, categories?: Array<{ __typename?: 'Category', id: string, title: string, description?: string | null }> | null, reviews?: Array<{ __typename?: 'Review', id: string, review: string, rating: number }> | null }> };
+export type GetProductsQuery = { __typename?: 'Query', products: Array<{ __typename?: 'Product', id: string, title: string, description?: string | null, slug?: string | null, salePrice: number, retailPrice: number, brand?: string | null, dimensions: { __typename?: 'DimensionsResponse', width: number, height: number, depth: number }, categories?: Array<{ __typename?: 'Category', id: string, title: string, description?: string | null }> | null, reviews?: Array<{ __typename?: 'Review', id: string, review: string, rating: number }> | null }> };
 
 export type GetUserQueryVariables = Exact<{
   id: Scalars['String']['input'];
@@ -928,6 +948,12 @@ export const GetProductsDocument = gql`
     slug
     salePrice
     retailPrice
+    brand
+    dimensions {
+      width
+      height
+      depth
+    }
     categories {
       id
       title
