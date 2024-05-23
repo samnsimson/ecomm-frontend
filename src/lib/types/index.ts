@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 declare module 'next-auth' {
     interface Session {
         user: {
@@ -17,4 +19,11 @@ declare module 'next-auth' {
 export type Token = {
     accessToken: string;
     refreshToken: string;
+};
+
+export type SideNavList = {
+    name: string;
+    description: string;
+    link: string;
+    icon: ReactNode;
 };

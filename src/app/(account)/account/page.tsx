@@ -1,6 +1,4 @@
-import { Container } from '@/components/container';
+import { redirect } from 'next/navigation';
 
-const AccountPage = () => {
-    return <Container>AccountPage</Container>;
-};
+const AccountPage = () => redirect('/account/profile');
 export default AccountPage;

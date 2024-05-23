@@ -13,9 +13,9 @@ export const signupSchema = z.object({
 });
 
 export const ProfileSchema = z.object({
-    firstName: z.string(),
-    lastName: z.string().optional(),
-    addressOne: z.string(),
+    firstName: z.string().min(1, 'First Name is required'),
+    lastName: z.string().optional().nullable(),
+    addressOne: z.string().min(1, 'Address is required'),
     addressTwo: z.string().optional().nullable(),
     city: z.string().min(1, 'City is required'),
     state: z.string().min(1, 'State is required'),

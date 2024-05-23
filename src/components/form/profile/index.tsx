@@ -2,7 +2,7 @@
 import { Alert } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { useCreateProfileMutation, useGetUserQuery, useUpdateProfileMutation } from '@/graphql/generated';
@@ -107,18 +107,20 @@ export const ProfileForm: FC<ProfileFormProps> = ({ ...props }) => {
                                 <FormControl>
                                     <Input type="text" {...field} />
                                 </FormControl>
+                                <FormMessage />
                             </FormItem>
                         )}
                     />
                     <FormField
                         control={form.control}
                         name="lastName"
-                        render={({ field }) => (
+                        render={({ field: { value, ...rest } }) => (
                             <FormItem>
                                 <FormLabel>Last Name</FormLabel>
                                 <FormControl>
-                                    <Input type="text" {...field} />
+                                    <Input type="text" value={value ?? ''} {...rest} />
                                 </FormControl>
+                                <FormMessage />
                             </FormItem>
                         )}
                     />
@@ -131,6 +133,7 @@ export const ProfileForm: FC<ProfileFormProps> = ({ ...props }) => {
                                 <FormControl>
                                     <Input type="text" {...field} />
                                 </FormControl>
+                                <FormMessage />
                             </FormItem>
                         )}
                     />
@@ -143,6 +146,7 @@ export const ProfileForm: FC<ProfileFormProps> = ({ ...props }) => {
                                 <FormControl>
                                     <Input type="text" value={value ?? ''} {...rest} />
                                 </FormControl>
+                                <FormMessage />
                             </FormItem>
                         )}
                     />
@@ -155,6 +159,7 @@ export const ProfileForm: FC<ProfileFormProps> = ({ ...props }) => {
                                 <FormControl>
                                     <Input type="text" {...field} />
                                 </FormControl>
+                                <FormMessage />
                             </FormItem>
                         )}
                     />
@@ -167,6 +172,7 @@ export const ProfileForm: FC<ProfileFormProps> = ({ ...props }) => {
                                 <FormControl>
                                     <Input type="text" {...field} />
                                 </FormControl>
+                                <FormMessage />
                             </FormItem>
                         )}
                     />
@@ -179,6 +185,7 @@ export const ProfileForm: FC<ProfileFormProps> = ({ ...props }) => {
                                 <FormControl>
                                     <Input type="text" {...field} />
                                 </FormControl>
+                                <FormMessage />
                             </FormItem>
                         )}
                     />
@@ -191,6 +198,7 @@ export const ProfileForm: FC<ProfileFormProps> = ({ ...props }) => {
                                 <FormControl>
                                     <Input type="text" {...field} />
                                 </FormControl>
+                                <FormMessage />
                             </FormItem>
                         )}
                     />

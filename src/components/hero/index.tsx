@@ -22,8 +22,8 @@ export const Hero: FC<HeroProps> = ({ ...props }) => {
                             praesentium odit molestiae perferendis porro ea repellat dolore eos, facere eveniet. Animi, ipsa aut.
                         </p>
                     </div>
-                    <Button size="lg" variant="secondary" className="flex items-center space-x-3 bg-amber-500 font-bold">
-                        <span>Shop now</span> <ArrowRightIcon />
+                    <Button size="lg" variant="secondary" className="flex items-center space-x-3 bg-amber-500 font-bold" endContent={<ArrowRightIcon />}>
+                        Shop now
                     </Button>
                 </div>
             </Container>
