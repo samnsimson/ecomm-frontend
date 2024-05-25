@@ -1,0 +1,11 @@
+query GetShippings {
+    shippings {
+        id
+        title
+        description
+        enabled
+        type
+        amount
+        percentage
+    }
+}

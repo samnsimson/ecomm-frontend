@@ -1,0 +1,11 @@
+query GetShipping($id: String!) {
+    shipping(id: $id) {
+        id
+        title
+        description
+        enabled
+        type
+        amount
+        percentage
+    }
+}

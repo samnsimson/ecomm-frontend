@@ -1,4 +1,4 @@
-import { CreateProductMutationVariables } from '@/graphql/generated';
+import { CreateProductMutationVariables, ShippingType } from '@/graphql/generated';
 import { title } from 'process';
 import { z } from 'zod';
 
@@ -54,4 +54,12 @@ export const SettingsSchema = z.object({
     couponsEnabled: z.boolean().optional().nullable(),
     shippingEnabled: z.boolean().optional().nullable(),
     discountsEnabled: z.boolean().optional().nullable(),
+});
+
+export const ShippingsSchema = z.object({
+    title: z.string().min(1, 'Title is required'),
+    description: z.string().optional().nullable(),
+    type: z.enum([ShippingType.Free, ShippingType.Flat, ShippingType.Percentage]),
+    amount: z.coerce.number().min(0).optional().nullable(),
+    percentage: z.coerce.number().min(0).optional().nullable(),
 });

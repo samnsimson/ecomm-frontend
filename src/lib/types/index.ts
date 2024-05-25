@@ -27,3 +27,9 @@ export type SideNavList = {
     link: string;
     icon: ReactNode;
 };
+
+export enum ShippingTypes {
+    FREE = 'free',
+    FLAT = 'flat',
+    PERCENTAGE = 'percentage',
+}

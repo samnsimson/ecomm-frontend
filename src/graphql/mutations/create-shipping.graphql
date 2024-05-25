@@ -1,0 +1,11 @@
+mutation CreateShipping($input: CreateShippingInput!) {
+    createShipping(createShippingInput: $input) {
+        id
+        title
+        description
+        enabled
+        type
+        amount
+        percentage
+    }
+}

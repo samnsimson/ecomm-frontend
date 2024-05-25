@@ -109,8 +109,12 @@ export type CreateReviewInput = {
 };
 
 export type CreateShippingInput = {
-  /** Example field (placeholder) */
-  exampleField: Scalars['Int']['input'];
+  amount?: InputMaybe<Scalars['Float']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  enabled?: Scalars['Boolean']['input'];
+  percentage?: InputMaybe<Scalars['Float']['input']>;
+  title: Scalars['String']['input'];
+  type: ShippingType;
 };
 
 export type CreateTaxInput = {
@@ -328,7 +332,7 @@ export type MutationRemoveReviewArgs = {
 
 
 export type MutationRemoveShippingArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['String']['input'];
 };
 
 
@@ -626,7 +630,13 @@ export type QuerySettingArgs = {
 
 
 export type QueryShippingArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['String']['input'];
+};
+
+
+export type QueryShippingsArgs = {
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  take?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -815,9 +825,13 @@ export type UpdateReviewInput = {
 };
 
 export type UpdateShippingInput = {
-  /** Example field (placeholder) */
-  exampleField?: InputMaybe<Scalars['Int']['input']>;
-  id: Scalars['Int']['input'];
+  amount?: InputMaybe<Scalars['Float']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  enabled?: InputMaybe<Scalars['Boolean']['input']>;
+  id: Scalars['String']['input'];
+  percentage?: InputMaybe<Scalars['Float']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  type?: InputMaybe<ShippingType>;
 };
 
 export type UpdateTaxInput = {
@@ -871,6 +885,13 @@ export type CreateProfileMutationVariables = Exact<{
 
 export type CreateProfileMutation = { __typename?: 'Mutation', createProfile: { __typename?: 'Profile', id: string, firstName: string, lastName?: string | null, profileImage?: string | null, addressOne: string, addressTwo?: string | null, city: string, state: string, country: string, zipcode: string } };
 
+export type CreateShippingMutationVariables = Exact<{
+  input: CreateShippingInput;
+}>;
+
+
+export type CreateShippingMutation = { __typename?: 'Mutation', createShipping: { __typename?: 'Shipping', id: string, title: string, description: string, enabled: boolean, type: ShippingType, amount: number, percentage: number } };
+
 export type LoginMutationVariables = Exact<{
   input: LoginInput;
 }>;
@@ -917,6 +938,18 @@ export type GetSettingsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetSettingsQuery = { __typename?: 'Query', setting: { __typename?: 'Setting', id: string, addressOne?: string | null, addressTwo?: string | null, city?: string | null, state?: string | null, country?: string | null, zipcode?: string | null, email?: string | null, phone?: string | null, currency: Currency, taxesEnabled: boolean, couponsEnabled: boolean, shippingEnabled: boolean, discountsEnabled: boolean } };
+
+export type GetShippingQueryVariables = Exact<{
+  id: Scalars['String']['input'];
+}>;
+
+
+export type GetShippingQuery = { __typename?: 'Query', shipping: { __typename?: 'Shipping', id: string, title: string, description: string, enabled: boolean, type: ShippingType, amount: number, percentage: number } };
+
+export type GetShippingsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetShippingsQuery = { __typename?: 'Query', shippings: Array<{ __typename?: 'Shipping', id: string, title: string, description: string, enabled: boolean, type: ShippingType, amount: number, percentage: number }> };
 
 export type GetUserQueryVariables = Exact<{
   id: Scalars['String']['input'];
@@ -1013,6 +1046,45 @@ export function useCreateProfileMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateProfileMutationHookResult = ReturnType<typeof useCreateProfileMutation>;
 export type CreateProfileMutationResult = Apollo.MutationResult<CreateProfileMutation>;
 export type CreateProfileMutationOptions = Apollo.BaseMutationOptions<CreateProfileMutation, CreateProfileMutationVariables>;
+export const CreateShippingDocument = gql`
+    mutation CreateShipping($input: CreateShippingInput!) {
+  createShipping(createShippingInput: $input) {
+    id
+    title
+    description
+    enabled
+    type
+    amount
+    percentage
+  }
+}
+    `;
+export type CreateShippingMutationFn = Apollo.MutationFunction<CreateShippingMutation, CreateShippingMutationVariables>;
+
+/**
+ * __useCreateShippingMutation__
+ *
+ * To run a mutation, you first call `useCreateShippingMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateShippingMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createShippingMutation, { data, loading, error }] = useCreateShippingMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateShippingMutation(baseOptions?: Apollo.MutationHookOptions<CreateShippingMutation, CreateShippingMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateShippingMutation, CreateShippingMutationVariables>(CreateShippingDocument, options);
+      }
+export type CreateShippingMutationHookResult = ReturnType<typeof useCreateShippingMutation>;
+export type CreateShippingMutationResult = Apollo.MutationResult<CreateShippingMutation>;
+export type CreateShippingMutationOptions = Apollo.BaseMutationOptions<CreateShippingMutation, CreateShippingMutationVariables>;
 export const LoginDocument = gql`
     mutation Login($input: LoginInput!) {
   login(credentials: $input) {
@@ -1348,6 +1420,97 @@ export type GetSettingsQueryHookResult = ReturnType<typeof useGetSettingsQuery>;
 export type GetSettingsLazyQueryHookResult = ReturnType<typeof useGetSettingsLazyQuery>;
 export type GetSettingsSuspenseQueryHookResult = ReturnType<typeof useGetSettingsSuspenseQuery>;
 export type GetSettingsQueryResult = Apollo.QueryResult<GetSettingsQuery, GetSettingsQueryVariables>;
+export const GetShippingDocument = gql`
+    query GetShipping($id: String!) {
+  shipping(id: $id) {
+    id
+    title
+    description
+    enabled
+    type
+    amount
+    percentage
+  }
+}
+    `;
+
+/**
+ * __useGetShippingQuery__
+ *
+ * To run a query within a React component, call `useGetShippingQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetShippingQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetShippingQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetShippingQuery(baseOptions: Apollo.QueryHookOptions<GetShippingQuery, GetShippingQueryVariables> & ({ variables: GetShippingQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetShippingQuery, GetShippingQueryVariables>(GetShippingDocument, options);
+      }
+export function useGetShippingLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetShippingQuery, GetShippingQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetShippingQuery, GetShippingQueryVariables>(GetShippingDocument, options);
+        }
+export function useGetShippingSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetShippingQuery, GetShippingQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetShippingQuery, GetShippingQueryVariables>(GetShippingDocument, options);
+        }
+export type GetShippingQueryHookResult = ReturnType<typeof useGetShippingQuery>;
+export type GetShippingLazyQueryHookResult = ReturnType<typeof useGetShippingLazyQuery>;
+export type GetShippingSuspenseQueryHookResult = ReturnType<typeof useGetShippingSuspenseQuery>;
+export type GetShippingQueryResult = Apollo.QueryResult<GetShippingQuery, GetShippingQueryVariables>;
+export const GetShippingsDocument = gql`
+    query GetShippings {
+  shippings {
+    id
+    title
+    description
+    enabled
+    type
+    amount
+    percentage
+  }
+}
+    `;
+
+/**
+ * __useGetShippingsQuery__
+ *
+ * To run a query within a React component, call `useGetShippingsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetShippingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetShippingsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetShippingsQuery(baseOptions?: Apollo.QueryHookOptions<GetShippingsQuery, GetShippingsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetShippingsQuery, GetShippingsQueryVariables>(GetShippingsDocument, options);
+      }
+export function useGetShippingsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetShippingsQuery, GetShippingsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetShippingsQuery, GetShippingsQueryVariables>(GetShippingsDocument, options);
+        }
+export function useGetShippingsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetShippingsQuery, GetShippingsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetShippingsQuery, GetShippingsQueryVariables>(GetShippingsDocument, options);
+        }
+export type GetShippingsQueryHookResult = ReturnType<typeof useGetShippingsQuery>;
+export type GetShippingsLazyQueryHookResult = ReturnType<typeof useGetShippingsLazyQuery>;
+export type GetShippingsSuspenseQueryHookResult = ReturnType<typeof useGetShippingsSuspenseQuery>;
+export type GetShippingsQueryResult = Apollo.QueryResult<GetShippingsQuery, GetShippingsQueryVariables>;
 export const GetUserDocument = gql`
     query GetUser($id: String!) {
   user(id: $id) {
