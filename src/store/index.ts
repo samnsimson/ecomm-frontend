@@ -1,13 +1,22 @@
+import { SettingsSchema } from '@/lib/zod/schemas';
+import { z } from 'zod';
 import { create } from 'zustand';
-import { combine, devtools, persist } from 'zustand/middleware';
+import { persist } from 'zustand/middleware';
 
-const initialState: Record<string, any> = {};
+export type StoreState = {
+    settings: z.infer<typeof SettingsSchema>;
+};
 
-export const useStore = create(
-    devtools(
-        persist(
-            combine(initialState, (set) => ({})),
-            { name: 'ecomm' },
-        ),
-    ),
-);
+export type StoreActions = {
+    setSettings: (settings: StoreState['settings']) => void;
+};
+
+export type Store = StoreState & StoreActions;
+
+const initialState: StoreState = {
+    settings: {},
+};
+
+export const createStore = (initState: StoreState = initialState) => {
+    return create<Store>()(persist((set) => ({ ...initState, setSettings: (settings) => set(() => ({ settings })) }), { name: 'ecomm' }));
+};

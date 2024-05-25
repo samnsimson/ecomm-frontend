@@ -1,20 +1,24 @@
 'use client';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
-import { FC, HTMLAttributes, useState } from 'react';
+import { FC, HTMLAttributes } from 'react';
 import { Button, buttonVariants } from '../ui/button';
 import { LogOutIcon } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import { SideNavList } from '@/lib/types';
+import { SectionTitle } from '../dashboard/section-title';
+import { SignOutComponent } from '../signout';
 
 interface SideNavProps extends HTMLAttributes<HTMLDivElement> {
+    title?: string;
+    description?: string;
     navs: Array<SideNavList>;
 }
 
-export const SideNav: FC<SideNavProps> = ({ navs }) => {
-    const [selected, setSelected] = useState('profile');
+export const SideNav: FC<SideNavProps> = ({ navs, title, description }) => {
     return (
         <div className="space-y-6">
+            {(title || description) && <SectionTitle title={title ?? ''} description={description} />}
             <div className="flex flex-col divide-y-[1px] rounded border border-default bg-white p-3">
                 {navs.map((list, key) => (
                     <Link
@@ -34,17 +38,6 @@ export const SideNav: FC<SideNavProps> = ({ navs }) => {
                         </span>
                     </Link>
                 ))}
-            </div>
-            <div className="flex flex-col divide-y-[1px] rounded border border-default bg-white p-3">
-                <Button
-                    variant="secondary"
-                    size="lg"
-                    onClick={() => signOut({ callbackUrl: '/', redirect: true })}
-                    className="w-full"
-                    startContent={<LogOutIcon className="rotate-180" />}
-                >
-                    Sign out
-                </Button>
             </div>
         </div>
     );

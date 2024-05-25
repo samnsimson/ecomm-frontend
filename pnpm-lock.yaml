@@ -167,6 +167,9 @@ importers:
       react-hook-form:
         specifier: ^7.51.5
         version: 7.51.5(react@18.3.1)
+      react-paginate:
+        specifier: ^8.2.0
+        version: 8.2.0(react@18.3.1)
       react-resizable-panels:
         specifier: ^2.0.19
         version: 2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -3463,6 +3466,11 @@ packages:
 
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
+
+  react-paginate@8.2.0:
+    resolution: {integrity: sha512-sJCz1PW+9PNIjUSn919nlcRVuleN2YPoFBOvL+6TPgrH/3lwphqiSOgdrLafLdyLDxsgK+oSgviqacF4hxsDIw==}
+    peerDependencies:
+      react: ^16 || ^17 || ^18
 
   react-remove-scroll-bar@2.3.6:
     resolution: {integrity: sha512-DtSYaao4mBmX+HDo5YWYdBWQwYIQQshUV/dVxFxK+KM26Wjwp1gZ6rv6OC3oujI6Bfu6Xyg3TwK533AQutsn/g==}
@@ -7950,6 +7958,11 @@ snapshots:
       react: 18.3.1
 
   react-is@16.13.1: {}
+
+  react-paginate@8.2.0(react@18.3.1):
+    dependencies:
+      prop-types: 15.8.1
+      react: 18.3.1
 
   react-remove-scroll-bar@2.3.6(@types/react@18.3.2)(react@18.3.1):
     dependencies:

@@ -1,4 +1,6 @@
 'use client';
+import { withPagination } from '@/components/hoc/pagination';
+import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { useGetProductsQuery } from '@/graphql/generated';
 import Link from 'next/link';
@@ -23,6 +25,11 @@ export const ProductList: FC<ProductListProps> = ({ page, ...props }) => {
                                 </Link>
                             </h4>
                             <p className="my-0 line-clamp-2">{product.description}</p>
+                            {product.brand && (
+                                <p className="my-0 items-center">
+                                    <span className="font-semibold">Brand:</span> <Badge>{product.brand}</Badge>
+                                </p>
+                            )}
                         </div>
 
                         <div className="w-1/5">
@@ -38,3 +45,5 @@ export const ProductList: FC<ProductListProps> = ({ page, ...props }) => {
         </div>
     );
 };
+
+export const ProductListWithPagination = withPagination(ProductList);

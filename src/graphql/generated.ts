@@ -43,6 +43,12 @@ export type CategoryProductsArgs = {
   take?: InputMaybe<Scalars['Int']['input']>;
 };
 
+export type Coupon = {
+  __typename?: 'Coupon';
+  /** Example field (placeholder) */
+  exampleField: Scalars['Int']['output'];
+};
+
 export type CreateCartInput = {
   /** Example field (placeholder) */
   exampleField: Scalars['Int']['input'];
@@ -52,6 +58,16 @@ export type CreateCategoryInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   products?: InputMaybe<Array<ProductIds>>;
   title: Scalars['String']['input'];
+};
+
+export type CreateCouponInput = {
+  /** Example field (placeholder) */
+  exampleField: Scalars['Int']['input'];
+};
+
+export type CreateDiscountInput = {
+  /** Example field (placeholder) */
+  exampleField: Scalars['Int']['input'];
 };
 
 export type CreateOrderInput = {
@@ -92,12 +108,28 @@ export type CreateReviewInput = {
   id: Scalars['String']['input'];
 };
 
+export type CreateShippingInput = {
+  /** Example field (placeholder) */
+  exampleField: Scalars['Int']['input'];
+};
+
+export type CreateTaxInput = {
+  /** Example field (placeholder) */
+  exampleField: Scalars['Int']['input'];
+};
+
 export type CreateUserInput = {
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
   phone: Scalars['String']['input'];
   username: Scalars['String']['input'];
 };
+
+export enum Currency {
+  Cad = 'CAD',
+  Inr = 'INR',
+  Usd = 'USD'
+}
 
 export type DeltedUser = {
   __typename?: 'DeltedUser';
@@ -115,6 +147,12 @@ export type DimensionsResponse = {
   depth: Scalars['Float']['output'];
   height: Scalars['Float']['output'];
   width: Scalars['Float']['output'];
+};
+
+export type Discount = {
+  __typename?: 'Discount';
+  /** Example field (placeholder) */
+  exampleField: Scalars['Int']['output'];
 };
 
 export type LoginInput = {
@@ -138,29 +176,42 @@ export type Mutation = {
   __typename?: 'Mutation';
   createCart: Cart;
   createCategory: Category;
+  createCoupon: Coupon;
+  createDiscount: Discount;
   createOrder: Order;
   createPayment: Payment;
   createProduct: Product;
   createProfile: Profile;
   createReview: Review;
+  createShipping: Shipping;
+  createTax: Tax;
   login: LoginResponse;
   refresh: RefreshTokenResponse;
   removeCart: Cart;
   removeCategory: Category;
+  removeCoupon: Coupon;
+  removeDiscount: Discount;
   removeOrder: Order;
   removePayment: Payment;
   removeProduct: Product;
   removeProfile: Profile;
   removeReview: Review;
+  removeShipping: Shipping;
+  removeTax: Tax;
   removeUser: DeltedUser;
+  saveSetting: Setting;
   signup: SignupResponse;
   updateCart: Cart;
   updateCategory: Category;
+  updateCoupon: Coupon;
+  updateDiscount: Discount;
   updateOrder: Order;
   updatePayment: Payment;
   updateProduct: Product;
   updateProfile: Profile;
   updateReview: Review;
+  updateShipping: Shipping;
+  updateTax: Tax;
   updateUser: User;
 };
 
@@ -172,6 +223,16 @@ export type MutationCreateCartArgs = {
 
 export type MutationCreateCategoryArgs = {
   createCategoryInput: CreateCategoryInput;
+};
+
+
+export type MutationCreateCouponArgs = {
+  createCouponInput: CreateCouponInput;
+};
+
+
+export type MutationCreateDiscountArgs = {
+  createDiscountInput: CreateDiscountInput;
 };
 
 
@@ -201,6 +262,16 @@ export type MutationCreateReviewArgs = {
 };
 
 
+export type MutationCreateShippingArgs = {
+  createShippingInput: CreateShippingInput;
+};
+
+
+export type MutationCreateTaxArgs = {
+  createTaxInput: CreateTaxInput;
+};
+
+
 export type MutationLoginArgs = {
   credentials: LoginInput;
 };
@@ -217,6 +288,16 @@ export type MutationRemoveCartArgs = {
 
 
 export type MutationRemoveCategoryArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type MutationRemoveCouponArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type MutationRemoveDiscountArgs = {
   id: Scalars['Int']['input'];
 };
 
@@ -246,8 +327,23 @@ export type MutationRemoveReviewArgs = {
 };
 
 
+export type MutationRemoveShippingArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type MutationRemoveTaxArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
 export type MutationRemoveUserArgs = {
   id: Scalars['String']['input'];
+};
+
+
+export type MutationSaveSettingArgs = {
+  settingsInput: SettingsInput;
 };
 
 
@@ -264,6 +360,16 @@ export type MutationUpdateCartArgs = {
 
 export type MutationUpdateCategoryArgs = {
   updateCategoryInput: UpdateCategoryInput;
+};
+
+
+export type MutationUpdateCouponArgs = {
+  updateCouponInput: UpdateCouponInput;
+};
+
+
+export type MutationUpdateDiscountArgs = {
+  updateDiscountInput: UpdateDiscountInput;
 };
 
 
@@ -289,6 +395,16 @@ export type MutationUpdateProfileArgs = {
 
 export type MutationUpdateReviewArgs = {
   updateReviewInput: UpdateReviewInput;
+};
+
+
+export type MutationUpdateShippingArgs = {
+  updateShippingInput: UpdateShippingInput;
+};
+
+
+export type MutationUpdateTaxArgs = {
+  updateTaxInput: UpdateTaxInput;
 };
 
 
@@ -398,6 +514,10 @@ export type Query = {
   carts: Array<Cart>;
   categories: Array<Category>;
   category: Category;
+  coupon: Coupon;
+  coupons: Array<Coupon>;
+  discount: Discount;
+  discounts: Array<Discount>;
   order: Order;
   orders: Array<Order>;
   payment: Payment;
@@ -408,6 +528,12 @@ export type Query = {
   profiles: Array<Profile>;
   review: Review;
   reviews: Array<Review>;
+  setting: Setting;
+  settings: Array<Setting>;
+  shipping: Shipping;
+  shippings: Array<Shipping>;
+  tax: Tax;
+  taxes: Array<Tax>;
   user: User;
   users: Array<User>;
 };
@@ -425,6 +551,16 @@ export type QueryCategoriesArgs = {
 
 
 export type QueryCategoryArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type QueryCouponArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type QueryDiscountArgs = {
   id: Scalars['Int']['input'];
 };
 
@@ -484,6 +620,21 @@ export type QueryReviewsArgs = {
 };
 
 
+export type QuerySettingArgs = {
+  id?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryShippingArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type QueryTaxArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
 export type QueryUserArgs = {
   id: Scalars['String']['input'];
 };
@@ -514,6 +665,62 @@ export type Review = {
   user: User;
 };
 
+export type Setting = {
+  __typename?: 'Setting';
+  addressOne?: Maybe<Scalars['String']['output']>;
+  addressTwo?: Maybe<Scalars['String']['output']>;
+  city?: Maybe<Scalars['String']['output']>;
+  country?: Maybe<Scalars['String']['output']>;
+  couponsEnabled: Scalars['Boolean']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  currency: Currency;
+  discountsEnabled: Scalars['Boolean']['output'];
+  email?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  phone?: Maybe<Scalars['String']['output']>;
+  shippingEnabled: Scalars['Boolean']['output'];
+  state?: Maybe<Scalars['String']['output']>;
+  taxesEnabled: Scalars['Boolean']['output'];
+  updatedAt: Scalars['DateTime']['output'];
+  zipcode?: Maybe<Scalars['String']['output']>;
+};
+
+export type SettingsInput = {
+  addressOne?: InputMaybe<Scalars['String']['input']>;
+  addressTwo?: InputMaybe<Scalars['String']['input']>;
+  city?: InputMaybe<Scalars['String']['input']>;
+  country?: InputMaybe<Scalars['String']['input']>;
+  couponsEnabled?: InputMaybe<Scalars['Boolean']['input']>;
+  currency?: InputMaybe<Scalars['String']['input']>;
+  discountsEnabled?: InputMaybe<Scalars['Boolean']['input']>;
+  email?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  phone?: InputMaybe<Scalars['String']['input']>;
+  shippingEnabled?: InputMaybe<Scalars['Boolean']['input']>;
+  state?: InputMaybe<Scalars['String']['input']>;
+  taxesEnabled?: InputMaybe<Scalars['Boolean']['input']>;
+  zipcode?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type Shipping = {
+  __typename?: 'Shipping';
+  amount: Scalars['Int']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  description: Scalars['String']['output'];
+  enabled: Scalars['Boolean']['output'];
+  id: Scalars['ID']['output'];
+  percentage: Scalars['Int']['output'];
+  title: Scalars['String']['output'];
+  type: ShippingType;
+  updatedAt: Scalars['DateTime']['output'];
+};
+
+export enum ShippingType {
+  Flat = 'FLAT',
+  Free = 'FREE',
+  Percentage = 'PERCENTAGE'
+}
+
 export type SignupResponse = {
   __typename?: 'SignupResponse';
   accessToken?: Maybe<Scalars['String']['output']>;
@@ -534,6 +741,12 @@ export type SignupResponse = {
   username: Scalars['String']['output'];
 };
 
+export type Tax = {
+  __typename?: 'Tax';
+  /** Example field (placeholder) */
+  exampleField: Scalars['Int']['output'];
+};
+
 export type UpdateCartInput = {
   /** Example field (placeholder) */
   exampleField?: InputMaybe<Scalars['Int']['input']>;
@@ -545,6 +758,18 @@ export type UpdateCategoryInput = {
   id: Scalars['ID']['input'];
   products?: InputMaybe<Array<ProductIds>>;
   title?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateCouponInput = {
+  /** Example field (placeholder) */
+  exampleField?: InputMaybe<Scalars['Int']['input']>;
+  id: Scalars['Int']['input'];
+};
+
+export type UpdateDiscountInput = {
+  /** Example field (placeholder) */
+  exampleField?: InputMaybe<Scalars['Int']['input']>;
+  id: Scalars['Int']['input'];
 };
 
 export type UpdateOrderInput = {
@@ -587,6 +812,18 @@ export type UpdateProfileInput = {
 
 export type UpdateReviewInput = {
   id: Scalars['String']['input'];
+};
+
+export type UpdateShippingInput = {
+  /** Example field (placeholder) */
+  exampleField?: InputMaybe<Scalars['Int']['input']>;
+  id: Scalars['Int']['input'];
+};
+
+export type UpdateTaxInput = {
+  /** Example field (placeholder) */
+  exampleField?: InputMaybe<Scalars['Int']['input']>;
+  id: Scalars['Int']['input'];
 };
 
 export type UpdateUserInput = {
@@ -641,6 +878,13 @@ export type LoginMutationVariables = Exact<{
 
 export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponse', id: string, username: string, email: string, name: string, role: string, authenticated: boolean, accessToken: string, refreshToken: string } };
 
+export type SaveSettingsMutationVariables = Exact<{
+  input: SettingsInput;
+}>;
+
+
+export type SaveSettingsMutation = { __typename?: 'Mutation', saveSetting: { __typename?: 'Setting', id: string, addressOne?: string | null, addressTwo?: string | null, city?: string | null, state?: string | null, country?: string | null, zipcode?: string | null, currency: Currency, email?: string | null, phone?: string | null, taxesEnabled: boolean, couponsEnabled: boolean, shippingEnabled: boolean, discountsEnabled: boolean } };
+
 export type SignupMutationVariables = Exact<{
   input: CreateUserInput;
   autoLogin?: InputMaybe<Scalars['Boolean']['input']>;
@@ -668,6 +912,11 @@ export type GetProductsQueryVariables = Exact<{
 
 
 export type GetProductsQuery = { __typename?: 'Query', products: Array<{ __typename?: 'Product', id: string, title: string, description?: string | null, slug?: string | null, salePrice: number, retailPrice: number, brand?: string | null, dimensions: { __typename?: 'DimensionsResponse', width: number, height: number, depth: number }, categories?: Array<{ __typename?: 'Category', id: string, title: string, description?: string | null }> | null, reviews?: Array<{ __typename?: 'Review', id: string, review: string, rating: number }> | null }> };
+
+export type GetSettingsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetSettingsQuery = { __typename?: 'Query', setting: { __typename?: 'Setting', id: string, addressOne?: string | null, addressTwo?: string | null, city?: string | null, state?: string | null, country?: string | null, zipcode?: string | null, email?: string | null, phone?: string | null, currency: Currency, taxesEnabled: boolean, couponsEnabled: boolean, shippingEnabled: boolean, discountsEnabled: boolean } };
 
 export type GetUserQueryVariables = Exact<{
   id: Scalars['String']['input'];
@@ -804,6 +1053,52 @@ export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginM
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const SaveSettingsDocument = gql`
+    mutation SaveSettings($input: SettingsInput!) {
+  saveSetting(settingsInput: $input) {
+    id
+    addressOne
+    addressTwo
+    city
+    state
+    country
+    zipcode
+    currency
+    email
+    phone
+    taxesEnabled
+    couponsEnabled
+    shippingEnabled
+    discountsEnabled
+  }
+}
+    `;
+export type SaveSettingsMutationFn = Apollo.MutationFunction<SaveSettingsMutation, SaveSettingsMutationVariables>;
+
+/**
+ * __useSaveSettingsMutation__
+ *
+ * To run a mutation, you first call `useSaveSettingsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSaveSettingsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [saveSettingsMutation, { data, loading, error }] = useSaveSettingsMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useSaveSettingsMutation(baseOptions?: Apollo.MutationHookOptions<SaveSettingsMutation, SaveSettingsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SaveSettingsMutation, SaveSettingsMutationVariables>(SaveSettingsDocument, options);
+      }
+export type SaveSettingsMutationHookResult = ReturnType<typeof useSaveSettingsMutation>;
+export type SaveSettingsMutationResult = Apollo.MutationResult<SaveSettingsMutation>;
+export type SaveSettingsMutationOptions = Apollo.BaseMutationOptions<SaveSettingsMutation, SaveSettingsMutationVariables>;
 export const SignupDocument = gql`
     mutation Signup($input: CreateUserInput!, $autoLogin: Boolean) {
   signup(signupInput: $input, autoLogin: $autoLogin) {
@@ -1001,6 +1296,58 @@ export type GetProductsQueryHookResult = ReturnType<typeof useGetProductsQuery>;
 export type GetProductsLazyQueryHookResult = ReturnType<typeof useGetProductsLazyQuery>;
 export type GetProductsSuspenseQueryHookResult = ReturnType<typeof useGetProductsSuspenseQuery>;
 export type GetProductsQueryResult = Apollo.QueryResult<GetProductsQuery, GetProductsQueryVariables>;
+export const GetSettingsDocument = gql`
+    query GetSettings {
+  setting {
+    id
+    addressOne
+    addressTwo
+    city
+    state
+    country
+    zipcode
+    email
+    phone
+    currency
+    taxesEnabled
+    couponsEnabled
+    shippingEnabled
+    discountsEnabled
+  }
+}
+    `;
+
+/**
+ * __useGetSettingsQuery__
+ *
+ * To run a query within a React component, call `useGetSettingsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSettingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSettingsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetSettingsQuery(baseOptions?: Apollo.QueryHookOptions<GetSettingsQuery, GetSettingsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetSettingsQuery, GetSettingsQueryVariables>(GetSettingsDocument, options);
+      }
+export function useGetSettingsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSettingsQuery, GetSettingsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetSettingsQuery, GetSettingsQueryVariables>(GetSettingsDocument, options);
+        }
+export function useGetSettingsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetSettingsQuery, GetSettingsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetSettingsQuery, GetSettingsQueryVariables>(GetSettingsDocument, options);
+        }
+export type GetSettingsQueryHookResult = ReturnType<typeof useGetSettingsQuery>;
+export type GetSettingsLazyQueryHookResult = ReturnType<typeof useGetSettingsLazyQuery>;
+export type GetSettingsSuspenseQueryHookResult = ReturnType<typeof useGetSettingsSuspenseQuery>;
+export type GetSettingsQueryResult = Apollo.QueryResult<GetSettingsQuery, GetSettingsQueryVariables>;
 export const GetUserDocument = gql`
     query GetUser($id: String!) {
   user(id: $id) {

@@ -1,5 +1,5 @@
 import { CreateProduct } from '@/components/dashboard/products/create';
-import { ProductList } from '@/components/dashboard/products/list';
+import { ProductListWithPagination } from '@/components/dashboard/products/list';
 import { SectionTitle } from '@/components/dashboard/section-title';
 import { Button } from '@/components/ui/button';
 import { PlusIcon } from 'lucide-react';
@@ -14,7 +14,7 @@ const ProductComponent: FC<{ param: Map<string, string> }> = ({ param }) => {
 
     switch (action) {
         case 'list':
-            return <ProductList page={page ? parseInt(page) : 0} />;
+            return <ProductListWithPagination page={page ? parseInt(page) : 0} />;
         case 'create':
             return <CreateProduct />;
         case 'update':

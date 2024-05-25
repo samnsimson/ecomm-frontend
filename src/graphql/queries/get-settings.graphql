@@ -1,0 +1,18 @@
+query GetSettings {
+    setting {
+        id
+        addressOne
+        addressTwo
+        city
+        state
+        country
+        zipcode
+        email
+        phone
+        currency
+        taxesEnabled
+        couponsEnabled
+        shippingEnabled
+        discountsEnabled
+    }
+}

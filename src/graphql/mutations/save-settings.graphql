@@ -1,0 +1,18 @@
+mutation SaveSettings($input: SettingsInput!) {
+    saveSetting(settingsInput: $input) {
+        id
+        addressOne
+        addressTwo
+        city
+        state
+        country
+        zipcode
+        currency
+        email
+        phone
+        taxesEnabled
+        couponsEnabled
+        shippingEnabled
+        discountsEnabled
+    }
+}

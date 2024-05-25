@@ -1,3 +1,5 @@
+import { CreateProductMutationVariables } from '@/graphql/generated';
+import { title } from 'process';
 import { z } from 'zod';
 
 export const signInSchema = z.object({
@@ -21,4 +23,35 @@ export const ProfileSchema = z.object({
     state: z.string().min(1, 'State is required'),
     country: z.string().min(1, 'Country is required'),
     zipcode: z.string().min(1, 'Zipcode is required'),
+});
+
+export const CreateProductDimensionsSchema = z.object({
+    width: z.coerce.number().min(0).optional(),
+    height: z.coerce.number().min(0).optional(),
+    depth: z.coerce.number().min(0).optional(),
+});
+
+export const CreateProductSchema = z.object({
+    title: z.string().min(1, 'Title cannot be empty'),
+    description: z.string().min(1, 'Description is required'),
+    brand: z.string().min(1, 'Please choose a value for brand'),
+    retailPrice: z.coerce.number().min(0),
+    salePrice: z.coerce.number().min(0),
+    dimensions: CreateProductDimensionsSchema.optional(),
+});
+
+export const SettingsSchema = z.object({
+    addressOne: z.string().optional().nullable(),
+    addressTwo: z.string().optional().nullable(),
+    city: z.string().optional().nullable(),
+    state: z.string().optional().nullable(),
+    country: z.string().optional().nullable(),
+    zipcode: z.string().optional().nullable(),
+    currency: z.string().optional().nullable(),
+    email: z.string().optional().nullable(),
+    phone: z.string().optional().nullable(),
+    taxesEnabled: z.boolean().optional().nullable(),
+    couponsEnabled: z.boolean().optional().nullable(),
+    shippingEnabled: z.boolean().optional().nullable(),
+    discountsEnabled: z.boolean().optional().nullable(),
 });
