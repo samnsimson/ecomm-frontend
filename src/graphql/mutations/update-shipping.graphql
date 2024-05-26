@@ -1,0 +1,11 @@
+mutation UpdateShipping($input: UpdateShippingInput!) {
+    updateShipping(updateShippingInput: $input) {
+        id
+        title
+        description
+        enabled
+        type
+        amount
+        percentage
+    }
+}

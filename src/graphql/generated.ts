@@ -921,6 +921,13 @@ export type UpdateProfileMutationVariables = Exact<{
 
 export type UpdateProfileMutation = { __typename?: 'Mutation', updateProfile: { __typename?: 'Profile', id: string, firstName: string, lastName?: string | null, profileImage?: string | null, addressOne: string, addressTwo?: string | null, city: string, state: string, country: string, zipcode: string } };
 
+export type UpdateShippingMutationVariables = Exact<{
+  input: UpdateShippingInput;
+}>;
+
+
+export type UpdateShippingMutation = { __typename?: 'Mutation', updateShipping: { __typename?: 'Shipping', id: string, title: string, description: string, enabled: boolean, type: ShippingType, amount: number, percentage: number } };
+
 export type GetOrdersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1251,6 +1258,45 @@ export function useUpdateProfileMutation(baseOptions?: Apollo.MutationHookOption
 export type UpdateProfileMutationHookResult = ReturnType<typeof useUpdateProfileMutation>;
 export type UpdateProfileMutationResult = Apollo.MutationResult<UpdateProfileMutation>;
 export type UpdateProfileMutationOptions = Apollo.BaseMutationOptions<UpdateProfileMutation, UpdateProfileMutationVariables>;
+export const UpdateShippingDocument = gql`
+    mutation UpdateShipping($input: UpdateShippingInput!) {
+  updateShipping(updateShippingInput: $input) {
+    id
+    title
+    description
+    enabled
+    type
+    amount
+    percentage
+  }
+}
+    `;
+export type UpdateShippingMutationFn = Apollo.MutationFunction<UpdateShippingMutation, UpdateShippingMutationVariables>;
+
+/**
+ * __useUpdateShippingMutation__
+ *
+ * To run a mutation, you first call `useUpdateShippingMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateShippingMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateShippingMutation, { data, loading, error }] = useUpdateShippingMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateShippingMutation(baseOptions?: Apollo.MutationHookOptions<UpdateShippingMutation, UpdateShippingMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateShippingMutation, UpdateShippingMutationVariables>(UpdateShippingDocument, options);
+      }
+export type UpdateShippingMutationHookResult = ReturnType<typeof useUpdateShippingMutation>;
+export type UpdateShippingMutationResult = Apollo.MutationResult<UpdateShippingMutation>;
+export type UpdateShippingMutationOptions = Apollo.BaseMutationOptions<UpdateShippingMutation, UpdateShippingMutationVariables>;
 export const GetOrdersDocument = gql`
     query GetOrders {
   orders {

@@ -6,8 +6,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { ShippingType, useCreateShippingMutation } from '@/graphql/generated';
 import { ShippingsSchema } from '@/lib/zod/schemas';
+import { useShipping } from '@/providers/shipping.provider';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { FC, HTMLAttributes, useId, useState } from 'react';
+import { FC, HTMLAttributes, useEffect, useId, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
@@ -19,6 +20,7 @@ interface ShippingFormProps extends HTMLAttributes<HTMLFormElement> {
 type FormType = z.infer<typeof ShippingsSchema>;
 
 export const ShippingForm: FC<ShippingFormProps> = ({ ...props }) => {
+    const { refetch, context, update, setContext } = useShipping();
     const [type, setType] = useState(ShippingType.Free);
     const [createShipping] = useCreateShippingMutation();
     const form = useForm<FormType>({
@@ -30,18 +32,32 @@ export const ShippingForm: FC<ShippingFormProps> = ({ ...props }) => {
         if (data === 'FREE') setType(ShippingType.Free);
         if (data === 'FLAT') setType(ShippingType.Flat);
         if (data === 'PERCENTAGE') setType(ShippingType.Percentage);
-        return field.onChange;
+        return field.onChange(data);
     };
 
     const handleSubmit = async (input: FormType) => {
         try {
-            console.log('fired');
-            await createShipping({ variables: { input } });
+            if (context) await update(context.id, input);
+            else await createShipping({ variables: { input } });
             toast.success('Success', { description: 'Shipping type created successfully' });
+            refetch();
         } catch (error: any) {
             toast.error('Error', { description: error.message });
+        } finally {
+            form.reset();
+            setContext(undefined);
         }
     };
+
+    useEffect(() => {
+        if (context) {
+            form.setValue('title', context.title);
+            form.setValue('description', context.description);
+            form.setValue('type', context.type);
+            form.setValue('amount', context.amount);
+            form.setValue('percentage', context.percentage);
+        }
+    }, [context]);
 
     return (
         <Form {...form} {...props}>
@@ -141,7 +157,7 @@ export const ShippingForm: FC<ShippingFormProps> = ({ ...props }) => {
                     />
                 </div>
                 <Button type="submit" size="lg" className="w-full">
-                    Create Shipping
+                    {!!context ? 'Update' : 'Create'} Shipping
                 </Button>
             </form>
         </Form>

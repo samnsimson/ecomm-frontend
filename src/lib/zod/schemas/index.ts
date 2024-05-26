@@ -58,8 +58,8 @@ export const SettingsSchema = z.object({
 
 export const ShippingsSchema = z.object({
     title: z.string().min(1, 'Title is required'),
-    description: z.string().optional().nullable(),
+    description: z.string().optional(),
     type: z.enum([ShippingType.Free, ShippingType.Flat, ShippingType.Percentage]),
-    amount: z.coerce.number().min(0).optional().nullable(),
-    percentage: z.coerce.number().min(0).optional().nullable(),
+    amount: z.coerce.number().min(0).optional(),
+    percentage: z.coerce.number().min(0).optional(),
 });
