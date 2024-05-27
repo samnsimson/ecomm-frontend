@@ -1,0 +1,10 @@
+query GetCategories {
+    categories {
+        id
+        title
+        description
+        slug
+        createdAt
+        updatedAt
+    }
+}

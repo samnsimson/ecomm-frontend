@@ -33,6 +33,7 @@ export type Category = {
   description?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   products?: Maybe<Array<Product>>;
+  slug?: Maybe<Scalars['String']['output']>;
   title: Scalars['String']['output'];
   updatedAt: Scalars['DateTime']['output'];
 };
@@ -89,6 +90,7 @@ export type CreateProductInput = {
   dimensions?: InputMaybe<Dimensions>;
   retailPrice: Scalars['Int']['input'];
   salePrice: Scalars['Int']['input'];
+  shipping?: InputMaybe<ShippingMethod>;
   title: Scalars['String']['input'];
 };
 
@@ -479,6 +481,7 @@ export type Product = {
   retailPrice: Scalars['Int']['output'];
   reviews?: Maybe<Array<Review>>;
   salePrice: Scalars['Int']['output'];
+  shipping?: Maybe<Shipping>;
   slug?: Maybe<Scalars['String']['output']>;
   stock: Scalars['Int']['output'];
   title: Scalars['String']['output'];
@@ -720,9 +723,14 @@ export type Shipping = {
   enabled: Scalars['Boolean']['output'];
   id: Scalars['ID']['output'];
   percentage: Scalars['Int']['output'];
+  products?: Maybe<Array<Product>>;
   title: Scalars['String']['output'];
   type: ShippingType;
   updatedAt: Scalars['DateTime']['output'];
+};
+
+export type ShippingMethod = {
+  id: Scalars['String']['input'];
 };
 
 export enum ShippingType {
@@ -804,6 +812,7 @@ export type UpdateProductInput = {
   id: Scalars['ID']['input'];
   retailPrice?: InputMaybe<Scalars['Int']['input']>;
   salePrice?: InputMaybe<Scalars['Int']['input']>;
+  shipping?: InputMaybe<ShippingMethod>;
   title?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -870,6 +879,13 @@ export enum UserRole {
   User = 'USER'
 }
 
+export type CreateCategoryMutationVariables = Exact<{
+  input: CreateCategoryInput;
+}>;
+
+
+export type CreateCategoryMutation = { __typename?: 'Mutation', createCategory: { __typename?: 'Category', id: string, title: string, description?: string | null, slug?: string | null } };
+
 export type CreateProductMutationVariables = Exact<{
   input: CreateProductInput;
 }>;
@@ -928,6 +944,11 @@ export type UpdateShippingMutationVariables = Exact<{
 
 export type UpdateShippingMutation = { __typename?: 'Mutation', updateShipping: { __typename?: 'Shipping', id: string, title: string, description: string, enabled: boolean, type: ShippingType, amount: number, percentage: number } };
 
+export type GetCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetCategoriesQuery = { __typename?: 'Query', categories: Array<{ __typename?: 'Category', id: string, title: string, description?: string | null, slug?: string | null, createdAt: any, updatedAt: any }> };
+
 export type GetOrdersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -939,7 +960,7 @@ export type GetProductsQueryVariables = Exact<{
 }>;
 
 
-export type GetProductsQuery = { __typename?: 'Query', products: Array<{ __typename?: 'Product', id: string, title: string, description?: string | null, slug?: string | null, salePrice: number, retailPrice: number, brand?: string | null, dimensions: { __typename?: 'DimensionsResponse', width: number, height: number, depth: number }, categories?: Array<{ __typename?: 'Category', id: string, title: string, description?: string | null }> | null, reviews?: Array<{ __typename?: 'Review', id: string, review: string, rating: number }> | null }> };
+export type GetProductsQuery = { __typename?: 'Query', products: Array<{ __typename?: 'Product', id: string, title: string, description?: string | null, slug?: string | null, salePrice: number, retailPrice: number, brand?: string | null, dimensions: { __typename?: 'DimensionsResponse', width: number, height: number, depth: number }, categories?: Array<{ __typename?: 'Category', id: string, title: string, description?: string | null }> | null, reviews?: Array<{ __typename?: 'Review', id: string, review: string, rating: number }> | null, shipping?: { __typename?: 'Shipping', id: string, title: string, type: ShippingType, percentage: number, amount: number, enabled: boolean } | null }> };
 
 export type GetSettingsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -971,6 +992,42 @@ export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
 export type GetUsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', id: string, username: string, email: string, phone: string, emailVerified?: boolean | null, phoneVerified?: boolean | null, orders?: Array<{ __typename?: 'Order', id: string, products: Array<{ __typename?: 'Product', id: string, title: string, salePrice: number, retailPrice: number }> }> | null, profile?: { __typename?: 'Profile', id: string, firstName: string, lastName?: string | null, addressOne: string, city: string, state: string, country: string, zipcode: string, profileImage?: string | null } | null }> };
 
 
+export const CreateCategoryDocument = gql`
+    mutation CreateCategory($input: CreateCategoryInput!) {
+  createCategory(createCategoryInput: $input) {
+    id
+    title
+    description
+    slug
+  }
+}
+    `;
+export type CreateCategoryMutationFn = Apollo.MutationFunction<CreateCategoryMutation, CreateCategoryMutationVariables>;
+
+/**
+ * __useCreateCategoryMutation__
+ *
+ * To run a mutation, you first call `useCreateCategoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCategoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCategoryMutation, { data, loading, error }] = useCreateCategoryMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateCategoryMutation(baseOptions?: Apollo.MutationHookOptions<CreateCategoryMutation, CreateCategoryMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateCategoryMutation, CreateCategoryMutationVariables>(CreateCategoryDocument, options);
+      }
+export type CreateCategoryMutationHookResult = ReturnType<typeof useCreateCategoryMutation>;
+export type CreateCategoryMutationResult = Apollo.MutationResult<CreateCategoryMutation>;
+export type CreateCategoryMutationOptions = Apollo.BaseMutationOptions<CreateCategoryMutation, CreateCategoryMutationVariables>;
 export const CreateProductDocument = gql`
     mutation CreateProduct($input: CreateProductInput!) {
   createProduct(createProductInput: $input) {
@@ -1297,6 +1354,50 @@ export function useUpdateShippingMutation(baseOptions?: Apollo.MutationHookOptio
 export type UpdateShippingMutationHookResult = ReturnType<typeof useUpdateShippingMutation>;
 export type UpdateShippingMutationResult = Apollo.MutationResult<UpdateShippingMutation>;
 export type UpdateShippingMutationOptions = Apollo.BaseMutationOptions<UpdateShippingMutation, UpdateShippingMutationVariables>;
+export const GetCategoriesDocument = gql`
+    query GetCategories {
+  categories {
+    id
+    title
+    description
+    slug
+    createdAt
+    updatedAt
+  }
+}
+    `;
+
+/**
+ * __useGetCategoriesQuery__
+ *
+ * To run a query within a React component, call `useGetCategoriesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCategoriesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCategoriesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetCategoriesQuery(baseOptions?: Apollo.QueryHookOptions<GetCategoriesQuery, GetCategoriesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCategoriesQuery, GetCategoriesQueryVariables>(GetCategoriesDocument, options);
+      }
+export function useGetCategoriesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCategoriesQuery, GetCategoriesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCategoriesQuery, GetCategoriesQueryVariables>(GetCategoriesDocument, options);
+        }
+export function useGetCategoriesSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetCategoriesQuery, GetCategoriesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetCategoriesQuery, GetCategoriesQueryVariables>(GetCategoriesDocument, options);
+        }
+export type GetCategoriesQueryHookResult = ReturnType<typeof useGetCategoriesQuery>;
+export type GetCategoriesLazyQueryHookResult = ReturnType<typeof useGetCategoriesLazyQuery>;
+export type GetCategoriesSuspenseQueryHookResult = ReturnType<typeof useGetCategoriesSuspenseQuery>;
+export type GetCategoriesQueryResult = Apollo.QueryResult<GetCategoriesQuery, GetCategoriesQueryVariables>;
 export const GetOrdersDocument = gql`
     query GetOrders {
   orders {
@@ -1376,6 +1477,14 @@ export const GetProductsDocument = gql`
       id
       review
       rating
+    }
+    shipping {
+      id
+      title
+      type
+      percentage
+      amount
+      enabled
     }
   }
 }

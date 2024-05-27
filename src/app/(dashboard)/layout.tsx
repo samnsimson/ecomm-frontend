@@ -27,7 +27,7 @@ const navs: Array<SideNavList> = [
     {
         name: 'Categories',
         description: 'View & manage product categories',
-        link: '/dashboard/orders',
+        link: '/dashboard/categories',
         icon: <BoxesIcon />,
     },
     {

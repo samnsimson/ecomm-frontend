@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { ShippingType, useCreateShippingMutation } from '@/graphql/generated';
+import { cn } from '@/lib/utils';
 import { ShippingsSchema } from '@/lib/zod/schemas';
 import { useShipping } from '@/providers/shipping.provider';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -47,6 +48,11 @@ export const ShippingForm: FC<ShippingFormProps> = ({ ...props }) => {
             form.reset();
             setContext(undefined);
         }
+    };
+
+    const clearForm = () => {
+        setContext(undefined);
+        form.reset();
     };
 
     useEffect(() => {
@@ -156,9 +162,16 @@ export const ShippingForm: FC<ShippingFormProps> = ({ ...props }) => {
                         )}
                     />
                 </div>
-                <Button type="submit" size="lg" className="w-full">
-                    {!!context ? 'Update' : 'Create'} Shipping
-                </Button>
+                <div className="grid grid-cols-2 gap-6">
+                    {!!context && (
+                        <Button type="button" size="lg" variant="outline" onClick={() => clearForm()} className="col-span-1">
+                            Clear form
+                        </Button>
+                    )}
+                    <Button type="submit" size="lg" className={cn(!!context ? 'col-span-1' : 'col-span-2')}>
+                        {!!context ? 'Update' : 'Create'} Shipping
+                    </Button>
+                </div>
             </form>
         </Form>
     );

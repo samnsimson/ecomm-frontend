@@ -31,13 +31,19 @@ export const CreateProductDimensionsSchema = z.object({
     depth: z.coerce.number().min(0).optional(),
 });
 
+export const CreateProductShippingSchema = z.object({
+    id: z.string().uuid(),
+});
+
 export const CreateProductSchema = z.object({
     title: z.string().min(1, 'Title cannot be empty'),
     description: z.string().min(1, 'Description is required'),
     brand: z.string().min(1, 'Please choose a value for brand'),
     retailPrice: z.coerce.number().min(0),
     salePrice: z.coerce.number().min(0),
+    shipping: CreateProductShippingSchema.optional(),
     dimensions: CreateProductDimensionsSchema.optional(),
+    categories: z.array(z.object({ id: z.string().uuid() })).optional(),
 });
 
 export const SettingsSchema = z.object({

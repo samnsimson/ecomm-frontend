@@ -22,5 +22,13 @@ query GetProducts($take: Int, $page: Int) {
             review
             rating
         }
+        shipping {
+            id
+            title
+            type
+            percentage
+            amount
+            enabled
+        }
     }
 }

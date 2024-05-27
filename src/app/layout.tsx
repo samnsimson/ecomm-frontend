@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
     return (
         <html lang="en">
-            <body className={cn('bg-slate-50', montserrat.className)} suppressHydrationWarning>
+            <body className={cn('bg-muted', montserrat.className)} suppressHydrationWarning>
                 <Providers>
                     <section className="flex min-h-screen flex-col">
                         <Header />

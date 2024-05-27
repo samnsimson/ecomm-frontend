@@ -1,10 +1,9 @@
 'use client';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Shipping } from '@/graphql/generated';
 import { useShipping } from '@/providers/shipping.provider';
-import { FC, HTMLAttributes } from 'react';
+import { FC, HTMLAttributes, use } from 'react';
 
 interface ShippingsListProps extends HTMLAttributes<HTMLDivElement> {
     [x: string]: any;
@@ -25,6 +24,7 @@ const shippingValue = (shipping: Omit<Shipping, 'createdAt' | 'updatedAt'>) => {
 
 export const ShippingsList: FC<ShippingsListProps> = ({ ...props }) => {
     const { shippings, update, setContext } = useShipping();
+
     return (
         <div {...props} className="flex flex-col divide-y">
             {shippings.map((shipping) => (

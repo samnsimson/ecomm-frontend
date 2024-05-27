@@ -1,0 +1,8 @@
+mutation CreateCategory($input: CreateCategoryInput!) {
+    createCategory(createCategoryInput: $input) {
+        id
+        title
+        description
+        slug
+    }
+}

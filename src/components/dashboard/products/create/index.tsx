@@ -1,5 +1,4 @@
-import { CreateProductForm } from '@/components/form/product/create';
-import { Card, CardContent } from '@/components/ui/card';
+import { CreateProductForm } from '@/components/form/dashboard/product/create';
 import { FC, HTMLAttributes } from 'react';
 
 interface CreateProductProps extends HTMLAttributes<HTMLDivElement> {
@@ -7,11 +6,5 @@ interface CreateProductProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export const CreateProduct: FC<CreateProductProps> = ({ ...props }) => {
-    return (
-        <Card {...props}>
-            <CardContent className="p-4">
-                <CreateProductForm />
-            </CardContent>
-        </Card>
-    );
+    return <CreateProductForm />;
 };
