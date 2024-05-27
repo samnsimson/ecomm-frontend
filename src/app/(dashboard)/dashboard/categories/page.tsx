@@ -1,6 +1,6 @@
 import { ListCategoriesWithPagination } from '@/components/dashboard/categories/list';
-import { SectionTitle } from '@/components/dashboard/section-title';
 import { CreateCategoryForm } from '@/components/form/dashboard/categories/create';
+import { Page } from '@/components/page';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { NextPage } from 'next';
@@ -46,10 +46,9 @@ const CategoriesPage: NextPage = ({ searchParams }: any) => {
     const sp = new Map<string, string>(Object.entries(searchParams));
 
     return (
-        <div className="flex flex-col space-y-6">
-            <SectionTitle title="Categories" description="Manage all you categories" action={renderActionButton(sp)} />
+        <Page title="Categories" description="Manage all you categories" action={renderActionButton(sp)} className="flex flex-col space-y-6">
             {renderComponent(sp)}
-        </div>
+        </Page>
     );
 };
 export default CategoriesPage;

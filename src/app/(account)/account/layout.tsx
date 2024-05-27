@@ -3,6 +3,7 @@ import { Container } from '@/components/container';
 import { FC, PropsWithChildren } from 'react';
 import { SideNavList } from '@/lib/types';
 import { BookmarkIcon, BoxIcon, User } from 'lucide-react';
+import { SignOutComponent } from '@/components/signout';
 
 const navs: Array<SideNavList> = [
     {
@@ -28,8 +29,9 @@ const navs: Array<SideNavList> = [
 const AccountLayout: FC<PropsWithChildren> = ({ children, ...props }) => {
     return (
         <Container className="flex space-x-6 py-6">
-            <div className="w-1/4">
+            <div className="flex w-1/4 flex-col space-y-6">
                 <SideNav navs={navs} />
+                <SignOutComponent />
             </div>
             <div className="w-3/4">{children}</div>
         </Container>
