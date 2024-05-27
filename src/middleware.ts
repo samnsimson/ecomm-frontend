@@ -2,7 +2,7 @@ import { auth } from './lib/auth';
 import { NextResponse } from 'next/server';
 
 export const config = {
-    matcher: ['/((?!api|_next/static|_next/image|sign-in|sign-up|.*\\.png$).*)'],
+    matcher: ['/((?!api|_next/static|_next/image|sign-in|sign-up|shop/*|.*\\.png$).*)'],
 };
 
 // export default NextAuth(authConfig).auth;
@@ -15,8 +15,10 @@ export default auth((req) => {
     requestHeaders.set('x-origin', url.origin);
     requestHeaders.set('x-pathname', url.pathname);
 
+    const publicPaths = ['/'];
+
     const session = req.auth;
-    if (!session && url.pathname !== '/') {
+    if (!session && !publicPaths.includes(url.pathname)) {
         return NextResponse.redirect(new URL(`/api/auth/signin?callbackUrl=${encodeURIComponent(url.pathname)}`, req.url));
     }
 

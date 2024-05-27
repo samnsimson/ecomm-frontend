@@ -16,22 +16,32 @@ interface HeaderProps extends HTMLAttributes<HTMLDivElement> {
 export const Header: FC<HeaderProps> = ({ ...props }) => {
     const { data } = useSession();
     return (
-        <div className="flex min-h-20 flex-col justify-center border-b border-default bg-white py-3" {...props}>
+        <div className="border-default flex min-h-20 flex-col justify-center border-b bg-white py-3" {...props}>
             <Container className="flex h-full items-center justify-between">
                 <Logo />
-                {!!data?.user ? (
-                    <Link href="/account/profile">
-                        <Avatar className="ring ring-primary ring-offset-2">
-                            <AvatarFallback>
-                                <User2Icon />
-                            </AvatarFallback>
-                        </Avatar>
-                    </Link>
-                ) : (
-                    <Link href="/sign-in" className={cn(buttonVariants({ variant: 'outline', size: 'lg' }), 'flex space-x-3')}>
-                        <LogInIcon /> <span>Sigin in</span>
-                    </Link>
-                )}
+                <div className="flex items-center space-x-4">
+                    <div className="flex items-center">
+                        <Link className={cn('uppercase', buttonVariants({ variant: 'ghost', size: 'lg' }))} href="/shop">
+                            Shop
+                        </Link>
+                        <Link className={cn('uppercase', buttonVariants({ variant: 'ghost', size: 'lg' }))} href="/cart">
+                            Cart
+                        </Link>
+                    </div>
+                    {!!data?.user ? (
+                        <Link href="/account/profile">
+                            <Avatar className="ring ring-primary ring-offset-2">
+                                <AvatarFallback>
+                                    <User2Icon />
+                                </AvatarFallback>
+                            </Avatar>
+                        </Link>
+                    ) : (
+                        <Link href="/sign-in" className={cn(buttonVariants({ variant: 'outline', size: 'lg' }), 'flex space-x-3')}>
+                            <LogInIcon /> <span>Sigin in</span>
+                        </Link>
+                    )}
+                </div>
             </Container>
         </div>
     );
