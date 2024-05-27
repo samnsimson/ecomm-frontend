@@ -1,4 +1,6 @@
 import { ReactNode } from 'react';
+import { z } from 'zod';
+import { SettingsSchema } from '../zod/schemas';
 
 declare module 'next-auth' {
     interface Session {
@@ -33,3 +35,22 @@ export enum ShippingTypes {
     FLAT = 'flat',
     PERCENTAGE = 'percentage',
 }
+
+export type CartType = {
+    id: string;
+    quantity: number;
+    price: number;
+};
+
+export type StoreState = {
+    settings: z.infer<typeof SettingsSchema>;
+    cart: Array<CartType>;
+};
+
+export type StoreActions = {
+    setSettings: (settings: StoreState['settings']) => void;
+    addToCart: (item: CartType) => void;
+    removeFromCart: (item: CartType) => void;
+};
+
+export type Store = StoreState & StoreActions;

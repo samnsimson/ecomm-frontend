@@ -11,11 +11,11 @@ const Providers: FC<PropsWithChildren> = ({ children }) => {
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <NextSessionProvider>
                 <ApolloClientProvider>
-                    <StoreProvider>
-                        <CategoryProvider>
-                            <ShippingProvider>{children}</ShippingProvider>
-                        </CategoryProvider>
-                    </StoreProvider>
+                    {/* <StoreProvider> */}
+                    <CategoryProvider>
+                        <ShippingProvider>{children}</ShippingProvider>
+                    </CategoryProvider>
+                    {/* </StoreProvider> */}
                 </ApolloClientProvider>
             </NextSessionProvider>
         </ThemeProvider>

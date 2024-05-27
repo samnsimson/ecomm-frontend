@@ -39,7 +39,7 @@ export const ProductList: FC<ProductListProps> = ({ ...props }) => {
                                 <Button variant="secondary" size="icon">
                                     <HeartIcon size={18} />
                                 </Button>
-                                <AddToCart />
+                                <AddToCart id={pdt.id} price={pdt.salePrice} />
                             </div>
                         </CardFooter>
                     </Card>
