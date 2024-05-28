@@ -2,7 +2,7 @@ import { auth } from './lib/auth';
 import { NextResponse } from 'next/server';
 
 export const config = {
-    matcher: ['/((?!api|_next/static|_next/image|sign-in|sign-up|shop/*|.*\\.png$).*)'],
+    matcher: ['/((?!api|_next/static|_next/image|sign-in|sign-up|shop/*|cart/*|.*\\.png$).*)'],
 };
 
 // export default NextAuth(authConfig).auth;

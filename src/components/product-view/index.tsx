@@ -6,6 +6,8 @@ import { List, ListItem } from '../list';
 import { AddToCart } from '../add-to-cart';
 import { Button } from '../ui/button';
 import { HeartIcon } from 'lucide-react';
+import { AddToCartProduct } from '@/lib/types';
+import { getProductProperty } from '@/lib/helpers';
 
 interface ProductViewProps extends HTMLAttributes<HTMLDivElement> {
     product: GetProductQuery['product'];
@@ -44,7 +46,7 @@ export const ProductView: FC<ProductViewProps> = ({ product, ...props }) => {
                             </div>
                         </CardContent>
                         <CardFooter className="flex items-center justify-evenly space-x-6 p-6">
-                            <AddToCart size="xl" fullWidth id={product.id} price={product.salePrice} />
+                            <AddToCart size="xl" fullWidth product={getProductProperty(product)} />
                             <Button className="w-full" size="xl" variant="secondary" startContent={<HeartIcon />}>
                                 Add to wishlist
                             </Button>

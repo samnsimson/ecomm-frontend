@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { z } from 'zod';
 import { SettingsSchema } from '../zod/schemas';
+import { Product } from '@/graphql/generated';
 
 declare module 'next-auth' {
     interface Session {
@@ -44,13 +45,15 @@ export type CartType = {
 
 export type StoreState = {
     settings: z.infer<typeof SettingsSchema>;
-    cart: Array<CartType>;
+    cart: Array<AddToCartProduct>;
 };
 
 export type StoreActions = {
     setSettings: (settings: StoreState['settings']) => void;
-    addToCart: (item: CartType) => void;
-    removeFromCart: (item: CartType) => void;
+    addToCart: (item: AddToCartProduct) => void;
+    removeFromCart: (item: AddToCartProduct) => void;
 };
 
 export type Store = StoreState & StoreActions;
+
+export type AddToCartProduct = Required<Pick<Product, 'id' | 'salePrice' | 'slug' | 'title'>> & { quantity: number };

@@ -6,6 +6,7 @@ import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { useGetProductsQuery } from '@/graphql/generated';
+import { getProductProperty } from '@/lib/helpers';
 import { HeartIcon } from 'lucide-react';
 import Link from 'next/link';
 import { FC, HTMLAttributes } from 'react';
@@ -39,7 +40,7 @@ export const ProductList: FC<ProductListProps> = ({ ...props }) => {
                                 <Button variant="secondary" size="icon">
                                     <HeartIcon size={18} />
                                 </Button>
-                                <AddToCart id={pdt.id} price={pdt.salePrice} />
+                                <AddToCart id={pdt.id} product={getProductProperty(pdt)} />
                             </div>
                         </CardFooter>
                     </Card>
