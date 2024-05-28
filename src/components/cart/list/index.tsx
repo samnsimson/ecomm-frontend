@@ -1,6 +1,5 @@
 'use client';
-import { List, ListItem } from '@/components/list';
-import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useStore } from '@/store';
 import Link from 'next/link';
 import { FC, HTMLAttributes } from 'react';
