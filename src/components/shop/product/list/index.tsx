@@ -2,6 +2,7 @@
 import { AddToCart } from '@/components/add-to-cart';
 import { withPagination } from '@/components/hoc/pagination';
 import { List, ListItem } from '@/components/list';
+import { RetailPrice, SalePrice } from '@/components/price';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
@@ -33,11 +34,11 @@ export const ProductList: FC<ProductListProps> = ({ ...props }) => {
                         </CardContent>
                         <CardFooter className="prose flex items-center justify-between p-4">
                             <div className="flex items-center space-x-3">
-                                <h2 className="my-0">${pdt.salePrice}</h2>
-                                <p className="my-0 line-through">${pdt.retailPrice}</p>
+                                <SalePrice price={pdt.salePrice} />
+                                <RetailPrice price={pdt.retailPrice} />
                             </div>
                             <div className="flex items-center space-x-3">
-                                <Button variant="secondary" size="icon">
+                                <Button variant="warning" size="icon">
                                     <HeartIcon size={18} />
                                 </Button>
                                 <AddToCart id={pdt.id} product={getProductProperty(pdt)} />
