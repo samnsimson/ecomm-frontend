@@ -21,10 +21,25 @@ export type Scalars = {
 export type Cart = {
   __typename?: 'Cart';
   createdAt: Scalars['DateTime']['output'];
+  discount: Scalars['Int']['output'];
   id: Scalars['ID']['output'];
-  products: Array<Product>;
+  items: Array<CartItem>;
+  subTotal: Scalars['Int']['output'];
+  total: Scalars['Int']['output'];
   updatedAt: Scalars['DateTime']['output'];
   user: User;
+};
+
+export type CartItem = {
+  __typename?: 'CartItem';
+  cart: Cart;
+  createdAt: Scalars['DateTime']['output'];
+  id: Scalars['ID']['output'];
+  price: Scalars['Int']['output'];
+  product: Product;
+  quantity: Scalars['Int']['output'];
+  total?: Maybe<Scalars['Int']['output']>;
+  updatedAt: Scalars['DateTime']['output'];
 };
 
 export type CategoriesInput = {
@@ -55,8 +70,7 @@ export type Coupon = {
 };
 
 export type CreateCartInput = {
-  /** Example field (placeholder) */
-  exampleField: Scalars['Int']['input'];
+  items: Array<Item>;
 };
 
 export type CreateCategoryInput = {
@@ -166,6 +180,12 @@ export type Discount = {
   exampleField: Scalars['Int']['output'];
 };
 
+export type Item = {
+  id: Scalars['String']['input'];
+  price: Scalars['Int']['input'];
+  quantity: Scalars['Int']['input'];
+};
+
 export type LoginInput = {
   password: Scalars['String']['input'];
   username: Scalars['String']['input'];
@@ -212,7 +232,6 @@ export type Mutation = {
   removeUser: DeltedUser;
   saveSetting: Setting;
   signup: SignupResponse;
-  updateCart: Cart;
   updateCategory: Category;
   updateCoupon: Coupon;
   updateDiscount: Discount;
@@ -364,11 +383,6 @@ export type MutationSignupArgs = {
 };
 
 
-export type MutationUpdateCartArgs = {
-  updateCartInput: UpdateCartInput;
-};
-
-
 export type MutationUpdateCategoryArgs = {
   updateCategoryInput: UpdateCategoryInput;
 };
@@ -476,7 +490,6 @@ export enum PaymentType {
 export type Product = {
   __typename?: 'Product';
   brand?: Maybe<Scalars['String']['output']>;
-  carts?: Maybe<Array<Cart>>;
   categories?: Maybe<Array<Category>>;
   createdAt: Scalars['DateTime']['output'];
   description?: Maybe<Scalars['String']['output']>;
@@ -552,7 +565,8 @@ export type Query = {
 
 
 export type QueryCartArgs = {
-  id: Scalars['Int']['input'];
+  cartId?: InputMaybe<Scalars['String']['input']>;
+  userId?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -771,12 +785,6 @@ export type Tax = {
   exampleField: Scalars['Int']['output'];
 };
 
-export type UpdateCartInput = {
-  /** Example field (placeholder) */
-  exampleField?: InputMaybe<Scalars['Int']['input']>;
-  id: Scalars['Int']['input'];
-};
-
 export type UpdateCategoryInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['ID']['input'];
@@ -950,6 +958,14 @@ export type UpdateShippingMutationVariables = Exact<{
 
 
 export type UpdateShippingMutation = { __typename?: 'Mutation', updateShipping: { __typename?: 'Shipping', id: string, title: string, description: string, enabled: boolean, type: ShippingType, amount: number, percentage: number } };
+
+export type GetCartQueryVariables = Exact<{
+  cartId?: InputMaybe<Scalars['String']['input']>;
+  userId?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type GetCartQuery = { __typename?: 'Query', cart: { __typename?: 'Cart', id: string, subTotal: number, discount: number, total: number, items: Array<{ __typename?: 'CartItem', id: string, price: number, quantity: number, total?: number | null, createdAt: any, updatedAt: any, product: { __typename?: 'Product', id: string, title: string, salePrice: number, retailPrice: number, createdAt: any, updatedAt: any } }> } };
 
 export type GetCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1369,6 +1385,66 @@ export function useUpdateShippingMutation(baseOptions?: Apollo.MutationHookOptio
 export type UpdateShippingMutationHookResult = ReturnType<typeof useUpdateShippingMutation>;
 export type UpdateShippingMutationResult = Apollo.MutationResult<UpdateShippingMutation>;
 export type UpdateShippingMutationOptions = Apollo.BaseMutationOptions<UpdateShippingMutation, UpdateShippingMutationVariables>;
+export const GetCartDocument = gql`
+    query GetCart($cartId: String, $userId: String) {
+  cart(cartId: $cartId, userId: $userId) {
+    id
+    subTotal
+    discount
+    total
+    items {
+      id
+      price
+      quantity
+      total
+      createdAt
+      updatedAt
+      product {
+        id
+        title
+        salePrice
+        retailPrice
+        createdAt
+        updatedAt
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetCartQuery__
+ *
+ * To run a query within a React component, call `useGetCartQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCartQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCartQuery({
+ *   variables: {
+ *      cartId: // value for 'cartId'
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useGetCartQuery(baseOptions?: Apollo.QueryHookOptions<GetCartQuery, GetCartQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCartQuery, GetCartQueryVariables>(GetCartDocument, options);
+      }
+export function useGetCartLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCartQuery, GetCartQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCartQuery, GetCartQueryVariables>(GetCartDocument, options);
+        }
+export function useGetCartSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetCartQuery, GetCartQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetCartQuery, GetCartQueryVariables>(GetCartDocument, options);
+        }
+export type GetCartQueryHookResult = ReturnType<typeof useGetCartQuery>;
+export type GetCartLazyQueryHookResult = ReturnType<typeof useGetCartLazyQuery>;
+export type GetCartSuspenseQueryHookResult = ReturnType<typeof useGetCartSuspenseQuery>;
+export type GetCartQueryResult = Apollo.QueryResult<GetCartQuery, GetCartQueryVariables>;
 export const GetCategoriesDocument = gql`
     query GetCategories {
   categories {

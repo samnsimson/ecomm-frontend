@@ -12,7 +12,7 @@ export const Page: FC<PageProps> = ({ className, children, title, description, a
     return (
         <div className={cn('space-y-6', className)} {...props}>
             <SectionTitle title={title} description={description} action={action} />
-            <div>{children}</div>
+            <div className="space-y-6">{children}</div>
         </div>
     );
 };

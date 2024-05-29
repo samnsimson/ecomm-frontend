@@ -1,5 +1,5 @@
 'use client';
-import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useStore } from '@/store';
 import Link from 'next/link';
 import { FC, HTMLAttributes } from 'react';
@@ -12,6 +12,7 @@ export const CartList: FC<CartListProps> = ({ ...props }) => {
     const { cart } = useStore((state) => state);
     return (
         <Table {...props}>
+            <TableCaption className="my-0 border-t border-border px-4 py-2 text-left">Discounts and coupons will be calculated at checkout</TableCaption>
             <TableHeader className="bg-muted">
                 <TableRow>
                     <TableHead>Name</TableHead>

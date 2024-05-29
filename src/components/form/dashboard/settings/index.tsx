@@ -11,8 +11,8 @@ import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { useSaveSettingsMutation } from '@/graphql/generated';
 import { toast } from 'sonner';
-import { useStore } from '@/providers/store.provider';
 import { SaveIcon } from 'lucide-react';
+import { useStore } from '@/store';
 
 interface SettingsFormProps extends HTMLAttributes<HTMLFormElement> {
     [x: string]: any;
@@ -49,7 +49,7 @@ export const SettingsForm: FC<SettingsFormProps> = ({ ...props }) => {
         form.setValue('couponsEnabled', settings.couponsEnabled);
         form.setValue('shippingEnabled', settings.shippingEnabled);
         form.setValue('discountsEnabled', settings.discountsEnabled);
-    }, [settings]);
+    }, [form, settings]);
 
     return (
         <Form {...form} {...props}>
