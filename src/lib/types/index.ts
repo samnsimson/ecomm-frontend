@@ -45,15 +45,13 @@ export type CartType = {
 
 export type StoreState = {
     settings: z.infer<typeof SettingsSchema>;
-    cart: Array<AddToCartProduct>;
+    cart: Array<{ id: string; quantity: number }>;
 };
 
 export type StoreActions = {
     setSettings: (settings: StoreState['settings']) => void;
-    addToCart: (item: AddToCartProduct) => void;
-    removeFromCart: (item: AddToCartProduct) => void;
+    addToCart: (id: string, quantity: number) => void;
+    removeFromCart: (id: string, quantity: number) => void;
 };
 
 export type Store = StoreState & StoreActions;
-
-export type AddToCartProduct = Required<Pick<Product, 'id' | 'salePrice' | 'slug' | 'title'>> & { quantity: number };

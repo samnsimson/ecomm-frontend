@@ -42,6 +42,12 @@ export type CartItem = {
   updatedAt: Scalars['DateTime']['output'];
 };
 
+export type CartProductOutput = {
+  __typename?: 'CartProductOutput';
+  products: Array<ProductOutput>;
+  total: Scalars['Int']['output'];
+};
+
 export type CategoriesInput = {
   id: Scalars['String']['input'];
 };
@@ -516,6 +522,22 @@ export type ProductIds = {
   id: Scalars['String']['input'];
 };
 
+export type ProductInfo = {
+  id: Scalars['String']['input'];
+  quantity: Scalars['Int']['input'];
+};
+
+export type ProductOutput = {
+  __typename?: 'ProductOutput';
+  id: Scalars['String']['output'];
+  quantity: Scalars['Int']['output'];
+  retailPrice: Scalars['Int']['output'];
+  salePrice: Scalars['Int']['output'];
+  slug: Scalars['String']['output'];
+  title: Scalars['String']['output'];
+  total: Scalars['Int']['output'];
+};
+
 export type Profile = {
   __typename?: 'Profile';
   addressOne: Scalars['String']['output'];
@@ -536,6 +558,7 @@ export type Profile = {
 export type Query = {
   __typename?: 'Query';
   cart: Cart;
+  cartProducts: CartProductOutput;
   carts: Array<Cart>;
   categories: Array<Category>;
   category: Category;
@@ -567,6 +590,11 @@ export type Query = {
 export type QueryCartArgs = {
   cartId?: InputMaybe<Scalars['String']['input']>;
   userId?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryCartProductsArgs = {
+  input: Array<ProductInfo>;
 };
 
 
@@ -958,6 +986,13 @@ export type UpdateShippingMutationVariables = Exact<{
 
 
 export type UpdateShippingMutation = { __typename?: 'Mutation', updateShipping: { __typename?: 'Shipping', id: string, title: string, description: string, enabled: boolean, type: ShippingType, amount: number, percentage: number } };
+
+export type CartProductsQueryVariables = Exact<{
+  input: Array<ProductInfo> | ProductInfo;
+}>;
+
+
+export type CartProductsQuery = { __typename?: 'Query', cartProducts: { __typename?: 'CartProductOutput', total: number, products: Array<{ __typename?: 'ProductOutput', id: string, title: string, slug: string, salePrice: number, retailPrice: number, quantity: number, total: number }> } };
 
 export type GetCartQueryVariables = Exact<{
   cartId?: InputMaybe<Scalars['String']['input']>;
@@ -1385,6 +1420,55 @@ export function useUpdateShippingMutation(baseOptions?: Apollo.MutationHookOptio
 export type UpdateShippingMutationHookResult = ReturnType<typeof useUpdateShippingMutation>;
 export type UpdateShippingMutationResult = Apollo.MutationResult<UpdateShippingMutation>;
 export type UpdateShippingMutationOptions = Apollo.BaseMutationOptions<UpdateShippingMutation, UpdateShippingMutationVariables>;
+export const CartProductsDocument = gql`
+    query CartProducts($input: [ProductInfo!]!) {
+  cartProducts(input: $input) {
+    total
+    products {
+      id
+      title
+      slug
+      salePrice
+      retailPrice
+      quantity
+      total
+    }
+  }
+}
+    `;
+
+/**
+ * __useCartProductsQuery__
+ *
+ * To run a query within a React component, call `useCartProductsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCartProductsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCartProductsQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCartProductsQuery(baseOptions: Apollo.QueryHookOptions<CartProductsQuery, CartProductsQueryVariables> & ({ variables: CartProductsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CartProductsQuery, CartProductsQueryVariables>(CartProductsDocument, options);
+      }
+export function useCartProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CartProductsQuery, CartProductsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CartProductsQuery, CartProductsQueryVariables>(CartProductsDocument, options);
+        }
+export function useCartProductsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<CartProductsQuery, CartProductsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<CartProductsQuery, CartProductsQueryVariables>(CartProductsDocument, options);
+        }
+export type CartProductsQueryHookResult = ReturnType<typeof useCartProductsQuery>;
+export type CartProductsLazyQueryHookResult = ReturnType<typeof useCartProductsLazyQuery>;
+export type CartProductsSuspenseQueryHookResult = ReturnType<typeof useCartProductsSuspenseQuery>;
+export type CartProductsQueryResult = Apollo.QueryResult<CartProductsQuery, CartProductsQueryVariables>;
 export const GetCartDocument = gql`
     query GetCart($cartId: String, $userId: String) {
   cart(cartId: $cartId, userId: $userId) {

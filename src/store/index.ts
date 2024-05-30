@@ -14,8 +14,8 @@ export const useStore = create<Store>()(
             (set) => ({
                 ...initialState,
                 setSettings: (settings) => set(() => ({ settings })),
-                addToCart: (item) => set(({ cart }) => ({ cart: addItemToCart(cart, item) })),
-                removeFromCart: (item) => set(({ cart }) => ({ cart: removeItemFromCart(cart, item) })),
+                addToCart: (id, quantity) => set(({ cart }) => ({ cart: addItemToCart(cart, id, quantity) })),
+                removeFromCart: (id, quantity) => set(({ cart }) => ({ cart: removeItemFromCart(cart, id, quantity) })),
             }),
             { name: 'ecomm' },
         ),

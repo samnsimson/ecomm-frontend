@@ -11,7 +11,7 @@ const CartPage: NextPage = () => {
         <Page title="Cart" description="View & Manage items added to your cart">
             <Card className="divide-y">
                 <CardHeader>
-                    <CardTitle>items</CardTitle>
+                    <CardTitle>Items</CardTitle>
                 </CardHeader>
                 <CardContent className="p-0">
                     <CartList />
