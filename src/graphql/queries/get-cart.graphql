@@ -1,24 +1,14 @@
-query GetCart($cartId: String, $userId: String) {
-    cart(cartId: $cartId, userId: $userId) {
-        id
-        subTotal
-        discount
+query Cart($input: [ProductInfo!]!) {
+    cart(input: $input) {
         total
-        items {
+        products {
             id
-            price
+            title
+            slug
+            salePrice
+            retailPrice
             quantity
             total
-            createdAt
-            updatedAt
-            product {
-                id
-                title
-                salePrice
-                retailPrice
-                createdAt
-                updatedAt
-            }
         }
     }
 }

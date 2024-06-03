@@ -1,6 +1,6 @@
 'use client';
 import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { CartProductsQuery, useCartProductsLazyQuery } from '@/graphql/generated';
+import { CartQuery, useCartLazyQuery } from '@/graphql/generated';
 import { useStore } from '@/store';
 import { MinusIcon, PlusIcon, XIcon } from 'lucide-react';
 import Link from 'next/link';
@@ -28,13 +28,12 @@ const CartQuantity: FC<{ quantity: number; add: () => void; remove: () => void }
 
 export const CartList: FC<CartListProps> = ({ ...props }) => {
     const { cart, addToCart, removeFromCart } = useStore((state) => state);
-    const [cartItem, setCartItem] = useState<CartProductsQuery['cartProducts']>({ total: 0, products: [] });
-    const [getCartProducts, { loading, error }] = useCartProductsLazyQuery();
+    const [cartItem, setCartItem] = useState<CartQuery['cart']>({ total: 0, products: [] });
+    const [getCartProducts, { loading, error }] = useCartLazyQuery();
 
     useEffect(() => {
         getCartProducts({ variables: { input: cart.map(({ id, quantity }) => ({ id, quantity })) } }).then(({ data }) => {
-            console.log(data);
-            if (data) setCartItem(data.cartProducts);
+            if (data) setCartItem(data.cart);
         });
     }, [cart, getCartProducts]);
 
