@@ -28,7 +28,7 @@ const CartQuantity: FC<{ quantity: number; add: () => void; remove: () => void }
 
 export const CartList: FC<CartListProps> = ({ ...props }) => {
     const { cart, addToCart, removeFromCart } = useStore((state) => state);
-    const [cartItem, setCartItem] = useState<CartQuery['cart']>({ total: 0, products: [] });
+    const [cartItem, setCartItem] = useState<CartQuery['cart']>({ total: 0, subTotal: 0, isDeductionsEligible: false, products: [] });
     const [getCartProducts, { loading, error }] = useCartLazyQuery();
 
     useEffect(() => {
@@ -39,7 +39,6 @@ export const CartList: FC<CartListProps> = ({ ...props }) => {
 
     return (
         <Table {...props}>
-            <TableCaption className="my-0 border-t border-border px-4 py-2 text-left">Discounts and coupons will be calculated at checkout</TableCaption>
             <TableHeader className="bg-muted">
                 <TableRow>
                     <TableHead className="w-[40px]"></TableHead>
@@ -70,10 +69,24 @@ export const CartList: FC<CartListProps> = ({ ...props }) => {
             </TableBody>
             <TableFooter>
                 <TableRow>
-                    <TableCell className="text-right font-semibold" colSpan={4}>
+                    <TableCell className="py-2 text-right font-semibold" colSpan={4}>
+                        Sub Total
+                    </TableCell>
+                    <TableCell className="py-2 text-right text-base font-semibold">${cartItem.subTotal}</TableCell>
+                </TableRow>
+                {cartItem['taxes'] && (
+                    <TableRow>
+                        <TableCell className="py-2 text-right font-semibold" colSpan={4}>
+                            Taxes ({cartItem.taxes.percentage}%)
+                        </TableCell>
+                        <TableCell className="py-2 text-right text-base font-semibold">${cartItem.taxes.total}</TableCell>
+                    </TableRow>
+                )}
+                <TableRow>
+                    <TableCell className="py-2 text-right font-semibold" colSpan={4}>
                         Total
                     </TableCell>
-                    <TableCell className="text-right text-base font-semibold">${cartItem.total}</TableCell>
+                    <TableCell className="py-2 text-right text-base font-semibold">${cartItem.total}</TableCell>
                 </TableRow>
             </TableFooter>
         </Table>

@@ -1,6 +1,17 @@
 query Cart($input: [ProductInfo!]!) {
     cart(input: $input) {
         total
+        subTotal
+        isDeductionsEligible
+        taxes {
+            percentage
+            total
+            breakup {
+                name
+                percentage
+                total
+            }
+        }
         products {
             id
             title

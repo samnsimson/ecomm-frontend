@@ -9,7 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
-import { useSaveSettingsMutation } from '@/graphql/generated';
+import { useGetSettingsQuery, useSaveSettingsMutation } from '@/graphql/generated';
 import { toast } from 'sonner';
 import { SaveIcon } from 'lucide-react';
 import { useStore } from '@/store';
@@ -22,13 +22,13 @@ type FormType = z.infer<typeof SettingsSchema>;
 
 export const SettingsForm: FC<SettingsFormProps> = ({ ...props }) => {
     const form = useForm<FormType>({ resolver: zodResolver(SettingsSchema) });
+    const { data: settings, refetch } = useGetSettingsQuery();
     const [saveSettings] = useSaveSettingsMutation();
-    const { settings, setSettings } = useStore((store) => store);
 
     const handleSubmit = async (input: FormType) => {
         try {
-            const { data } = await saveSettings({ variables: { input } });
-            data && setSettings(data.saveSetting);
+            await saveSettings({ variables: { input } });
+            refetch();
             toast.success('Success', { description: 'Settings saved successfully' });
         } catch (error: any) {
             toast.error('Something went wrong!', { description: error.message });
@@ -36,19 +36,21 @@ export const SettingsForm: FC<SettingsFormProps> = ({ ...props }) => {
     };
 
     useEffect(() => {
-        form.setValue('addressOne', settings.addressOne);
-        form.setValue('addressTwo', settings.addressTwo);
-        form.setValue('city', settings.city);
-        form.setValue('state', settings.state);
-        form.setValue('country', settings.country);
-        form.setValue('zipcode', settings.zipcode);
-        form.setValue('email', settings.email);
-        form.setValue('phone', settings.phone);
-        form.setValue('currency', settings.currency);
-        form.setValue('taxesEnabled', settings.taxesEnabled);
-        form.setValue('couponsEnabled', settings.couponsEnabled);
-        form.setValue('shippingEnabled', settings.shippingEnabled);
-        form.setValue('discountsEnabled', settings.discountsEnabled);
+        if (settings) {
+            form.setValue('addressOne', settings.setting.addressOne);
+            form.setValue('addressTwo', settings.setting.addressTwo);
+            form.setValue('city', settings.setting.city);
+            form.setValue('state', settings.setting.state);
+            form.setValue('country', settings.setting.country);
+            form.setValue('zipcode', settings.setting.zipcode);
+            form.setValue('email', settings.setting.email);
+            form.setValue('phone', settings.setting.phone);
+            form.setValue('currency', settings.setting.currency);
+            form.setValue('taxesEnabled', settings.setting.taxesEnabled);
+            form.setValue('couponsEnabled', settings.setting.couponsEnabled);
+            form.setValue('shippingEnabled', settings.setting.shippingEnabled);
+            form.setValue('discountsEnabled', settings.setting.discountsEnabled);
+        }
     }, [form, settings]);
 
     return (

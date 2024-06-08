@@ -21,11 +21,8 @@ export type Scalars = {
 export type Cart = {
   __typename?: 'Cart';
   createdAt: Scalars['DateTime']['output'];
-  discount: Scalars['Int']['output'];
   id: Scalars['ID']['output'];
   items: Array<CartItem>;
-  subTotal: Scalars['Int']['output'];
-  total: Scalars['Int']['output'];
   updatedAt: Scalars['DateTime']['output'];
   user: User;
 };
@@ -44,7 +41,24 @@ export type CartItem = {
 
 export type CartProductOutput = {
   __typename?: 'CartProductOutput';
+  isDeductionsEligible: Scalars['Boolean']['output'];
   products: Array<ProductOutput>;
+  subTotal: Scalars['Int']['output'];
+  taxes?: Maybe<CartTaxes>;
+  total: Scalars['Int']['output'];
+};
+
+export type CartTaxBreakup = {
+  __typename?: 'CartTaxBreakup';
+  name: Scalars['String']['output'];
+  percentage: Scalars['Int']['output'];
+  total: Scalars['Int']['output'];
+};
+
+export type CartTaxes = {
+  __typename?: 'CartTaxes';
+  breakup: Array<CartTaxBreakup>;
+  percentage: Scalars['Int']['output'];
   total: Scalars['Int']['output'];
 };
 
@@ -73,10 +87,6 @@ export type Coupon = {
   __typename?: 'Coupon';
   /** Example field (placeholder) */
   exampleField: Scalars['Int']['output'];
-};
-
-export type CreateCartInput = {
-  items: Array<Item>;
 };
 
 export type CreateCategoryInput = {
@@ -186,12 +196,6 @@ export type Discount = {
   exampleField: Scalars['Int']['output'];
 };
 
-export type Item = {
-  id: Scalars['String']['input'];
-  price: Scalars['Int']['input'];
-  quantity: Scalars['Int']['input'];
-};
-
 export type LoginInput = {
   password: Scalars['String']['input'];
   username: Scalars['String']['input'];
@@ -211,7 +215,6 @@ export type LoginResponse = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  createCart: Cart;
   createCategory: Category;
   createCoupon: Coupon;
   createDiscount: Discount;
@@ -224,7 +227,6 @@ export type Mutation = {
   createTax: Tax;
   login: LoginResponse;
   refresh: RefreshTokenResponse;
-  removeCart: Cart;
   removeCategory: Category;
   removeCoupon: Coupon;
   removeDiscount: Discount;
@@ -249,11 +251,6 @@ export type Mutation = {
   updateShipping: Shipping;
   updateTax: Tax;
   updateUser: User;
-};
-
-
-export type MutationCreateCartArgs = {
-  createCartInput: CreateCartInput;
 };
 
 
@@ -315,11 +312,6 @@ export type MutationLoginArgs = {
 
 export type MutationRefreshArgs = {
   refreshTokenInput: RefreshTokenInput;
-};
-
-
-export type MutationRemoveCartArgs = {
-  id: Scalars['Int']['input'];
 };
 
 
@@ -558,7 +550,6 @@ export type Profile = {
 export type Query = {
   __typename?: 'Query';
   cart: CartProductOutput;
-  carts: Array<Cart>;
   categories: Array<Category>;
   category: Category;
   coupon: Coupon;
@@ -985,7 +976,7 @@ export type CartQueryVariables = Exact<{
 }>;
 
 
-export type CartQuery = { __typename?: 'Query', cart: { __typename?: 'CartProductOutput', total: number, products: Array<{ __typename?: 'ProductOutput', id: string, title: string, slug: string, salePrice: number, retailPrice: number, quantity: number, total: number }> } };
+export type CartQuery = { __typename?: 'Query', cart: { __typename?: 'CartProductOutput', total: number, subTotal: number, isDeductionsEligible: boolean, taxes?: { __typename?: 'CartTaxes', percentage: number, total: number, breakup: Array<{ __typename?: 'CartTaxBreakup', name: string, percentage: number, total: number }> } | null, products: Array<{ __typename?: 'ProductOutput', id: string, title: string, slug: string, salePrice: number, retailPrice: number, quantity: number, total: number }> } };
 
 export type GetCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1409,6 +1400,17 @@ export const CartDocument = gql`
     query Cart($input: [ProductInfo!]!) {
   cart(input: $input) {
     total
+    subTotal
+    isDeductionsEligible
+    taxes {
+      percentage
+      total
+      breakup {
+        name
+        percentage
+        total
+      }
+    }
     products {
       id
       title
