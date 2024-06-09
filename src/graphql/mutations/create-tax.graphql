@@ -1,0 +1,13 @@
+mutation CreateTax($input: CreateTaxInput!) {
+    createTax(createTaxInput: $input) {
+        id
+        title
+        description
+        type
+        amount
+        percentage
+        enabled
+        createdAt
+        updatedAt
+    }
+}

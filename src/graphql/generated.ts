@@ -50,15 +50,16 @@ export type CartProductOutput = {
 
 export type CartTaxBreakup = {
   __typename?: 'CartTaxBreakup';
-  name: Scalars['String']['output'];
-  percentage: Scalars['Int']['output'];
+  amount?: Maybe<Scalars['Int']['output']>;
+  description: Scalars['String']['output'];
+  percentage?: Maybe<Scalars['Int']['output']>;
+  title: Scalars['String']['output'];
   total: Scalars['Int']['output'];
 };
 
 export type CartTaxes = {
   __typename?: 'CartTaxes';
   breakup: Array<CartTaxBreakup>;
-  percentage: Scalars['Int']['output'];
   total: Scalars['Int']['output'];
 };
 
@@ -155,8 +156,12 @@ export type CreateShippingInput = {
 };
 
 export type CreateTaxInput = {
-  /** Example field (placeholder) */
-  exampleField: Scalars['Int']['input'];
+  amount?: InputMaybe<Scalars['Int']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  enabled: Scalars['Boolean']['input'];
+  percentage?: InputMaybe<Scalars['Int']['input']>;
+  title: Scalars['String']['input'];
+  type?: InputMaybe<TaxTypes>;
 };
 
 export type CreateUserInput = {
@@ -793,9 +798,21 @@ export type SignupResponse = {
 
 export type Tax = {
   __typename?: 'Tax';
-  /** Example field (placeholder) */
-  exampleField: Scalars['Int']['output'];
+  amount?: Maybe<Scalars['Int']['output']>;
+  createdAt: Scalars['DateTime']['output'];
+  description: Scalars['String']['output'];
+  enabled?: Maybe<Scalars['Boolean']['output']>;
+  id: Scalars['ID']['output'];
+  percentage?: Maybe<Scalars['Int']['output']>;
+  title: Scalars['String']['output'];
+  type: TaxTypes;
+  updatedAt: Scalars['DateTime']['output'];
 };
+
+export enum TaxTypes {
+  Flat = 'FLAT',
+  Percentage = 'PERCENTAGE'
+}
 
 export type UpdateCategoryInput = {
   description?: InputMaybe<Scalars['String']['input']>;
@@ -871,9 +888,13 @@ export type UpdateShippingInput = {
 };
 
 export type UpdateTaxInput = {
-  /** Example field (placeholder) */
-  exampleField?: InputMaybe<Scalars['Int']['input']>;
-  id: Scalars['Int']['input'];
+  amount?: InputMaybe<Scalars['Int']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  enabled?: InputMaybe<Scalars['Boolean']['input']>;
+  id: Scalars['String']['input'];
+  percentage?: InputMaybe<Scalars['Int']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  type?: InputMaybe<TaxTypes>;
 };
 
 export type UpdateUserInput = {
@@ -935,12 +956,26 @@ export type CreateShippingMutationVariables = Exact<{
 
 export type CreateShippingMutation = { __typename?: 'Mutation', createShipping: { __typename?: 'Shipping', id: string, title: string, description: string, enabled: boolean, type: ShippingType, amount: number, percentage: number } };
 
+export type CreateTaxMutationVariables = Exact<{
+  input: CreateTaxInput;
+}>;
+
+
+export type CreateTaxMutation = { __typename?: 'Mutation', createTax: { __typename?: 'Tax', id: string, title: string, description: string, type: TaxTypes, amount?: number | null, percentage?: number | null, enabled?: boolean | null, createdAt: any, updatedAt: any } };
+
 export type LoginMutationVariables = Exact<{
   input: LoginInput;
 }>;
 
 
 export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponse', id: string, username: string, email: string, name: string, role: string, authenticated: boolean, accessToken: string, refreshToken: string } };
+
+export type RefreshTokenMutationVariables = Exact<{
+  input: RefreshTokenInput;
+}>;
+
+
+export type RefreshTokenMutation = { __typename?: 'Mutation', refresh: { __typename?: 'RefreshTokenResponse', accessToken: string } };
 
 export type SaveSettingsMutationVariables = Exact<{
   input: SettingsInput;
@@ -971,12 +1006,19 @@ export type UpdateShippingMutationVariables = Exact<{
 
 export type UpdateShippingMutation = { __typename?: 'Mutation', updateShipping: { __typename?: 'Shipping', id: string, title: string, description: string, enabled: boolean, type: ShippingType, amount: number, percentage: number } };
 
+export type UpdateTaxMutationVariables = Exact<{
+  input: UpdateTaxInput;
+}>;
+
+
+export type UpdateTaxMutation = { __typename?: 'Mutation', updateTax: { __typename?: 'Tax', id: string, title: string, description: string, type: TaxTypes, amount?: number | null, percentage?: number | null, enabled?: boolean | null, createdAt: any, updatedAt: any } };
+
 export type CartQueryVariables = Exact<{
   input: Array<ProductInfo> | ProductInfo;
 }>;
 
 
-export type CartQuery = { __typename?: 'Query', cart: { __typename?: 'CartProductOutput', total: number, subTotal: number, isDeductionsEligible: boolean, taxes?: { __typename?: 'CartTaxes', percentage: number, total: number, breakup: Array<{ __typename?: 'CartTaxBreakup', name: string, percentage: number, total: number }> } | null, products: Array<{ __typename?: 'ProductOutput', id: string, title: string, slug: string, salePrice: number, retailPrice: number, quantity: number, total: number }> } };
+export type CartQuery = { __typename?: 'Query', cart: { __typename?: 'CartProductOutput', total: number, subTotal: number, isDeductionsEligible: boolean, taxes?: { __typename?: 'CartTaxes', total: number, breakup: Array<{ __typename?: 'CartTaxBreakup', title: string, description: string, amount?: number | null, percentage?: number | null, total: number }> } | null, products: Array<{ __typename?: 'ProductOutput', id: string, title: string, slug: string, salePrice: number, retailPrice: number, quantity: number, total: number }> } };
 
 export type GetCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1020,6 +1062,11 @@ export type GetShippingsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetShippingsQuery = { __typename?: 'Query', shippings: Array<{ __typename?: 'Shipping', id: string, title: string, description: string, enabled: boolean, type: ShippingType, amount: number, percentage: number }> };
+
+export type GetTaxesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetTaxesQuery = { __typename?: 'Query', taxes: Array<{ __typename?: 'Tax', id: string, title: string, description: string, type: TaxTypes, amount?: number | null, percentage?: number | null, enabled?: boolean | null, createdAt: any, updatedAt: any }> };
 
 export type GetUserQueryVariables = Exact<{
   id: Scalars['String']['input'];
@@ -1191,6 +1238,47 @@ export function useCreateShippingMutation(baseOptions?: Apollo.MutationHookOptio
 export type CreateShippingMutationHookResult = ReturnType<typeof useCreateShippingMutation>;
 export type CreateShippingMutationResult = Apollo.MutationResult<CreateShippingMutation>;
 export type CreateShippingMutationOptions = Apollo.BaseMutationOptions<CreateShippingMutation, CreateShippingMutationVariables>;
+export const CreateTaxDocument = gql`
+    mutation CreateTax($input: CreateTaxInput!) {
+  createTax(createTaxInput: $input) {
+    id
+    title
+    description
+    type
+    amount
+    percentage
+    enabled
+    createdAt
+    updatedAt
+  }
+}
+    `;
+export type CreateTaxMutationFn = Apollo.MutationFunction<CreateTaxMutation, CreateTaxMutationVariables>;
+
+/**
+ * __useCreateTaxMutation__
+ *
+ * To run a mutation, you first call `useCreateTaxMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateTaxMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createTaxMutation, { data, loading, error }] = useCreateTaxMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateTaxMutation(baseOptions?: Apollo.MutationHookOptions<CreateTaxMutation, CreateTaxMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateTaxMutation, CreateTaxMutationVariables>(CreateTaxDocument, options);
+      }
+export type CreateTaxMutationHookResult = ReturnType<typeof useCreateTaxMutation>;
+export type CreateTaxMutationResult = Apollo.MutationResult<CreateTaxMutation>;
+export type CreateTaxMutationOptions = Apollo.BaseMutationOptions<CreateTaxMutation, CreateTaxMutationVariables>;
 export const LoginDocument = gql`
     mutation Login($input: LoginInput!) {
   login(credentials: $input) {
@@ -1231,6 +1319,39 @@ export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginM
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const RefreshTokenDocument = gql`
+    mutation RefreshToken($input: RefreshTokenInput!) {
+  refresh(refreshTokenInput: $input) {
+    accessToken
+  }
+}
+    `;
+export type RefreshTokenMutationFn = Apollo.MutationFunction<RefreshTokenMutation, RefreshTokenMutationVariables>;
+
+/**
+ * __useRefreshTokenMutation__
+ *
+ * To run a mutation, you first call `useRefreshTokenMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRefreshTokenMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [refreshTokenMutation, { data, loading, error }] = useRefreshTokenMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useRefreshTokenMutation(baseOptions?: Apollo.MutationHookOptions<RefreshTokenMutation, RefreshTokenMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RefreshTokenMutation, RefreshTokenMutationVariables>(RefreshTokenDocument, options);
+      }
+export type RefreshTokenMutationHookResult = ReturnType<typeof useRefreshTokenMutation>;
+export type RefreshTokenMutationResult = Apollo.MutationResult<RefreshTokenMutation>;
+export type RefreshTokenMutationOptions = Apollo.BaseMutationOptions<RefreshTokenMutation, RefreshTokenMutationVariables>;
 export const SaveSettingsDocument = gql`
     mutation SaveSettings($input: SettingsInput!) {
   saveSetting(settingsInput: $input) {
@@ -1396,6 +1517,47 @@ export function useUpdateShippingMutation(baseOptions?: Apollo.MutationHookOptio
 export type UpdateShippingMutationHookResult = ReturnType<typeof useUpdateShippingMutation>;
 export type UpdateShippingMutationResult = Apollo.MutationResult<UpdateShippingMutation>;
 export type UpdateShippingMutationOptions = Apollo.BaseMutationOptions<UpdateShippingMutation, UpdateShippingMutationVariables>;
+export const UpdateTaxDocument = gql`
+    mutation UpdateTax($input: UpdateTaxInput!) {
+  updateTax(updateTaxInput: $input) {
+    id
+    title
+    description
+    type
+    amount
+    percentage
+    enabled
+    createdAt
+    updatedAt
+  }
+}
+    `;
+export type UpdateTaxMutationFn = Apollo.MutationFunction<UpdateTaxMutation, UpdateTaxMutationVariables>;
+
+/**
+ * __useUpdateTaxMutation__
+ *
+ * To run a mutation, you first call `useUpdateTaxMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateTaxMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateTaxMutation, { data, loading, error }] = useUpdateTaxMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateTaxMutation(baseOptions?: Apollo.MutationHookOptions<UpdateTaxMutation, UpdateTaxMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateTaxMutation, UpdateTaxMutationVariables>(UpdateTaxDocument, options);
+      }
+export type UpdateTaxMutationHookResult = ReturnType<typeof useUpdateTaxMutation>;
+export type UpdateTaxMutationResult = Apollo.MutationResult<UpdateTaxMutation>;
+export type UpdateTaxMutationOptions = Apollo.BaseMutationOptions<UpdateTaxMutation, UpdateTaxMutationVariables>;
 export const CartDocument = gql`
     query Cart($input: [ProductInfo!]!) {
   cart(input: $input) {
@@ -1403,10 +1565,11 @@ export const CartDocument = gql`
     subTotal
     isDeductionsEligible
     taxes {
-      percentage
       total
       breakup {
-        name
+        title
+        description
+        amount
         percentage
         total
       }
@@ -1838,6 +2001,53 @@ export type GetShippingsQueryHookResult = ReturnType<typeof useGetShippingsQuery
 export type GetShippingsLazyQueryHookResult = ReturnType<typeof useGetShippingsLazyQuery>;
 export type GetShippingsSuspenseQueryHookResult = ReturnType<typeof useGetShippingsSuspenseQuery>;
 export type GetShippingsQueryResult = Apollo.QueryResult<GetShippingsQuery, GetShippingsQueryVariables>;
+export const GetTaxesDocument = gql`
+    query GetTaxes {
+  taxes {
+    id
+    title
+    description
+    type
+    amount
+    percentage
+    enabled
+    createdAt
+    updatedAt
+  }
+}
+    `;
+
+/**
+ * __useGetTaxesQuery__
+ *
+ * To run a query within a React component, call `useGetTaxesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTaxesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTaxesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetTaxesQuery(baseOptions?: Apollo.QueryHookOptions<GetTaxesQuery, GetTaxesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetTaxesQuery, GetTaxesQueryVariables>(GetTaxesDocument, options);
+      }
+export function useGetTaxesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTaxesQuery, GetTaxesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetTaxesQuery, GetTaxesQueryVariables>(GetTaxesDocument, options);
+        }
+export function useGetTaxesSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetTaxesQuery, GetTaxesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetTaxesQuery, GetTaxesQueryVariables>(GetTaxesDocument, options);
+        }
+export type GetTaxesQueryHookResult = ReturnType<typeof useGetTaxesQuery>;
+export type GetTaxesLazyQueryHookResult = ReturnType<typeof useGetTaxesLazyQuery>;
+export type GetTaxesSuspenseQueryHookResult = ReturnType<typeof useGetTaxesSuspenseQuery>;
+export type GetTaxesQueryResult = Apollo.QueryResult<GetTaxesQuery, GetTaxesQueryVariables>;
 export const GetUserDocument = gql`
     query GetUser($id: String!) {
   user(id: $id) {

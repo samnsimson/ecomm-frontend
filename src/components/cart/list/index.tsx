@@ -77,7 +77,7 @@ export const CartList: FC<CartListProps> = ({ ...props }) => {
                 {cartItem['taxes'] && (
                     <TableRow>
                         <TableCell className="py-2 text-right font-semibold" colSpan={4}>
-                            Taxes ({cartItem.taxes.percentage}%)
+                            Taxes
                         </TableCell>
                         <TableCell className="py-2 text-right text-base font-semibold">${cartItem.taxes.total}</TableCell>
                     </TableRow>

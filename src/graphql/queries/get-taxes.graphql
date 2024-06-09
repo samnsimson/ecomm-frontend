@@ -1,0 +1,13 @@
+query GetTaxes {
+    taxes {
+        id
+        title
+        description
+        type
+        amount
+        percentage
+        enabled
+        createdAt
+        updatedAt
+    }
+}

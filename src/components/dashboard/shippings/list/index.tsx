@@ -39,7 +39,7 @@ export const ShippingsList: FC<ShippingsListProps> = ({ ...props }) => {
                         <Button variant="ghost" onClick={() => setContext(shippings.find((x) => x.id === shipping.id))}>
                             Edit
                         </Button>
-                        <Switch id="airplane-mode" checked={shipping.enabled} onCheckedChange={() => update(shipping.id, { enabled: !shipping.enabled })} />
+                        <Switch checked={shipping.enabled} onCheckedChange={() => update(shipping.id, { enabled: !shipping.enabled })} />
                     </div>
                 </div>
             ))}

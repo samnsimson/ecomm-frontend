@@ -63,7 +63,7 @@ export const ShippingForm: FC<ShippingFormProps> = ({ ...props }) => {
             form.setValue('amount', context.amount);
             form.setValue('percentage', context.percentage);
         }
-    }, [context]);
+    }, [context, form]);
 
     return (
         <Form {...form} {...props}>
@@ -135,7 +135,7 @@ export const ShippingForm: FC<ShippingFormProps> = ({ ...props }) => {
                                         {...field}
                                     />
                                 </FormControl>
-                                <FormDescription>If Shipping Type = "Flat"</FormDescription>
+                                <FormDescription>If Shipping Type = &quot;Flat&quot;</FormDescription>
                                 <FormMessage />
                             </FormItem>
                         )}
@@ -156,7 +156,7 @@ export const ShippingForm: FC<ShippingFormProps> = ({ ...props }) => {
                                         {...field}
                                     />
                                 </FormControl>
-                                <FormDescription>If Shipping Type = "Percentage"</FormDescription>
+                                <FormDescription>If Shipping Type = &quot;Percentage&quot;</FormDescription>
                                 <FormMessage />
                             </FormItem>
                         )}

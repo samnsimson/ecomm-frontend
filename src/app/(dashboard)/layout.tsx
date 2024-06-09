@@ -2,7 +2,20 @@ import { Container } from '@/components/container';
 import { SideNav } from '@/components/side-nav';
 import { SignOutComponent } from '@/components/signout';
 import { SideNavList } from '@/lib/types';
-import { BoxIcon, BoxesIcon, LayoutDashboard, MessageSquareMore, Package, PercentIcon, Settings2, TicketIcon, TruckIcon, User, WalletIcon } from 'lucide-react';
+import {
+    BoxIcon,
+    BoxesIcon,
+    CalculatorIcon,
+    LayoutDashboard,
+    MessageSquareMore,
+    Package,
+    PercentIcon,
+    Settings2,
+    TicketIcon,
+    TruckIcon,
+    User,
+    WalletIcon,
+} from 'lucide-react';
 import { FC, PropsWithChildren } from 'react';
 
 const navs: Array<SideNavList> = [
@@ -47,6 +60,12 @@ const navs: Array<SideNavList> = [
         description: 'Create, view & manage discounts',
         link: '/dashboard/discounts',
         icon: <PercentIcon />,
+    },
+    {
+        name: 'Taxes',
+        description: 'Create, view & manage taxes',
+        link: '/dashboard/taxes',
+        icon: <CalculatorIcon />,
     },
     {
         name: 'Payments',

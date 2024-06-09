@@ -1,0 +1,13 @@
+mutation UpdateTax($input: UpdateTaxInput!) {
+    updateTax(updateTaxInput: $input) {
+        id
+        title
+        description
+        type
+        amount
+        percentage
+        enabled
+        createdAt
+        updatedAt
+    }
+}

@@ -4,10 +4,11 @@ query Cart($input: [ProductInfo!]!) {
         subTotal
         isDeductionsEligible
         taxes {
-            percentage
             total
             breakup {
-                name
+                title
+                description
+                amount
                 percentage
                 total
             }
