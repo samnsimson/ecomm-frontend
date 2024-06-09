@@ -15,11 +15,10 @@ const httpLink = (accessToken: string | undefined) => {
     });
 };
 
-const errorLink = (refreshToken: string | undefined, updateSession: UpdateSession) => {
-    return onError(({ graphQLErrors, networkError, operation, forward }) => {
-        if (networkError) console.log(`[Network error]: ${networkError}`);
+const errorLink = (refreshToken: string | undefined, callback: (accessToken: string) => void) => {
+    return onError(({ graphQLErrors, operation, forward }) => {
         if (graphQLErrors) {
-            const promise = manageGraphQLErrors(graphQLErrors, refreshToken, operation, forward, updateSession);
+            const promise = manageGraphQLErrors(graphQLErrors, refreshToken, operation, forward, callback);
             return fromPromise(promise).flatMap(() => forward(operation));
         }
     });
@@ -32,25 +31,20 @@ const tokenRefresh = async (token: string | undefined) => {
     return null;
 };
 
-const logOut = async () => {
-    await signOut();
-    return;
-};
-
 const manageGraphQLErrors = async (
     errors: GraphQLErrors,
     refreshToken: string | undefined,
     operation: Operation,
     forward: NextLink,
-    updateSession: UpdateSession,
+    callback: (accessToken: string) => void,
 ) => {
     for (const { extensions } of errors) {
         if (extensions.code === 'UNAUTHENTICATED') {
             const accessToken = await tokenRefresh(refreshToken);
-            if (!accessToken) return forward(operation);
+            if (!accessToken) await signOut({ redirect: false });
+            accessToken && callback(accessToken);
             const { headers = {} } = operation.getContext();
             operation.setContext({ headers: { ...headers, authorization: `Bearer ${accessToken}` } });
-            console.log('retrying with new token...');
             return forward(operation);
         }
     }
@@ -59,8 +53,13 @@ const manageGraphQLErrors = async (
 export const apolloClient = (session: Session | null, updateSession: UpdateSession) => {
     const accessToken = session ? session.user?.accessToken : undefined;
     const refreshToken = session ? session.user?.refreshToken : undefined;
+
+    const sessionUpdate = async (accessToken: string) => {
+        session && (await updateSession({ ...session, user: { ...session.user, accessToken } }));
+    };
+
     return new ApolloClient({
-        link: ApolloLink.from([errorLink(refreshToken, updateSession), httpLink(accessToken)]),
+        link: ApolloLink.from([errorLink(refreshToken, sessionUpdate), httpLink(accessToken)]),
         cache: new InMemoryCache({
             typePolicies: {
                 ProductOutput: {

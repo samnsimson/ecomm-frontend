@@ -3,7 +3,6 @@ import { Montserrat } from 'next/font/google';
 import './globals.css';
 import { cn } from '@/lib/utils';
 import Providers from '@/providers';
-import { Header } from '@/components/header';
 import { Toaster } from 'sonner';
 
 const montserrat = Montserrat({ subsets: ['latin'] });
@@ -17,12 +16,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     return (
         <html lang="en">
             <body className={cn('bg-muted', montserrat.className)} suppressHydrationWarning>
-                <Providers>
-                    <section className="flex min-h-screen flex-col">
-                        <Header />
-                        <main className="flex flex-1 flex-col">{children}</main>
-                    </section>
-                </Providers>
+                <Providers>{children}</Providers>
                 <Toaster richColors />
             </body>
         </html>
