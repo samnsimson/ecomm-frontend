@@ -18,6 +18,29 @@ export type Scalars = {
   DateTime: { input: any; output: any; }
 };
 
+export type BillingInfoDto = {
+  __typename?: 'BillingInfoDto';
+  addressOne: Scalars['String']['output'];
+  addressTwo: Scalars['String']['output'];
+  city: Scalars['String']['output'];
+  country: Scalars['String']['output'];
+  email: Scalars['String']['output'];
+  phone: Scalars['String']['output'];
+  state: Scalars['String']['output'];
+  zipcode: Scalars['String']['output'];
+};
+
+export type BillingInfoInput = {
+  addressOne: Scalars['String']['input'];
+  addressTwo: Scalars['String']['input'];
+  city: Scalars['String']['input'];
+  country: Scalars['String']['input'];
+  email: Scalars['String']['input'];
+  phone: Scalars['String']['input'];
+  state: Scalars['String']['input'];
+  zipcode: Scalars['String']['input'];
+};
+
 export type Cart = {
   __typename?: 'Cart';
   createdAt: Scalars['DateTime']['output'];
@@ -101,6 +124,12 @@ export type CreateCouponInput = {
   exampleField: Scalars['Int']['input'];
 };
 
+export type CreateDeliveryInfoInput = {
+  billingAddress: BillingInfoInput;
+  shippingAddress: ShippingInfoInput;
+  userId: Scalars['String']['input'];
+};
+
 export type CreateDiscountInput = {
   /** Example field (placeholder) */
   exampleField: Scalars['Int']['input'];
@@ -177,6 +206,38 @@ export enum Currency {
   Usd = 'USD'
 }
 
+export type DeliveryInfo = {
+  __typename?: 'DeliveryInfo';
+  billingAddressOne?: Maybe<Scalars['String']['output']>;
+  billingAddressTwo?: Maybe<Scalars['String']['output']>;
+  billingCity?: Maybe<Scalars['String']['output']>;
+  billingCountry?: Maybe<Scalars['String']['output']>;
+  billingEmail?: Maybe<Scalars['String']['output']>;
+  billingPhone?: Maybe<Scalars['String']['output']>;
+  billingState?: Maybe<Scalars['String']['output']>;
+  billingZipcode?: Maybe<Scalars['String']['output']>;
+  createdAt: Scalars['DateTime']['output'];
+  id: Scalars['ID']['output'];
+  shippingAddressOne?: Maybe<Scalars['String']['output']>;
+  shippingAddressTwo?: Maybe<Scalars['String']['output']>;
+  shippingCity?: Maybe<Scalars['String']['output']>;
+  shippingCountry?: Maybe<Scalars['String']['output']>;
+  shippingState?: Maybe<Scalars['String']['output']>;
+  shippingZipcode?: Maybe<Scalars['String']['output']>;
+  updatedAt: Scalars['DateTime']['output'];
+  user: User;
+};
+
+export type DeliveryInfoDto = {
+  __typename?: 'DeliveryInfoDto';
+  billingAddress?: Maybe<BillingInfoDto>;
+  createdAt: Scalars['DateTime']['output'];
+  id: Scalars['ID']['output'];
+  shippingAddress?: Maybe<BillingInfoDto>;
+  updatedAt: Scalars['DateTime']['output'];
+  user: User;
+};
+
 export type DeltedUser = {
   __typename?: 'DeltedUser';
   id: Scalars['ID']['output'];
@@ -222,6 +283,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   createCategory: Category;
   createCoupon: Coupon;
+  createDeliveryInfo: DeliveryInfoDto;
   createDiscount: Discount;
   createOrder: Order;
   createPayment: Payment;
@@ -234,6 +296,7 @@ export type Mutation = {
   refresh: RefreshTokenResponse;
   removeCategory: Category;
   removeCoupon: Coupon;
+  removeDeliveryInfo: DeliveryInfo;
   removeDiscount: Discount;
   removeOrder: Order;
   removePayment: Payment;
@@ -247,6 +310,7 @@ export type Mutation = {
   signup: SignupResponse;
   updateCategory: Category;
   updateCoupon: Coupon;
+  updateDeliveryInfo: DeliveryInfo;
   updateDiscount: Discount;
   updateOrder: Order;
   updatePayment: Payment;
@@ -266,6 +330,11 @@ export type MutationCreateCategoryArgs = {
 
 export type MutationCreateCouponArgs = {
   createCouponInput: CreateCouponInput;
+};
+
+
+export type MutationCreateDeliveryInfoArgs = {
+  createDeliveryInfoInput: CreateDeliveryInfoInput;
 };
 
 
@@ -327,6 +396,11 @@ export type MutationRemoveCategoryArgs = {
 
 export type MutationRemoveCouponArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type MutationRemoveDeliveryInfoArgs = {
+  id: Scalars['String']['input'];
 };
 
 
@@ -393,6 +467,11 @@ export type MutationUpdateCategoryArgs = {
 
 export type MutationUpdateCouponArgs = {
   updateCouponInput: UpdateCouponInput;
+};
+
+
+export type MutationUpdateDeliveryInfoArgs = {
+  updateDeliveryInfoInput: UpdateDeliveryInfoInput;
 };
 
 
@@ -559,6 +638,8 @@ export type Query = {
   category: Category;
   coupon: Coupon;
   coupons: Array<Coupon>;
+  deliveryInfo: DeliveryInfoDto;
+  deliveryInfos: Array<DeliveryInfoDto>;
   discount: Discount;
   discounts: Array<Discount>;
   order: Order;
@@ -600,6 +681,17 @@ export type QueryCategoryArgs = {
 
 export type QueryCouponArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type QueryDeliveryInfoArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type QueryDeliveryInfosArgs = {
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  take?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -766,6 +858,15 @@ export type Shipping = {
   updatedAt: Scalars['DateTime']['output'];
 };
 
+export type ShippingInfoInput = {
+  addressOne: Scalars['String']['input'];
+  addressTwo: Scalars['String']['input'];
+  city: Scalars['String']['input'];
+  country: Scalars['String']['input'];
+  state: Scalars['String']['input'];
+  zipcode: Scalars['String']['input'];
+};
+
 export type ShippingMethod = {
   id: Scalars['String']['input'];
 };
@@ -782,6 +883,7 @@ export type SignupResponse = {
   authenticated?: Maybe<Scalars['Boolean']['output']>;
   cart?: Maybe<Cart>;
   createdAt: Scalars['DateTime']['output'];
+  deliveryInfo?: Maybe<DeliveryInfoDto>;
   email: Scalars['String']['output'];
   emailVerified?: Maybe<Scalars['Boolean']['output']>;
   id: Scalars['ID']['output'];
@@ -825,6 +927,13 @@ export type UpdateCouponInput = {
   /** Example field (placeholder) */
   exampleField?: InputMaybe<Scalars['Int']['input']>;
   id: Scalars['Int']['input'];
+};
+
+export type UpdateDeliveryInfoInput = {
+  billingAddress?: InputMaybe<BillingInfoInput>;
+  id: Scalars['String']['input'];
+  shippingAddress?: InputMaybe<ShippingInfoInput>;
+  userId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateDiscountInput = {
@@ -909,6 +1018,7 @@ export type User = {
   __typename?: 'User';
   cart?: Maybe<Cart>;
   createdAt: Scalars['DateTime']['output'];
+  deliveryInfo?: Maybe<DeliveryInfoDto>;
   email: Scalars['String']['output'];
   emailVerified?: Maybe<Scalars['Boolean']['output']>;
   id: Scalars['ID']['output'];
@@ -1025,6 +1135,13 @@ export type GetCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetCategoriesQuery = { __typename?: 'Query', categories: Array<{ __typename?: 'Category', id: string, title: string, description?: string | null, slug?: string | null, createdAt: any, updatedAt: any }> };
 
+export type GetDeliveryInfoQueryVariables = Exact<{
+  id: Scalars['String']['input'];
+}>;
+
+
+export type GetDeliveryInfoQuery = { __typename?: 'Query', deliveryInfo: { __typename?: 'DeliveryInfoDto', id: string, createdAt: any, updatedAt: any, billingAddress?: { __typename?: 'BillingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string, email: string, phone: string } | null, shippingAddress?: { __typename?: 'BillingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string } | null } };
+
 export type GetOrdersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1073,7 +1190,7 @@ export type GetUserQueryVariables = Exact<{
 }>;
 
 
-export type GetUserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, username: string, email: string, phone: string, phoneVerified?: boolean | null, emailVerified?: boolean | null, profile?: { __typename?: 'Profile', id: string, firstName: string, lastName?: string | null, addressOne: string, addressTwo?: string | null, city: string, state: string, country: string, zipcode: string, profileImage?: string | null } | null } };
+export type GetUserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, username: string, email: string, phone: string, phoneVerified?: boolean | null, emailVerified?: boolean | null, profile?: { __typename?: 'Profile', id: string, firstName: string, lastName?: string | null, addressOne: string, addressTwo?: string | null, city: string, state: string, country: string, zipcode: string, profileImage?: string | null } | null, deliveryInfo?: { __typename?: 'DeliveryInfoDto', id: string, billingAddress?: { __typename?: 'BillingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string, email: string, phone: string } | null, shippingAddress?: { __typename?: 'BillingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string } | null } | null } };
 
 export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1663,6 +1780,66 @@ export type GetCategoriesQueryHookResult = ReturnType<typeof useGetCategoriesQue
 export type GetCategoriesLazyQueryHookResult = ReturnType<typeof useGetCategoriesLazyQuery>;
 export type GetCategoriesSuspenseQueryHookResult = ReturnType<typeof useGetCategoriesSuspenseQuery>;
 export type GetCategoriesQueryResult = Apollo.QueryResult<GetCategoriesQuery, GetCategoriesQueryVariables>;
+export const GetDeliveryInfoDocument = gql`
+    query GetDeliveryInfo($id: String!) {
+  deliveryInfo(id: $id) {
+    id
+    createdAt
+    updatedAt
+    billingAddress {
+      addressOne
+      addressTwo
+      city
+      state
+      country
+      zipcode
+      email
+      phone
+    }
+    shippingAddress {
+      addressOne
+      addressTwo
+      city
+      state
+      country
+      zipcode
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetDeliveryInfoQuery__
+ *
+ * To run a query within a React component, call `useGetDeliveryInfoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDeliveryInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetDeliveryInfoQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetDeliveryInfoQuery(baseOptions: Apollo.QueryHookOptions<GetDeliveryInfoQuery, GetDeliveryInfoQueryVariables> & ({ variables: GetDeliveryInfoQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetDeliveryInfoQuery, GetDeliveryInfoQueryVariables>(GetDeliveryInfoDocument, options);
+      }
+export function useGetDeliveryInfoLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDeliveryInfoQuery, GetDeliveryInfoQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetDeliveryInfoQuery, GetDeliveryInfoQueryVariables>(GetDeliveryInfoDocument, options);
+        }
+export function useGetDeliveryInfoSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetDeliveryInfoQuery, GetDeliveryInfoQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetDeliveryInfoQuery, GetDeliveryInfoQueryVariables>(GetDeliveryInfoDocument, options);
+        }
+export type GetDeliveryInfoQueryHookResult = ReturnType<typeof useGetDeliveryInfoQuery>;
+export type GetDeliveryInfoLazyQueryHookResult = ReturnType<typeof useGetDeliveryInfoLazyQuery>;
+export type GetDeliveryInfoSuspenseQueryHookResult = ReturnType<typeof useGetDeliveryInfoSuspenseQuery>;
+export type GetDeliveryInfoQueryResult = Apollo.QueryResult<GetDeliveryInfoQuery, GetDeliveryInfoQueryVariables>;
 export const GetOrdersDocument = gql`
     query GetOrders {
   orders {
@@ -2068,6 +2245,27 @@ export const GetUserDocument = gql`
       country
       zipcode
       profileImage
+    }
+    deliveryInfo {
+      id
+      billingAddress {
+        addressOne
+        addressTwo
+        city
+        state
+        country
+        zipcode
+        email
+        phone
+      }
+      shippingAddress {
+        addressOne
+        addressTwo
+        city
+        state
+        country
+        zipcode
+      }
     }
   }
 }

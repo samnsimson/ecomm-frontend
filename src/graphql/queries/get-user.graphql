@@ -18,5 +18,26 @@ query GetUser($id: String!) {
             zipcode
             profileImage
         }
+        deliveryInfo {
+            id
+            billingAddress {
+                addressOne
+                addressTwo
+                city
+                state
+                country
+                zipcode
+                email
+                phone
+            }
+            shippingAddress {
+                addressOne
+                addressTwo
+                city
+                state
+                country
+                zipcode
+            }
+        }
     }
 }

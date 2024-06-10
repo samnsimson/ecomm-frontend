@@ -1,0 +1,25 @@
+query GetDeliveryInfo($id: String!) {
+    deliveryInfo(id: $id) {
+        id
+        createdAt
+        updatedAt
+        billingAddress {
+            addressOne
+            addressTwo
+            city
+            state
+            country
+            zipcode
+            email
+            phone
+        }
+        shippingAddress {
+            addressOne
+            addressTwo
+            city
+            state
+            country
+            zipcode
+        }
+    }
+}

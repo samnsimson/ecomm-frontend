@@ -1,17 +1,24 @@
-import { ApolloClient, InMemoryCache, HttpLink, ApolloLink, Operation, NextLink } from '@apollo/client';
+import { ApolloClient, InMemoryCache, ApolloLink, Operation, NextLink, createHttpLink } from '@apollo/client';
 import { GraphQLErrors } from '@apollo/client/errors';
 import { onError } from '@apollo/client/link/error';
 import { gql } from '../graphql-client';
 import { fromPromise } from '@apollo/client/link/utils';
+import { setContext } from '@apollo/client/link/context';
 import { RefreshTokenDocument, RefreshTokenMutation, RefreshTokenMutationVariables } from '@/graphql/generated';
 import { UpdateSession, signOut } from 'next-auth/react';
 import { Session } from 'next-auth';
 
-const httpLink = (accessToken: string | undefined) => {
-    return new HttpLink({
+const httpLink = () => {
+    return createHttpLink({
         uri: String(process.env.NEXT_PUBLIC_GRAPHQL_URL),
-        headers: { ...(accessToken && { authorization: `Bearer ${accessToken}` }) },
         credentials: 'include',
+    });
+};
+
+const authLink = (session: Session | null) => {
+    return setContext((_, { headers }) => {
+        const accessToken = session ? session.user.accessToken : null;
+        return { headers: { ...headers, authorization: accessToken ? `Bearer ${accessToken}` : null } };
     });
 };
 
@@ -51,15 +58,17 @@ const manageGraphQLErrors = async (
 };
 
 export const apolloClient = (session: Session | null, updateSession: UpdateSession) => {
-    const accessToken = session ? session.user?.accessToken : undefined;
     const refreshToken = session ? session.user?.refreshToken : undefined;
+    const auth = authLink(session);
+    const error = errorLink(refreshToken, sessionUpdate);
+    const http = httpLink();
 
-    const sessionUpdate = async (accessToken: string) => {
-        session && (await updateSession({ ...session, user: { ...session.user, accessToken } }));
-    };
+    async function sessionUpdate(accessToken: string) {
+        if (session) await updateSession({ ...session, user: { ...session.user, accessToken } });
+    }
 
     return new ApolloClient({
-        link: ApolloLink.from([errorLink(refreshToken, sessionUpdate), httpLink(accessToken)]),
+        link: ApolloLink.from([auth, error, http]),
         cache: new InMemoryCache({
             typePolicies: {
                 ProductOutput: {
