@@ -1,21 +1,5 @@
 query GetOrders {
     orders {
-        id
-        total
-        quantity
-        createdAt
-        status
-        payment {
-            id
-            provider
-            status
-            amount
-            type
-        }
-        products {
-            id
-            title
-            description
-        }
+        ...OrderFields
     }
 }

@@ -43,15 +43,33 @@ export type CartType = {
     price: number;
 };
 
+export type CartDataItem = {
+    id: string;
+    price: number;
+    quantity: number;
+    total: number;
+};
+
+export type CartData = {
+    total: number;
+    taxAmount: number;
+    discountAmount: number;
+    shippingAmount: number;
+    couponAmount: number;
+    cartItems: Array<CartDataItem>;
+};
+
 export type StoreState = {
     settings: z.infer<typeof SettingsSchema>;
     cart: Array<{ id: string; quantity: number }>;
+    cartData: CartData | undefined;
 };
 
 export type StoreActions = {
     setSettings: (settings: StoreState['settings']) => void;
     addToCart: (id: string, quantity: number) => void;
     removeFromCart: (id: string, quantity: number) => void;
+    setCartData: (data: CartData) => void;
 };
 
 export type Store = StoreState & StoreActions;

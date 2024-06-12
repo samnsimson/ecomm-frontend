@@ -1,0 +1,44 @@
+fragment OrderFields on Order {
+    id
+    total
+    status
+    createdAt
+    updatedAt
+    processedAt
+    shippedAt
+    fulfilledAt
+    cancelledAt
+    billingAddress {
+        addressOne
+        addressTwo
+        city
+        state
+        country
+        zipcode
+    }
+    shippingAddress {
+        addressOne
+        addressTwo
+        city
+        state
+        country
+        zipcode
+    }
+    user {
+        username
+        email
+        phone
+    }
+    items {
+        id
+        quantity
+        price
+        total
+    }
+    payment {
+        id
+        amount
+        type
+        provider
+    }
+}

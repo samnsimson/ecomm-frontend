@@ -6,6 +6,7 @@ import { addItemToCart, removeItemFromCart } from './actions';
 const initialState: StoreState = {
     settings: {},
     cart: [],
+    cartData: undefined,
 };
 
 export const useStore = create<Store>()(
@@ -16,6 +17,7 @@ export const useStore = create<Store>()(
                 setSettings: (settings) => set(() => ({ settings })),
                 addToCart: (id, quantity) => set(({ cart }) => ({ cart: addItemToCart(cart, id, quantity) })),
                 removeFromCart: (id, quantity) => set(({ cart }) => ({ cart: removeItemFromCart(cart, id, quantity) })),
+                setCartData: (data) => set(() => ({ cartData: data })),
             }),
             { name: 'ecomm' },
         ),

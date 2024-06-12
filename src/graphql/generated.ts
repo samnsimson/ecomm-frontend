@@ -32,7 +32,7 @@ export type BillingInfoDto = {
 
 export type BillingInfoInput = {
   addressOne: Scalars['String']['input'];
-  addressTwo: Scalars['String']['input'];
+  addressTwo?: InputMaybe<Scalars['String']['input']>;
   city: Scalars['String']['input'];
   country: Scalars['String']['input'];
   email: Scalars['String']['input'];
@@ -136,9 +136,16 @@ export type CreateDiscountInput = {
 };
 
 export type CreateOrderInput = {
-  productIds: Array<Scalars['String']['input']>;
-  quantity: Scalars['Int']['input'];
-  total: Scalars['Float']['input'];
+  billingAddress: BillingInfoInput;
+  couponAmount?: InputMaybe<Scalars['Int']['input']>;
+  discountAmount?: InputMaybe<Scalars['Int']['input']>;
+  items: Array<OrderItemsInput>;
+  paymentProvider: PaymentProvider;
+  paymentType: PaymentType;
+  shippingAddress: ShippingInfoInput;
+  shippingAmount?: InputMaybe<Scalars['Int']['input']>;
+  taxAmount?: InputMaybe<Scalars['Int']['input']>;
+  total: Scalars['Int']['input'];
 };
 
 export type CreatePaymentInput = {
@@ -287,6 +294,7 @@ export type Mutation = {
   createDiscount: Discount;
   createOrder: Order;
   createPayment: Payment;
+  createPaymentIntent: PaymentIntentOutput;
   createProduct: Product;
   createProfile: Profile;
   createReview: Review;
@@ -350,6 +358,11 @@ export type MutationCreateOrderArgs = {
 
 export type MutationCreatePaymentArgs = {
   createPaymentInput: CreatePaymentInput;
+};
+
+
+export type MutationCreatePaymentIntentArgs = {
+  paymentInput: PaymentIntentInput;
 };
 
 
@@ -521,21 +534,51 @@ export type MutationUpdateUserArgs = {
 
 export type Order = {
   __typename?: 'Order';
+  billingAddress: BillingInfoDto;
+  cancelledAt?: Maybe<Scalars['String']['output']>;
+  couponAmount?: Maybe<Scalars['Int']['output']>;
   createdAt: Scalars['DateTime']['output'];
+  discountAmount?: Maybe<Scalars['Int']['output']>;
+  fulfilledAt?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
+  items: Array<OrderItem>;
   payment: Payment;
-  products: Array<Product>;
-  quantity: Scalars['Int']['output'];
+  processedAt?: Maybe<Scalars['String']['output']>;
+  shippedAt?: Maybe<Scalars['String']['output']>;
+  shippingAddress: ShippingInfoDto;
+  shippingAmount?: Maybe<Scalars['Int']['output']>;
   status: OrderStatus;
-  total: Scalars['Float']['output'];
+  taxAmount?: Maybe<Scalars['Int']['output']>;
+  total: Scalars['Int']['output'];
   updatedAt: Scalars['DateTime']['output'];
   user: User;
 };
 
+export type OrderItem = {
+  __typename?: 'OrderItem';
+  createdAt: Scalars['DateTime']['output'];
+  id: Scalars['ID']['output'];
+  order: Order;
+  price: Scalars['Int']['output'];
+  product: Product;
+  quantity: Scalars['Int']['output'];
+  total?: Maybe<Scalars['Int']['output']>;
+  updatedAt: Scalars['DateTime']['output'];
+};
+
+export type OrderItemsInput = {
+  id: Scalars['String']['input'];
+  price: Scalars['Int']['input'];
+  quantity: Scalars['Int']['input'];
+  total: Scalars['Int']['input'];
+};
+
 export enum OrderStatus {
   Calcelled = 'CALCELLED',
-  Delivered = 'DELIVERED',
-  Placed = 'PLACED'
+  Created = 'CREATED',
+  Fullfilled = 'FULLFILLED',
+  Processing = 'PROCESSING',
+  Shipped = 'SHIPPED'
 }
 
 export type Payment = {
@@ -549,6 +592,16 @@ export type Payment = {
   status: PaymentStatus;
   type: PaymentType;
   updatedAt: Scalars['DateTime']['output'];
+};
+
+export type PaymentIntentInput = {
+  orderId: Scalars['String']['input'];
+  total: Scalars['Int']['input'];
+};
+
+export type PaymentIntentOutput = {
+  __typename?: 'PaymentIntentOutput';
+  clientSecret: Scalars['String']['output'];
 };
 
 export enum PaymentProvider {
@@ -577,7 +630,6 @@ export type Product = {
   description?: Maybe<Scalars['String']['output']>;
   dimensions: DimensionsResponse;
   id: Scalars['ID']['output'];
-  orders?: Maybe<Array<Order>>;
   retailPrice: Scalars['Int']['output'];
   reviews?: Maybe<Array<Review>>;
   salePrice: Scalars['Int']['output'];
@@ -858,9 +910,19 @@ export type Shipping = {
   updatedAt: Scalars['DateTime']['output'];
 };
 
+export type ShippingInfoDto = {
+  __typename?: 'ShippingInfoDto';
+  addressOne: Scalars['String']['output'];
+  addressTwo: Scalars['String']['output'];
+  city: Scalars['String']['output'];
+  country: Scalars['String']['output'];
+  state: Scalars['String']['output'];
+  zipcode: Scalars['String']['output'];
+};
+
 export type ShippingInfoInput = {
   addressOne: Scalars['String']['input'];
-  addressTwo: Scalars['String']['input'];
+  addressTwo?: InputMaybe<Scalars['String']['input']>;
   city: Scalars['String']['input'];
   country: Scalars['String']['input'];
   state: Scalars['String']['input'];
@@ -943,10 +1005,17 @@ export type UpdateDiscountInput = {
 };
 
 export type UpdateOrderInput = {
+  billingAddress?: InputMaybe<BillingInfoInput>;
+  couponAmount?: InputMaybe<Scalars['Int']['input']>;
+  discountAmount?: InputMaybe<Scalars['Int']['input']>;
   id: Scalars['String']['input'];
-  productIds?: InputMaybe<Array<Scalars['String']['input']>>;
-  quantity?: InputMaybe<Scalars['Int']['input']>;
-  total?: InputMaybe<Scalars['Float']['input']>;
+  items?: InputMaybe<Array<OrderItemsInput>>;
+  paymentProvider?: InputMaybe<PaymentProvider>;
+  paymentType?: InputMaybe<PaymentType>;
+  shippingAddress?: InputMaybe<ShippingInfoInput>;
+  shippingAmount?: InputMaybe<Scalars['Int']['input']>;
+  taxAmount?: InputMaybe<Scalars['Int']['input']>;
+  total?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type UpdatePaymentInput = {
@@ -1037,12 +1106,21 @@ export enum UserRole {
   User = 'USER'
 }
 
+export type OrderFieldsFragment = { __typename?: 'Order', id: string, total: number, status: OrderStatus, createdAt: any, updatedAt: any, processedAt?: string | null, shippedAt?: string | null, fulfilledAt?: string | null, cancelledAt?: string | null, billingAddress: { __typename?: 'BillingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string }, shippingAddress: { __typename?: 'ShippingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string }, user: { __typename?: 'User', username: string, email: string, phone: string }, items: Array<{ __typename?: 'OrderItem', id: string, quantity: number, price: number, total?: number | null }>, payment: { __typename?: 'Payment', id: string, amount: number, type: PaymentType, provider: PaymentProvider } };
+
 export type CreateCategoryMutationVariables = Exact<{
   input: CreateCategoryInput;
 }>;
 
 
 export type CreateCategoryMutation = { __typename?: 'Mutation', createCategory: { __typename?: 'Category', id: string, title: string, description?: string | null, slug?: string | null } };
+
+export type CreateOrderMutationVariables = Exact<{
+  input: CreateOrderInput;
+}>;
+
+
+export type CreateOrderMutation = { __typename?: 'Mutation', createOrder: { __typename?: 'Order', id: string, total: number, status: OrderStatus, createdAt: any, updatedAt: any, processedAt?: string | null, shippedAt?: string | null, fulfilledAt?: string | null, cancelledAt?: string | null, billingAddress: { __typename?: 'BillingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string }, shippingAddress: { __typename?: 'ShippingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string }, user: { __typename?: 'User', username: string, email: string, phone: string }, items: Array<{ __typename?: 'OrderItem', id: string, quantity: number, price: number, total?: number | null }>, payment: { __typename?: 'Payment', id: string, amount: number, type: PaymentType, provider: PaymentProvider } } };
 
 export type CreateProductMutationVariables = Exact<{
   input: CreateProductInput;
@@ -1145,7 +1223,7 @@ export type GetDeliveryInfoQuery = { __typename?: 'Query', deliveryInfo: { __typ
 export type GetOrdersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetOrdersQuery = { __typename?: 'Query', orders: Array<{ __typename?: 'Order', id: string, total: number, quantity: number, createdAt: any, status: OrderStatus, payment: { __typename?: 'Payment', id: string, provider: PaymentProvider, status: PaymentStatus, amount: number, type: PaymentType }, products: Array<{ __typename?: 'Product', id: string, title: string, description?: string | null }> }> };
+export type GetOrdersQuery = { __typename?: 'Query', orders: Array<{ __typename?: 'Order', id: string, total: number, status: OrderStatus, createdAt: any, updatedAt: any, processedAt?: string | null, shippedAt?: string | null, fulfilledAt?: string | null, cancelledAt?: string | null, billingAddress: { __typename?: 'BillingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string }, shippingAddress: { __typename?: 'ShippingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string }, user: { __typename?: 'User', username: string, email: string, phone: string }, items: Array<{ __typename?: 'OrderItem', id: string, quantity: number, price: number, total?: number | null }>, payment: { __typename?: 'Payment', id: string, amount: number, type: PaymentType, provider: PaymentProvider } }> };
 
 export type GetProductQueryVariables = Exact<{
   id?: InputMaybe<Scalars['String']['input']>;
@@ -1195,9 +1273,54 @@ export type GetUserQuery = { __typename?: 'Query', user: { __typename?: 'User', 
 export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', id: string, username: string, email: string, phone: string, emailVerified?: boolean | null, phoneVerified?: boolean | null, orders?: Array<{ __typename?: 'Order', id: string, products: Array<{ __typename?: 'Product', id: string, title: string, salePrice: number, retailPrice: number }> }> | null, profile?: { __typename?: 'Profile', id: string, firstName: string, lastName?: string | null, addressOne: string, city: string, state: string, country: string, zipcode: string, profileImage?: string | null } | null }> };
+export type GetUsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', id: string, username: string, email: string, phone: string, emailVerified?: boolean | null, phoneVerified?: boolean | null, orders?: Array<{ __typename?: 'Order', id: string, total: number, status: OrderStatus, createdAt: any, updatedAt: any, processedAt?: string | null, shippedAt?: string | null, fulfilledAt?: string | null, cancelledAt?: string | null, billingAddress: { __typename?: 'BillingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string }, shippingAddress: { __typename?: 'ShippingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string }, user: { __typename?: 'User', username: string, email: string, phone: string }, items: Array<{ __typename?: 'OrderItem', id: string, quantity: number, price: number, total?: number | null }>, payment: { __typename?: 'Payment', id: string, amount: number, type: PaymentType, provider: PaymentProvider } }> | null, profile?: { __typename?: 'Profile', id: string, firstName: string, lastName?: string | null, addressOne: string, city: string, state: string, country: string, zipcode: string, profileImage?: string | null } | null }> };
 
-
+export const OrderFieldsFragmentDoc = gql`
+    fragment OrderFields on Order {
+  id
+  total
+  status
+  createdAt
+  updatedAt
+  processedAt
+  shippedAt
+  fulfilledAt
+  cancelledAt
+  billingAddress {
+    addressOne
+    addressTwo
+    city
+    state
+    country
+    zipcode
+  }
+  shippingAddress {
+    addressOne
+    addressTwo
+    city
+    state
+    country
+    zipcode
+  }
+  user {
+    username
+    email
+    phone
+  }
+  items {
+    id
+    quantity
+    price
+    total
+  }
+  payment {
+    id
+    amount
+    type
+    provider
+  }
+}
+    `;
 export const CreateCategoryDocument = gql`
     mutation CreateCategory($input: CreateCategoryInput!) {
   createCategory(createCategoryInput: $input) {
@@ -1234,6 +1357,39 @@ export function useCreateCategoryMutation(baseOptions?: Apollo.MutationHookOptio
 export type CreateCategoryMutationHookResult = ReturnType<typeof useCreateCategoryMutation>;
 export type CreateCategoryMutationResult = Apollo.MutationResult<CreateCategoryMutation>;
 export type CreateCategoryMutationOptions = Apollo.BaseMutationOptions<CreateCategoryMutation, CreateCategoryMutationVariables>;
+export const CreateOrderDocument = gql`
+    mutation CreateOrder($input: CreateOrderInput!) {
+  createOrder(createOrderInput: $input) {
+    ...OrderFields
+  }
+}
+    ${OrderFieldsFragmentDoc}`;
+export type CreateOrderMutationFn = Apollo.MutationFunction<CreateOrderMutation, CreateOrderMutationVariables>;
+
+/**
+ * __useCreateOrderMutation__
+ *
+ * To run a mutation, you first call `useCreateOrderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateOrderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createOrderMutation, { data, loading, error }] = useCreateOrderMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateOrderMutation(baseOptions?: Apollo.MutationHookOptions<CreateOrderMutation, CreateOrderMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateOrderMutation, CreateOrderMutationVariables>(CreateOrderDocument, options);
+      }
+export type CreateOrderMutationHookResult = ReturnType<typeof useCreateOrderMutation>;
+export type CreateOrderMutationResult = Apollo.MutationResult<CreateOrderMutation>;
+export type CreateOrderMutationOptions = Apollo.BaseMutationOptions<CreateOrderMutation, CreateOrderMutationVariables>;
 export const CreateProductDocument = gql`
     mutation CreateProduct($input: CreateProductInput!) {
   createProduct(createProductInput: $input) {
@@ -1843,26 +1999,10 @@ export type GetDeliveryInfoQueryResult = Apollo.QueryResult<GetDeliveryInfoQuery
 export const GetOrdersDocument = gql`
     query GetOrders {
   orders {
-    id
-    total
-    quantity
-    createdAt
-    status
-    payment {
-      id
-      provider
-      status
-      amount
-      type
-    }
-    products {
-      id
-      title
-      description
-    }
+    ...OrderFields
   }
 }
-    `;
+    ${OrderFieldsFragmentDoc}`;
 
 /**
  * __useGetOrdersQuery__
@@ -2313,13 +2453,7 @@ export const GetUsersDocument = gql`
     emailVerified
     phoneVerified
     orders {
-      id
-      products {
-        id
-        title
-        salePrice
-        retailPrice
-      }
+      ...OrderFields
     }
     profile {
       id
@@ -2334,7 +2468,7 @@ export const GetUsersDocument = gql`
     }
   }
 }
-    `;
+    ${OrderFieldsFragmentDoc}`;
 
 /**
  * __useGetUsersQuery__

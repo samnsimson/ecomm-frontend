@@ -7,13 +7,7 @@ query GetUsers {
         emailVerified
         phoneVerified
         orders {
-            id
-            products {
-                id
-                title
-                salePrice
-                retailPrice
-            }
+            ...OrderFields
         }
         profile {
             id

@@ -1,4 +1,4 @@
-import { CreateProductMutationVariables, ShippingType, TaxTypes } from '@/graphql/generated';
+import { BillingInfoInput, CreateProductMutationVariables, ShippingInfoInput, ShippingType, TaxTypes } from '@/graphql/generated';
 import { title } from 'process';
 import { z } from 'zod';
 
@@ -77,4 +77,24 @@ export const TaxesSchema = z.object({
     amount: z.coerce.number().min(0).optional(),
     percentage: z.coerce.number().min(0).optional(),
     enabled: z.boolean().optional(),
+});
+
+export const ShippingInfoSchema: z.ZodType<ShippingInfoInput> = z.object({
+    addressOne: z.string(),
+    addressTwo: z.string().optional().nullable(),
+    city: z.string(),
+    state: z.string(),
+    country: z.string(),
+    zipcode: z.string(),
+});
+
+export const BillingInfoSchema: z.ZodType<BillingInfoInput> = z.object({
+    addressOne: z.string(),
+    addressTwo: z.string().optional().nullable(),
+    city: z.string(),
+    state: z.string(),
+    country: z.string(),
+    zipcode: z.string(),
+    email: z.string().email(),
+    phone: z.string(),
 });

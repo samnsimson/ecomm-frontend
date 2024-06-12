@@ -27,15 +27,25 @@ const CartQuantity: FC<{ quantity: number; add: () => void; remove: () => void }
 };
 
 export const CartList: FC<CartListProps> = ({ ...props }) => {
-    const { cart, addToCart, removeFromCart } = useStore((state) => state);
+    const { cart, addToCart, removeFromCart, setCartData } = useStore((state) => state);
     const [cartItem, setCartItem] = useState<CartQuery['cart']>({ total: 0, subTotal: 0, isDeductionsEligible: false, products: [] });
     const [getCartProducts, { loading, error }] = useCartLazyQuery();
 
     useEffect(() => {
         getCartProducts({ variables: { input: cart.map(({ id, quantity }) => ({ id, quantity })) } }).then(({ data }) => {
-            if (data) setCartItem(data.cart);
+            if (data) {
+                setCartItem(data.cart);
+                setCartData({
+                    total: data.cart.total,
+                    discountAmount: 0,
+                    taxAmount: data.cart['taxes'] ? data.cart.taxes.total : 0,
+                    couponAmount: 0,
+                    shippingAmount: 0,
+                    cartItems: data.cart.products.map((pdt) => ({ id: pdt.id, price: pdt.salePrice, quantity: pdt.quantity, total: pdt.total })),
+                });
+            }
         });
-    }, [cart, getCartProducts]);
+    }, [cart, getCartProducts, setCartData]);
 
     return (
         <Table {...props}>
