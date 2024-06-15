@@ -1,5 +1,6 @@
-import { BillingInfo } from '@/components/form/checkout/billing';
-import { ShippingInfo } from '@/components/form/checkout/shipping';
+import { Checkout } from '@/components/checkout';
+import { OrderPreview } from '@/components/form/checkout/order-preview';
+import { PaymentButton } from '@/components/form/checkout/payment-button';
 import { Page } from '@/components/page';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { BillingAndShippingProvider } from '@/providers/billing-and-shipping.provider';
@@ -11,32 +12,19 @@ const CheckoutPage: NextPage = () => {
             <BillingAndShippingProvider>
                 <div className="grid grid-cols-6 gap-6">
                     <div className="col-span-4 space-y-6">
-                        <Card className="divide-y">
-                            <CardHeader>
-                                <CardTitle>Shipping info</CardTitle>
-                                <CardDescription>Provide your shipping information</CardDescription>
-                            </CardHeader>
-                            <CardContent className="p-6">
-                                <ShippingInfo />
-                            </CardContent>
-                        </Card>
-                        <Card className="divide-y">
-                            <CardHeader>
-                                <CardTitle>Billing info</CardTitle>
-                                <CardDescription>Provide your billing information</CardDescription>
-                            </CardHeader>
-                            <CardContent className="p-6">
-                                <BillingInfo />
-                            </CardContent>
-                        </Card>
+                        <Checkout />
                     </div>
-                    <div className="col-span-2">
-                        <Card>
+                    <div className="col-span-2 space-y-6">
+                        <Card className="divide-y overflow-hidden">
                             <CardHeader>
                                 <CardTitle>Review order</CardTitle>
                                 <CardDescription>Review your order</CardDescription>
                             </CardHeader>
+                            <CardContent className="p-0">
+                                <OrderPreview />
+                            </CardContent>
                         </Card>
+                        <PaymentButton />
                     </div>
                 </div>
             </BillingAndShippingProvider>

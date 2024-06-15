@@ -5,10 +5,14 @@ import { Dispatch, FC, PropsWithChildren, SetStateAction, createContext, useCont
 export type BillingAndShippingContextType = {
     shippingData: ShippingInfoInput;
     billingData: BillingInfoInput;
-    sameAsShipping: boolean;
+    activeForm: 'shipping' | 'billing';
+    shippingValid: boolean;
+    billingValid: boolean;
     setShippingData: Dispatch<SetStateAction<ShippingInfoInput>>;
     setBillingData: Dispatch<SetStateAction<BillingInfoInput>>;
-    setSameAsShipping: Dispatch<SetStateAction<boolean>>;
+    setActiveForm: Dispatch<SetStateAction<'shipping' | 'billing'>>;
+    setShippingValid: Dispatch<SetStateAction<boolean>>;
+    setBillingValid: Dispatch<SetStateAction<boolean>>;
 };
 
 export const inititalBillingData: BillingInfoInput = {
@@ -34,19 +38,38 @@ export const initialShippingData: ShippingInfoInput = {
 export const BillingAndShippingContext = createContext<BillingAndShippingContextType>({
     shippingData: initialShippingData,
     billingData: inititalBillingData,
-    sameAsShipping: false,
+    activeForm: 'shipping',
+    shippingValid: false,
+    billingValid: false,
     setShippingData: () => {},
     setBillingData: () => {},
-    setSameAsShipping: () => {},
+    setActiveForm: () => {},
+    setShippingValid: () => {},
+    setBillingValid: () => {},
 });
 
 export const BillingAndShippingProvider: FC<PropsWithChildren> = ({ children }) => {
     const [shippingData, setShippingData] = useState<ShippingInfoInput>(initialShippingData);
     const [billingData, setBillingData] = useState<BillingInfoInput>(inititalBillingData);
-    const [sameAsShipping, setSameAsShipping] = useState<boolean>(false);
+    const [activeForm, setActiveForm] = useState<BillingAndShippingContextType['activeForm']>('shipping');
+    const [shippingValid, setShippingValid] = useState<boolean>(false);
+    const [billingValid, setBillingValid] = useState<boolean>(false);
 
     return (
-        <BillingAndShippingContext.Provider value={{ shippingData, billingData, sameAsShipping, setShippingData, setBillingData, setSameAsShipping }}>
+        <BillingAndShippingContext.Provider
+            value={{
+                shippingData,
+                billingData,
+                activeForm,
+                shippingValid,
+                billingValid,
+                setActiveForm,
+                setShippingData,
+                setBillingData,
+                setShippingValid,
+                setBillingValid,
+            }}
+        >
             {children}
         </BillingAndShippingContext.Provider>
     );

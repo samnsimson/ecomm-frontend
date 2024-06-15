@@ -1,10 +1,12 @@
 'use client';
-import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { BillingInfoSchema } from '@/lib/zod/schemas';
-import { useBillingAndShipping } from '@/providers/billing-and-shipping.provider';
+import { inititalBillingData, useBillingAndShipping } from '@/providers/billing-and-shipping.provider';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { FC, HTMLAttributes, useEffect } from 'react';
+import { FC, HTMLAttributes, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -15,21 +17,39 @@ interface BillingInfoProps extends HTMLAttributes<HTMLDivElement> {
 type FormType = z.infer<typeof BillingInfoSchema>;
 
 export const BillingInfo: FC<BillingInfoProps> = ({ ...props }) => {
-    const { billingData, sameAsShipping } = useBillingAndShipping();
-    const form = useForm<FormType>({ resolver: zodResolver(BillingInfoSchema) });
+    const { shippingData, setBillingData, setBillingValid } = useBillingAndShipping();
+    const form = useForm<FormType>({ resolver: zodResolver(BillingInfoSchema), mode: 'onBlur', defaultValues: inititalBillingData });
+    const [sameAsShipping, setSameAsShipping] = useState<boolean>(false);
+    const [buttonDisabled, setButtonDisabled] = useState(true);
+
+    const continueToPayment = (formData: FormType) => {
+        setBillingData(formData);
+    };
 
     useEffect(() => {
-        form.setValue('addressOne', billingData.addressOne);
-        form.setValue('addressTwo', billingData.addressTwo);
-        form.setValue('city', billingData.city);
-        form.setValue('state', billingData.state);
-        form.setValue('country', billingData.country);
-        form.setValue('zipcode', billingData.zipcode);
-    }, [billingData, form]);
+        console.log('Billing Valid', form.formState.isValid);
+        setButtonDisabled(form.formState.isValid);
+        setBillingValid(form.formState.isValid);
+    }, [form.formState.isValid, setBillingValid]);
+
+    useEffect(() => {
+        form.setValue('addressOne', sameAsShipping ? shippingData.addressOne : '');
+        form.setValue('addressTwo', sameAsShipping ? shippingData.addressTwo : '');
+        form.setValue('city', sameAsShipping ? shippingData.city : '');
+        form.setValue('state', sameAsShipping ? shippingData.state : '');
+        form.setValue('country', sameAsShipping ? shippingData.country : '');
+        form.setValue('zipcode', sameAsShipping ? shippingData.zipcode : '');
+    }, [shippingData, form, sameAsShipping]);
 
     return (
         <Form {...form} {...props}>
-            <form className="grid grid-cols-2 gap-6">
+            <form onSubmit={form.handleSubmit(continueToPayment)} className="grid grid-cols-2 gap-6">
+                <div className="col-span-2 flex items-center space-x-2">
+                    <Checkbox id="reuseAddress" onCheckedChange={(val) => setSameAsShipping(!!val)} />
+                    <label htmlFor="reuseAddress" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                        Billing address is same as shipping address
+                    </label>
+                </div>
                 <FormField
                     name="addressOne"
                     control={form.control}
@@ -40,6 +60,7 @@ export const BillingInfo: FC<BillingInfoProps> = ({ ...props }) => {
                             <FormControl>
                                 <Input type="text" {...field} className="disabled:bg-border" />
                             </FormControl>
+                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -53,6 +74,7 @@ export const BillingInfo: FC<BillingInfoProps> = ({ ...props }) => {
                             <FormControl>
                                 <Input type="text" value={value ?? ''} {...field} className="disabled:bg-border" />
                             </FormControl>
+                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -66,6 +88,7 @@ export const BillingInfo: FC<BillingInfoProps> = ({ ...props }) => {
                             <FormControl>
                                 <Input type="text" value={value ?? ''} {...field} className="disabled:bg-border" />
                             </FormControl>
+                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -79,6 +102,7 @@ export const BillingInfo: FC<BillingInfoProps> = ({ ...props }) => {
                             <FormControl>
                                 <Input type="text" value={value ?? ''} {...field} className="disabled:bg-border" />
                             </FormControl>
+                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -92,6 +116,7 @@ export const BillingInfo: FC<BillingInfoProps> = ({ ...props }) => {
                             <FormControl>
                                 <Input type="text" value={value ?? ''} {...field} className="disabled:bg-border" />
                             </FormControl>
+                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -105,6 +130,7 @@ export const BillingInfo: FC<BillingInfoProps> = ({ ...props }) => {
                             <FormControl>
                                 <Input type="text" value={value ?? ''} {...field} className="disabled:bg-border" />
                             </FormControl>
+                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -117,6 +143,7 @@ export const BillingInfo: FC<BillingInfoProps> = ({ ...props }) => {
                             <FormControl>
                                 <Input type="text" value={value ?? ''} {...field} />
                             </FormControl>
+                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -129,9 +156,13 @@ export const BillingInfo: FC<BillingInfoProps> = ({ ...props }) => {
                             <FormControl>
                                 <Input type="text" value={value ?? ''} {...field} />
                             </FormControl>
+                            <FormMessage />
                         </FormItem>
                     )}
                 />
+                <Button type="submit" className="col-span-2 w-full" size="lg" disabled={buttonDisabled}>
+                    Continue
+                </Button>
             </form>
         </Form>
     );

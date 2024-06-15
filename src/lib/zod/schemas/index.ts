@@ -80,21 +80,21 @@ export const TaxesSchema = z.object({
 });
 
 export const ShippingInfoSchema: z.ZodType<ShippingInfoInput> = z.object({
-    addressOne: z.string(),
+    addressOne: z.string().min(1),
     addressTwo: z.string().optional().nullable(),
-    city: z.string(),
-    state: z.string(),
-    country: z.string(),
-    zipcode: z.string(),
+    city: z.string().min(1),
+    state: z.string().min(1),
+    country: z.string().min(1),
+    zipcode: z.string().min(1),
 });
 
 export const BillingInfoSchema: z.ZodType<BillingInfoInput> = z.object({
-    addressOne: z.string(),
+    addressOne: z.string().min(1),
     addressTwo: z.string().optional().nullable(),
-    city: z.string(),
-    state: z.string(),
-    country: z.string(),
-    zipcode: z.string(),
+    city: z.string().min(1),
+    state: z.string().min(1),
+    country: z.string().min(1),
+    zipcode: z.string().min(1),
     email: z.string().email(),
-    phone: z.string(),
+    phone: z.string().min(1),
 });

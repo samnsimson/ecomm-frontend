@@ -37,6 +37,7 @@ export const CartList: FC<CartListProps> = ({ ...props }) => {
                 setCartItem(data.cart);
                 setCartData({
                     total: data.cart.total,
+                    subTotal: data.cart.subTotal,
                     discountAmount: 0,
                     taxAmount: data.cart['taxes'] ? data.cart.taxes.total : 0,
                     couponAmount: 0,

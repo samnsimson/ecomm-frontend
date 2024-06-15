@@ -52,6 +52,7 @@ export type CartDataItem = {
 
 export type CartData = {
     total: number;
+    subTotal: number;
     taxAmount: number;
     discountAmount: number;
     shippingAmount: number;
