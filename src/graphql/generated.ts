@@ -144,6 +144,7 @@ export type CreateOrderInput = {
   paymentType: PaymentType;
   shippingAddress: ShippingInfoInput;
   shippingAmount?: InputMaybe<Scalars['Int']['input']>;
+  subTotal: Scalars['Int']['input'];
   taxAmount?: InputMaybe<Scalars['Int']['input']>;
   total: Scalars['Int']['input'];
 };
@@ -548,6 +549,7 @@ export type Order = {
   shippingAddress: ShippingInfoDto;
   shippingAmount?: Maybe<Scalars['Int']['output']>;
   status: OrderStatus;
+  subTotal: Scalars['Int']['output'];
   taxAmount?: Maybe<Scalars['Int']['output']>;
   total: Scalars['Int']['output'];
   updatedAt: Scalars['DateTime']['output'];
@@ -1014,6 +1016,7 @@ export type UpdateOrderInput = {
   paymentType?: InputMaybe<PaymentType>;
   shippingAddress?: InputMaybe<ShippingInfoInput>;
   shippingAmount?: InputMaybe<Scalars['Int']['input']>;
+  subTotal?: InputMaybe<Scalars['Int']['input']>;
   taxAmount?: InputMaybe<Scalars['Int']['input']>;
   total?: InputMaybe<Scalars['Int']['input']>;
 };
@@ -1121,6 +1124,13 @@ export type CreateOrderMutationVariables = Exact<{
 
 
 export type CreateOrderMutation = { __typename?: 'Mutation', createOrder: { __typename?: 'Order', id: string, total: number, status: OrderStatus, createdAt: any, updatedAt: any, processedAt?: string | null, shippedAt?: string | null, fulfilledAt?: string | null, cancelledAt?: string | null, billingAddress: { __typename?: 'BillingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string }, shippingAddress: { __typename?: 'ShippingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string }, user: { __typename?: 'User', username: string, email: string, phone: string }, items: Array<{ __typename?: 'OrderItem', id: string, quantity: number, price: number, total?: number | null }>, payment: { __typename?: 'Payment', id: string, amount: number, type: PaymentType, provider: PaymentProvider } } };
+
+export type CreatePaymentIntentMutationVariables = Exact<{
+  input: PaymentIntentInput;
+}>;
+
+
+export type CreatePaymentIntentMutation = { __typename?: 'Mutation', createPaymentIntent: { __typename?: 'PaymentIntentOutput', clientSecret: string } };
 
 export type CreateProductMutationVariables = Exact<{
   input: CreateProductInput;
@@ -1390,6 +1400,39 @@ export function useCreateOrderMutation(baseOptions?: Apollo.MutationHookOptions<
 export type CreateOrderMutationHookResult = ReturnType<typeof useCreateOrderMutation>;
 export type CreateOrderMutationResult = Apollo.MutationResult<CreateOrderMutation>;
 export type CreateOrderMutationOptions = Apollo.BaseMutationOptions<CreateOrderMutation, CreateOrderMutationVariables>;
+export const CreatePaymentIntentDocument = gql`
+    mutation CreatePaymentIntent($input: PaymentIntentInput!) {
+  createPaymentIntent(paymentInput: $input) {
+    clientSecret
+  }
+}
+    `;
+export type CreatePaymentIntentMutationFn = Apollo.MutationFunction<CreatePaymentIntentMutation, CreatePaymentIntentMutationVariables>;
+
+/**
+ * __useCreatePaymentIntentMutation__
+ *
+ * To run a mutation, you first call `useCreatePaymentIntentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreatePaymentIntentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createPaymentIntentMutation, { data, loading, error }] = useCreatePaymentIntentMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreatePaymentIntentMutation(baseOptions?: Apollo.MutationHookOptions<CreatePaymentIntentMutation, CreatePaymentIntentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreatePaymentIntentMutation, CreatePaymentIntentMutationVariables>(CreatePaymentIntentDocument, options);
+      }
+export type CreatePaymentIntentMutationHookResult = ReturnType<typeof useCreatePaymentIntentMutation>;
+export type CreatePaymentIntentMutationResult = Apollo.MutationResult<CreatePaymentIntentMutation>;
+export type CreatePaymentIntentMutationOptions = Apollo.BaseMutationOptions<CreatePaymentIntentMutation, CreatePaymentIntentMutationVariables>;
 export const CreateProductDocument = gql`
     mutation CreateProduct($input: CreateProductInput!) {
   createProduct(createProductInput: $input) {
