@@ -11,10 +11,16 @@ interface CheckoutProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export const Checkout: FC<CheckoutProps> = ({ ...props }) => {
-    const { activeForm } = useBillingAndShipping();
+    const { activeForm, shippingValid, billingValid, setActiveForm } = useBillingAndShipping();
+
+    const toggleAccordian = (value: 'shipping' | 'billing') => {
+        if (value === 'shipping' && shippingValid) setActiveForm('shipping');
+        if (value === 'billing' && billingValid) setActiveForm('billing');
+    };
+
     return (
         <Accordion type="single" collapsible className="space-y-6" value={activeForm}>
-            <AccordionItem value="shipping" className="divide-y rounded bg-white">
+            <AccordionItem value="shipping" className="divide-y rounded bg-white" onClick={() => toggleAccordian('shipping')}>
                 <AccordionTrigger className="px-6 py-4 hover:no-underline">
                     <div className="flex-col space-y-2 text-left">
                         <CardTitle>Shipping info</CardTitle>
@@ -25,7 +31,7 @@ export const Checkout: FC<CheckoutProps> = ({ ...props }) => {
                     <ShippingInfo />
                 </AccordionContent>
             </AccordionItem>
-            <AccordionItem value="billing" className="divide-y rounded bg-white">
+            <AccordionItem value="billing" className="divide-y rounded bg-white" onClick={() => toggleAccordian('billing')}>
                 <AccordionTrigger className="px-6 py-4 hover:no-underline">
                     <div className="flex-col space-y-2 text-left">
                         <CardTitle>Billing info</CardTitle>

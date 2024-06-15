@@ -9,10 +9,10 @@ interface PaymentButtonProps extends HTMLAttributes<HTMLButtonElement> {
 }
 
 export const PaymentButton: FC<PaymentButtonProps> = ({ ...props }) => {
-    const { shippingValid, billingValid } = useBillingAndShipping();
-
+    const { shippingValid, billingValid, activeForm } = useBillingAndShipping();
+    const enablePaymentButton = shippingValid && billingValid && activeForm === 'payment';
     return (
-        <Button size="lg" variant="default" className="w-full" endContent={<ArrowRightIcon />} {...props} disabled={!shippingValid || !billingValid}>
+        <Button size="lg" variant="default" className="w-full" endContent={<ArrowRightIcon />} {...props} disabled={!enablePaymentButton}>
             Continue to payment
         </Button>
     );

@@ -1,10 +1,9 @@
 'use client';
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { ShippingInfoSchema } from '@/lib/zod/schemas';
-import { initialShippingData, inititalBillingData, useBillingAndShipping } from '@/providers/billing-and-shipping.provider';
+import { useBillingAndShipping } from '@/providers/billing-and-shipping.provider';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useSession } from 'next-auth/react';
 import { FC, HTMLAttributes, useEffect, useState } from 'react';
@@ -19,9 +18,9 @@ type FormType = z.infer<typeof ShippingInfoSchema>;
 
 export const ShippingInfo: FC<ShippingInfoProps> = ({ ...props }) => {
     const { data } = useSession();
-    const { setShippingData, setActiveForm, setShippingValid } = useBillingAndShipping();
+    const { setShippingData, setActiveForm, setShippingValid, shippingData } = useBillingAndShipping();
     const [buttonDisabled, setButtonDisabled] = useState<boolean>(true);
-    const form = useForm<FormType>({ resolver: zodResolver(ShippingInfoSchema), mode: 'onBlur', defaultValues: initialShippingData });
+    const form = useForm<FormType>({ resolver: zodResolver(ShippingInfoSchema), mode: 'onBlur', defaultValues: shippingData });
 
     const continueToBilling = (formData: FormType) => {
         setShippingData(formData);
@@ -43,7 +42,7 @@ export const ShippingInfo: FC<ShippingInfoProps> = ({ ...props }) => {
                         <FormItem>
                             <FormLabel>Address line one</FormLabel>
                             <FormControl>
-                                <Input type="text" {...field} />
+                                <Input type="text" autoComplete="addressOne" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -56,7 +55,7 @@ export const ShippingInfo: FC<ShippingInfoProps> = ({ ...props }) => {
                         <FormItem>
                             <FormLabel>Address line two</FormLabel>
                             <FormControl>
-                                <Input type="text" value={value ?? ''} {...field} />
+                                <Input type="text" autoComplete="addressTwo" value={value ?? ''} {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -69,7 +68,7 @@ export const ShippingInfo: FC<ShippingInfoProps> = ({ ...props }) => {
                         <FormItem>
                             <FormLabel>City</FormLabel>
                             <FormControl>
-                                <Input type="text" value={value ?? ''} {...field} />
+                                <Input type="text" autoComplete="city" value={value ?? ''} {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -82,7 +81,7 @@ export const ShippingInfo: FC<ShippingInfoProps> = ({ ...props }) => {
                         <FormItem>
                             <FormLabel>State</FormLabel>
                             <FormControl>
-                                <Input type="text" value={value ?? ''} {...field} />
+                                <Input type="text" autoComplete="state" value={value ?? ''} {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -95,7 +94,7 @@ export const ShippingInfo: FC<ShippingInfoProps> = ({ ...props }) => {
                         <FormItem>
                             <FormLabel>Country</FormLabel>
                             <FormControl>
-                                <Input type="text" value={value ?? ''} {...field} />
+                                <Input type="text" autoComplete="country" value={value ?? ''} {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -108,7 +107,7 @@ export const ShippingInfo: FC<ShippingInfoProps> = ({ ...props }) => {
                         <FormItem>
                             <FormLabel>Zipcode</FormLabel>
                             <FormControl>
-                                <Input type="text" value={value ?? ''} {...field} />
+                                <Input type="text" autoComplete="zipcode" value={value ?? ''} {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>

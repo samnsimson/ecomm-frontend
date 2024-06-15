@@ -4,7 +4,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { BillingInfoSchema } from '@/lib/zod/schemas';
-import { inititalBillingData, useBillingAndShipping } from '@/providers/billing-and-shipping.provider';
+import { useBillingAndShipping } from '@/providers/billing-and-shipping.provider';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FC, HTMLAttributes, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -17,35 +17,38 @@ interface BillingInfoProps extends HTMLAttributes<HTMLDivElement> {
 type FormType = z.infer<typeof BillingInfoSchema>;
 
 export const BillingInfo: FC<BillingInfoProps> = ({ ...props }) => {
-    const { shippingData, setBillingData, setBillingValid } = useBillingAndShipping();
-    const form = useForm<FormType>({ resolver: zodResolver(BillingInfoSchema), mode: 'onBlur', defaultValues: inititalBillingData });
-    const [sameAsShipping, setSameAsShipping] = useState<boolean>(false);
+    const { shippingData, billingData, sameAsShipping, setBillingData, setBillingValid, setActiveForm, setSameAsShipping } = useBillingAndShipping();
+    const form = useForm<FormType>({ resolver: zodResolver(BillingInfoSchema), mode: 'onBlur', defaultValues: billingData });
     const [buttonDisabled, setButtonDisabled] = useState(true);
 
     const continueToPayment = (formData: FormType) => {
         setBillingData(formData);
+        setActiveForm('payment');
     };
 
     useEffect(() => {
-        console.log('Billing Valid', form.formState.isValid);
-        setButtonDisabled(form.formState.isValid);
-        setBillingValid(form.formState.isValid);
-    }, [form.formState.isValid, setBillingValid]);
+        if (sameAsShipping) {
+            form.setValue('addressOne', shippingData.addressOne);
+            form.setValue('addressTwo', shippingData.addressTwo);
+            form.setValue('city', shippingData.city);
+            form.setValue('state', shippingData.state);
+            form.setValue('country', shippingData.country);
+            form.setValue('zipcode', shippingData.zipcode);
+        } else {
+            form.reset();
+        }
+    }, [shippingData, form, sameAsShipping]);
 
     useEffect(() => {
-        form.setValue('addressOne', sameAsShipping ? shippingData.addressOne : '');
-        form.setValue('addressTwo', sameAsShipping ? shippingData.addressTwo : '');
-        form.setValue('city', sameAsShipping ? shippingData.city : '');
-        form.setValue('state', sameAsShipping ? shippingData.state : '');
-        form.setValue('country', sameAsShipping ? shippingData.country : '');
-        form.setValue('zipcode', sameAsShipping ? shippingData.zipcode : '');
-    }, [shippingData, form, sameAsShipping]);
+        setButtonDisabled(!form.formState.isValid);
+        setBillingValid(form.formState.isValid);
+    }, [form.formState.isValid, setBillingValid]);
 
     return (
         <Form {...form} {...props}>
             <form onSubmit={form.handleSubmit(continueToPayment)} className="grid grid-cols-2 gap-6">
                 <div className="col-span-2 flex items-center space-x-2">
-                    <Checkbox id="reuseAddress" onCheckedChange={(val) => setSameAsShipping(!!val)} />
+                    <Checkbox id="reuseAddress" onCheckedChange={(val) => setSameAsShipping(!!val)} checked={sameAsShipping} />
                     <label htmlFor="reuseAddress" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                         Billing address is same as shipping address
                     </label>
@@ -53,12 +56,11 @@ export const BillingInfo: FC<BillingInfoProps> = ({ ...props }) => {
                 <FormField
                     name="addressOne"
                     control={form.control}
-                    disabled={sameAsShipping}
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Address line one</FormLabel>
                             <FormControl>
-                                <Input type="text" {...field} className="disabled:bg-border" />
+                                <Input type="text" readOnly={sameAsShipping} autoComplete="addressOne" {...field} className="read-only:bg-muted" />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -67,12 +69,18 @@ export const BillingInfo: FC<BillingInfoProps> = ({ ...props }) => {
                 <FormField
                     name="addressTwo"
                     control={form.control}
-                    disabled={sameAsShipping}
                     render={({ field: { value, ...field } }) => (
                         <FormItem>
                             <FormLabel>Address line two</FormLabel>
                             <FormControl>
-                                <Input type="text" value={value ?? ''} {...field} className="disabled:bg-border" />
+                                <Input
+                                    type="text"
+                                    readOnly={sameAsShipping}
+                                    autoComplete="addressTwo"
+                                    value={value ?? ''}
+                                    {...field}
+                                    className="read-only:bg-muted"
+                                />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -81,12 +89,11 @@ export const BillingInfo: FC<BillingInfoProps> = ({ ...props }) => {
                 <FormField
                     name="city"
                     control={form.control}
-                    disabled={sameAsShipping}
-                    render={({ field: { value, ...field } }) => (
+                    render={({ field }) => (
                         <FormItem>
                             <FormLabel>City</FormLabel>
                             <FormControl>
-                                <Input type="text" value={value ?? ''} {...field} className="disabled:bg-border" />
+                                <Input type="text" readOnly={sameAsShipping} autoComplete="city" {...field} className="read-only:bg-muted" />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -95,12 +102,11 @@ export const BillingInfo: FC<BillingInfoProps> = ({ ...props }) => {
                 <FormField
                     name="state"
                     control={form.control}
-                    disabled={sameAsShipping}
-                    render={({ field: { value, ...field } }) => (
+                    render={({ field }) => (
                         <FormItem>
                             <FormLabel>State</FormLabel>
                             <FormControl>
-                                <Input type="text" value={value ?? ''} {...field} className="disabled:bg-border" />
+                                <Input type="text" readOnly={sameAsShipping} autoComplete="state" {...field} className="read-only:bg-muted" />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -109,12 +115,11 @@ export const BillingInfo: FC<BillingInfoProps> = ({ ...props }) => {
                 <FormField
                     name="country"
                     control={form.control}
-                    disabled={sameAsShipping}
-                    render={({ field: { value, ...field } }) => (
+                    render={({ field }) => (
                         <FormItem>
                             <FormLabel>Country</FormLabel>
                             <FormControl>
-                                <Input type="text" value={value ?? ''} {...field} className="disabled:bg-border" />
+                                <Input type="text" readOnly={sameAsShipping} autoComplete="country" {...field} className="read-only:bg-muted" />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -123,12 +128,11 @@ export const BillingInfo: FC<BillingInfoProps> = ({ ...props }) => {
                 <FormField
                     name="zipcode"
                     control={form.control}
-                    disabled={sameAsShipping}
-                    render={({ field: { value, ...field } }) => (
+                    render={({ field }) => (
                         <FormItem>
                             <FormLabel>Zipcode</FormLabel>
                             <FormControl>
-                                <Input type="text" value={value ?? ''} {...field} className="disabled:bg-border" />
+                                <Input type="text" readOnly={sameAsShipping} autoComplete="zipcode" {...field} className="read-only:bg-muted" />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -137,11 +141,11 @@ export const BillingInfo: FC<BillingInfoProps> = ({ ...props }) => {
                 <FormField
                     name="email"
                     control={form.control}
-                    render={({ field: { value, ...field } }) => (
+                    render={({ field }) => (
                         <FormItem>
                             <FormLabel>Email</FormLabel>
                             <FormControl>
-                                <Input type="text" value={value ?? ''} {...field} />
+                                <Input type="email" autoComplete="email" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -150,11 +154,11 @@ export const BillingInfo: FC<BillingInfoProps> = ({ ...props }) => {
                 <FormField
                     name="phone"
                     control={form.control}
-                    render={({ field: { value, ...field } }) => (
+                    render={({ field }) => (
                         <FormItem>
                             <FormLabel>Phone</FormLabel>
                             <FormControl>
-                                <Input type="text" value={value ?? ''} {...field} />
+                                <Input type="tel" autoComplete="phone" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>

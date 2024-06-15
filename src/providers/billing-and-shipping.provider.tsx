@@ -5,14 +5,16 @@ import { Dispatch, FC, PropsWithChildren, SetStateAction, createContext, useCont
 export type BillingAndShippingContextType = {
     shippingData: ShippingInfoInput;
     billingData: BillingInfoInput;
-    activeForm: 'shipping' | 'billing';
+    activeForm: 'shipping' | 'billing' | 'payment';
     shippingValid: boolean;
     billingValid: boolean;
+    sameAsShipping: boolean;
     setShippingData: Dispatch<SetStateAction<ShippingInfoInput>>;
     setBillingData: Dispatch<SetStateAction<BillingInfoInput>>;
-    setActiveForm: Dispatch<SetStateAction<'shipping' | 'billing'>>;
+    setActiveForm: Dispatch<SetStateAction<'shipping' | 'billing' | 'payment'>>;
     setShippingValid: Dispatch<SetStateAction<boolean>>;
     setBillingValid: Dispatch<SetStateAction<boolean>>;
+    setSameAsShipping: Dispatch<SetStateAction<boolean>>;
 };
 
 export const inititalBillingData: BillingInfoInput = {
@@ -41,11 +43,13 @@ export const BillingAndShippingContext = createContext<BillingAndShippingContext
     activeForm: 'shipping',
     shippingValid: false,
     billingValid: false,
+    sameAsShipping: false,
     setShippingData: () => {},
     setBillingData: () => {},
     setActiveForm: () => {},
     setShippingValid: () => {},
     setBillingValid: () => {},
+    setSameAsShipping: () => {},
 });
 
 export const BillingAndShippingProvider: FC<PropsWithChildren> = ({ children }) => {
@@ -54,6 +58,7 @@ export const BillingAndShippingProvider: FC<PropsWithChildren> = ({ children }) 
     const [activeForm, setActiveForm] = useState<BillingAndShippingContextType['activeForm']>('shipping');
     const [shippingValid, setShippingValid] = useState<boolean>(false);
     const [billingValid, setBillingValid] = useState<boolean>(false);
+    const [sameAsShipping, setSameAsShipping] = useState<boolean>(false);
 
     return (
         <BillingAndShippingContext.Provider
@@ -63,11 +68,13 @@ export const BillingAndShippingProvider: FC<PropsWithChildren> = ({ children }) 
                 activeForm,
                 shippingValid,
                 billingValid,
+                sameAsShipping,
                 setActiveForm,
                 setShippingData,
                 setBillingData,
                 setShippingValid,
                 setBillingValid,
+                setSameAsShipping,
             }}
         >
             {children}
