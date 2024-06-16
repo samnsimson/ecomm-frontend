@@ -1,11 +1,13 @@
 'use client';
-import { FC, FormEvent, HTMLAttributes } from 'react';
+import { FC, FormEvent, HTMLAttributes, useState } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { Button } from '@/components/ui/button';
 import { ArrowRightIcon, LoaderIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import { useBillingAndShipping } from '@/providers/billing-and-shipping.provider';
+import { useStore } from '@/store';
+import { Store } from '@/lib/types';
 
 interface CheckoutFormProps extends HTMLAttributes<HTMLDivElement> {
     [x: string]: any;
@@ -30,14 +32,22 @@ export const CheckoutForm: FC<CheckoutFormProps> = ({ ...props }) => {
 export const CheckoutFormElement: FC<CheckoutFormElementProps> = ({ props }) => {
     const stripe = useStripe();
     const elements = useElements();
-    const { creatingOrder } = useBillingAndShipping();
+    const [makingPayment, setMakingPayment] = useState<boolean>(false);
+    const { orderId, paymentId } = useStore<Store>((state) => state);
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        if (!stripe || !elements) return toast.error('Waiting for payment to load');
-        const { error } = await stripe.confirmPayment({ elements, confirmParams: { return_url: 'http://localhost:3000/order/success' } });
-        if (error.type === 'card_error' || error.type === 'validation_error') toast('Payment failed', { description: error.message });
-        else return toast('Payment failed', { description: 'An unexpected error occurred.' });
+        try {
+            setMakingPayment(true);
+            if (!stripe || !elements) return toast.error('Waiting for payment to load');
+            const params = new URLSearchParams({ ...(orderId && { orderId }), ...(paymentId && { paymentId }) });
+            const return_url = `http://localhost:3000/order/success?${params}`;
+            const { error } = await stripe.confirmPayment({ elements, confirmParams: { return_url } });
+            if (error.type === 'card_error' || error.type === 'validation_error') toast.error('Payment failed', { description: error.message });
+            else return toast.error('Payment failed', { description: 'An unexpected error occurred.' });
+        } finally {
+            setMakingPayment(false);
+        }
     };
 
     return (
@@ -46,8 +56,8 @@ export const CheckoutFormElement: FC<CheckoutFormElementProps> = ({ props }) => 
             <Button
                 type="submit"
                 size="lg"
-                endContent={creatingOrder ? <LoaderIcon className="animate-spin" /> : <ArrowRightIcon />}
-                disabled={creatingOrder}
+                endContent={makingPayment ? <LoaderIcon className="animate-spin" /> : <ArrowRightIcon />}
+                disabled={makingPayment}
                 className="w-full"
             >
                 Make payment

@@ -1,6 +1,7 @@
 'use client';
 import { BillingInfoInput, PaymentProvider, PaymentType, ShippingInfoInput, useCreateOrderMutation, useCreatePaymentIntentMutation } from '@/graphql/generated';
-import { CartData } from '@/lib/types';
+import { CartData, Store } from '@/lib/types';
+import { useStore } from '@/store';
 import { Dispatch, FC, PropsWithChildren, SetStateAction, createContext, useContext, useState } from 'react';
 
 export type BillingAndShippingContextType = {
@@ -69,6 +70,7 @@ export const BillingAndShippingProvider: FC<PropsWithChildren> = ({ children }) 
     const [clientSecret, setClientSecret] = useState<string | null>(null);
     const [createPaymentIntentMutation] = useCreatePaymentIntentMutation();
     const [createOrderMutation, { loading: creatingOrder }] = useCreateOrderMutation();
+    const { setOrderId, setPaymentId } = useStore<Store>((state) => state);
 
     const createPaymentIntent = async (total: number, orderId: string) => {
         const { data } = await createPaymentIntentMutation({ variables: { input: { total, orderId } } });
@@ -76,7 +78,7 @@ export const BillingAndShippingProvider: FC<PropsWithChildren> = ({ children }) 
     };
 
     const createOrder = async (cartData: CartData) => {
-        const { data } = await createOrderMutation({
+        const { data, errors } = await createOrderMutation({
             variables: {
                 input: {
                     shippingAddress: shippingData,
@@ -94,8 +96,14 @@ export const BillingAndShippingProvider: FC<PropsWithChildren> = ({ children }) 
             },
         });
 
+        console.log('🚀 ~ createOrder ~ errors:', errors);
         // GET THE ORDER ID FROM DB AND CREATE PAYMENT INTENT
-        if (data) await createPaymentIntent(data.createOrder.total, data.createOrder.id);
+        if (data) {
+            console.log('🚀 ~ createOrder ~ data:', data);
+            setOrderId(data.createOrder.id);
+            setPaymentId(data.createOrder.payment.id);
+            await createPaymentIntent(data.createOrder.total, data.createOrder.id);
+        }
     };
 
     return (

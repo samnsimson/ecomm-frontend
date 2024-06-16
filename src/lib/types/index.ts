@@ -64,13 +64,18 @@ export type StoreState = {
     settings: z.infer<typeof SettingsSchema>;
     cart: Array<{ id: string; quantity: number }>;
     cartData: CartData | undefined;
+    orderId: string | undefined;
+    paymentId: string | undefined;
 };
 
 export type StoreActions = {
     setSettings: (settings: StoreState['settings']) => void;
     addToCart: (id: string, quantity: number) => void;
     removeFromCart: (id: string, quantity: number) => void;
-    setCartData: (data: CartData) => void;
+    setCartData: (data: CartData | undefined) => void;
+    setOrderId: (id: string | undefined) => void;
+    setPaymentId: (id: string | undefined) => void;
+    emptyCart: () => void;
 };
 
 export type Store = StoreState & StoreActions;
