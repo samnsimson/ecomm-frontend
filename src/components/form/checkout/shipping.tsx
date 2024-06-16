@@ -17,7 +17,6 @@ interface ShippingInfoProps extends HTMLAttributes<HTMLDivElement> {
 type FormType = z.infer<typeof ShippingInfoSchema>;
 
 export const ShippingInfo: FC<ShippingInfoProps> = ({ ...props }) => {
-    const { data } = useSession();
     const { setShippingData, setActiveForm, setShippingValid, shippingData } = useBillingAndShipping();
     const [buttonDisabled, setButtonDisabled] = useState<boolean>(true);
     const form = useForm<FormType>({ resolver: zodResolver(ShippingInfoSchema), mode: 'onBlur', defaultValues: shippingData });

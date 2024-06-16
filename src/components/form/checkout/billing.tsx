@@ -26,6 +26,7 @@ export const BillingInfo: FC<BillingInfoProps> = ({ ...props }) => {
     const { cartData } = useStore<Store>((state) => state);
 
     const continueToPayment = (formData: FormType) => {
+        console.log('🚀 ~ continueToPayment ~ formData:', formData);
         setBillingData(formData);
         if (cartData) createOrder(cartData);
         setActiveForm('payment');
