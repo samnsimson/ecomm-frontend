@@ -3,8 +3,10 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Store } from '@/lib/types';
 import { BillingInfoSchema } from '@/lib/zod/schemas';
 import { useBillingAndShipping } from '@/providers/billing-and-shipping.provider';
+import { useStore } from '@/store';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FC, HTMLAttributes, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -17,12 +19,15 @@ interface BillingInfoProps extends HTMLAttributes<HTMLDivElement> {
 type FormType = z.infer<typeof BillingInfoSchema>;
 
 export const BillingInfo: FC<BillingInfoProps> = ({ ...props }) => {
-    const { shippingData, billingData, sameAsShipping, setBillingData, setBillingValid, setActiveForm, setSameAsShipping } = useBillingAndShipping();
+    const { shippingData, billingData, sameAsShipping, setBillingData, setBillingValid, setActiveForm, setSameAsShipping, createOrder } =
+        useBillingAndShipping();
     const form = useForm<FormType>({ resolver: zodResolver(BillingInfoSchema), mode: 'onBlur', defaultValues: billingData });
     const [buttonDisabled, setButtonDisabled] = useState(true);
+    const { cartData } = useStore<Store>((state) => state);
 
     const continueToPayment = (formData: FormType) => {
         setBillingData(formData);
+        if (cartData) createOrder(cartData);
         setActiveForm('payment');
     };
 

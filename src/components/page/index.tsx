@@ -3,7 +3,7 @@ import { FC, HTMLAttributes, ReactNode } from 'react';
 import { SectionTitle } from '../dashboard/section-title';
 
 interface PageProps extends HTMLAttributes<HTMLDivElement> {
-    title: string;
+    title?: string;
     description?: string;
     action?: ReactNode;
 }

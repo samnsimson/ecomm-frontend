@@ -1,5 +1,6 @@
 'use client';
-import { BillingInfoInput, ShippingInfoInput } from '@/graphql/generated';
+import { BillingInfoInput, PaymentProvider, PaymentType, ShippingInfoInput, useCreateOrderMutation, useCreatePaymentIntentMutation } from '@/graphql/generated';
+import { CartData } from '@/lib/types';
 import { Dispatch, FC, PropsWithChildren, SetStateAction, createContext, useContext, useState } from 'react';
 
 export type BillingAndShippingContextType = {
@@ -9,6 +10,9 @@ export type BillingAndShippingContextType = {
     shippingValid: boolean;
     billingValid: boolean;
     sameAsShipping: boolean;
+    clientSecret: string | null;
+    creatingOrder: boolean;
+    createOrder: (cartData: CartData) => Promise<void>;
     setShippingData: Dispatch<SetStateAction<ShippingInfoInput>>;
     setBillingData: Dispatch<SetStateAction<BillingInfoInput>>;
     setActiveForm: Dispatch<SetStateAction<'shipping' | 'billing' | 'payment'>>;
@@ -44,6 +48,9 @@ export const BillingAndShippingContext = createContext<BillingAndShippingContext
     shippingValid: false,
     billingValid: false,
     sameAsShipping: false,
+    clientSecret: null,
+    creatingOrder: false,
+    createOrder: async () => {},
     setShippingData: () => {},
     setBillingData: () => {},
     setActiveForm: () => {},
@@ -59,6 +66,37 @@ export const BillingAndShippingProvider: FC<PropsWithChildren> = ({ children }) 
     const [shippingValid, setShippingValid] = useState<boolean>(false);
     const [billingValid, setBillingValid] = useState<boolean>(false);
     const [sameAsShipping, setSameAsShipping] = useState<boolean>(false);
+    const [clientSecret, setClientSecret] = useState<string | null>(null);
+    const [createPaymentIntentMutation] = useCreatePaymentIntentMutation();
+    const [createOrderMutation, { loading: creatingOrder }] = useCreateOrderMutation();
+
+    const createPaymentIntent = async (total: number, orderId: string) => {
+        const { data } = await createPaymentIntentMutation({ variables: { input: { total, orderId } } });
+        if (data) setClientSecret(data.createPaymentIntent.clientSecret);
+    };
+
+    const createOrder = async (cartData: CartData) => {
+        const { data } = await createOrderMutation({
+            variables: {
+                input: {
+                    shippingAddress: shippingData,
+                    billingAddress: billingData,
+                    total: cartData.total,
+                    subTotal: cartData.subTotal,
+                    taxAmount: cartData.taxAmount,
+                    shippingAmount: cartData.shippingAmount,
+                    couponAmount: cartData.couponAmount,
+                    discountAmount: cartData.discountAmount,
+                    paymentType: PaymentType.Card,
+                    paymentProvider: PaymentProvider.Stripe,
+                    items: cartData.cartItems,
+                },
+            },
+        });
+
+        // GET THE ORDER ID FROM DB AND CREATE PAYMENT INTENT
+        if (data) await createPaymentIntent(data.createOrder.total, data.createOrder.id);
+    };
 
     return (
         <BillingAndShippingContext.Provider
@@ -69,6 +107,9 @@ export const BillingAndShippingProvider: FC<PropsWithChildren> = ({ children }) 
                 shippingValid,
                 billingValid,
                 sameAsShipping,
+                clientSecret,
+                creatingOrder,
+                createOrder,
                 setActiveForm,
                 setShippingData,
                 setBillingData,

@@ -1,6 +1,5 @@
 import { Checkout } from '@/components/checkout';
 import { OrderPreview } from '@/components/form/checkout/order-preview';
-import { PaymentButton } from '@/components/form/checkout/payment-button';
 import { Page } from '@/components/page';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { BillingAndShippingProvider } from '@/providers/billing-and-shipping.provider';
@@ -24,7 +23,6 @@ const CheckoutPage: NextPage = () => {
                                 <OrderPreview />
                             </CardContent>
                         </Card>
-                        <PaymentButton />
                     </div>
                 </div>
             </BillingAndShippingProvider>

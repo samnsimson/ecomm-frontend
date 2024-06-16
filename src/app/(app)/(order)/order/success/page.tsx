@@ -3,7 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 
 const OrderSuccessPage = () => {
     return (
-        <Page title="Order Placed">
+        <Page>
             <Card className=" aspect-video ">
                 <CardContent className="flex h-full w-full items-center justify-center">
                     <div className="prose space-y-6 text-center">

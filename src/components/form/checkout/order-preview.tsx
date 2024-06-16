@@ -36,10 +36,10 @@ export const OrderPreview: FC<OrderPreviewProps> = ({ ...props }) => {
                         <TableCell className="text-right font-semibold">${cartData?.couponAmount}</TableCell>
                     </TableRow>
                 </TableBody>
-                <TableFooter className="bg-accent">
+                <TableFooter className="bg-primary">
                     <TableRow className="prose">
-                        <TableCell className="text-accent-foreground">Total</TableCell>
-                        <TableCell className="text-right font-semibold text-accent-foreground">${cartData?.total}</TableCell>
+                        <TableCell className="text-primary-foreground">Total</TableCell>
+                        <TableCell className="text-right font-semibold text-primary-foreground">${cartData?.total}</TableCell>
                     </TableRow>
                 </TableFooter>
             </Table>
