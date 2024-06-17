@@ -19,16 +19,15 @@ interface BillingInfoProps extends HTMLAttributes<HTMLDivElement> {
 type FormType = z.infer<typeof BillingInfoSchema>;
 
 export const BillingInfo: FC<BillingInfoProps> = ({ ...props }) => {
-    const { shippingData, billingData, sameAsShipping, setBillingData, setBillingValid, setActiveForm, setSameAsShipping, createOrder } =
+    const { shippingData, billingData, sameAsShipping, activeForm, setBillingData, setBillingValid, setActiveForm, setSameAsShipping, createOrder } =
         useBillingAndShipping();
     const form = useForm<FormType>({ resolver: zodResolver(BillingInfoSchema), mode: 'onBlur', defaultValues: billingData });
     const [buttonDisabled, setButtonDisabled] = useState(true);
     const { cartData } = useStore<Store>((state) => state);
 
     const continueToPayment = (formData: FormType) => {
-        console.log('🚀 ~ continueToPayment ~ formData:', formData);
         setBillingData(formData);
-        if (cartData) createOrder(cartData);
+        if (cartData) createOrder({ ...cartData, billingData: formData });
         setActiveForm('payment');
     };
 

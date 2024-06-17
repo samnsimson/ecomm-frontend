@@ -19,10 +19,10 @@ interface ProductListProps extends HTMLAttributes<HTMLDivElement> {
 export const ProductList: FC<ProductListProps> = ({ ...props }) => {
     const { data } = useGetProductsQuery();
     return (
-        <List className="grid grid-cols-3 gap-6" {...props}>
+        <List className="grid grid-cols-3" {...props}>
             {data?.products.map((pdt) => (
                 <ListItem key={pdt.id}>
-                    <Card className="h-full divide-y hover:shadow-lg">
+                    <Card className="h-full divide-y rounded-none border-0 hover:shadow-xl">
                         <CardContent className="prose flex flex-1 flex-col p-4">
                             <AspectRatio ratio={1 / 1} className="rounded bg-muted"></AspectRatio>
                             <Link href={`/shop/${pdt.slug}`} className="group no-underline">

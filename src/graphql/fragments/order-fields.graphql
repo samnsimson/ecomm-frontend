@@ -2,12 +2,17 @@ fragment OrderFields on Order {
     id
     total
     status
+    subTotal
     createdAt
     updatedAt
     processedAt
     shippedAt
     fulfilledAt
     cancelledAt
+    taxAmount
+    shippingAmount
+    couponAmount
+    discountAmount
     billingAddress {
         addressOne
         addressTwo
@@ -34,11 +39,16 @@ fragment OrderFields on Order {
         quantity
         price
         total
+        product {
+            title
+            slug
+        }
     }
     payment {
         id
         amount
         type
         provider
+        status
     }
 }

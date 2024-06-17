@@ -4,6 +4,10 @@ import { CartData, Store } from '@/lib/types';
 import { useStore } from '@/store';
 import { Dispatch, FC, PropsWithChildren, SetStateAction, createContext, useContext, useState } from 'react';
 
+type CreateOrderInput = CartData & {
+    billingData: BillingInfoInput;
+};
+
 export type BillingAndShippingContextType = {
     shippingData: ShippingInfoInput;
     billingData: BillingInfoInput;
@@ -13,7 +17,7 @@ export type BillingAndShippingContextType = {
     sameAsShipping: boolean;
     clientSecret: string | null;
     creatingOrder: boolean;
-    createOrder: (cartData: CartData) => Promise<void>;
+    createOrder: (cartData: CreateOrderInput) => Promise<void>;
     setShippingData: Dispatch<SetStateAction<ShippingInfoInput>>;
     setBillingData: Dispatch<SetStateAction<BillingInfoInput>>;
     setActiveForm: Dispatch<SetStateAction<'shipping' | 'billing' | 'payment'>>;
@@ -77,12 +81,12 @@ export const BillingAndShippingProvider: FC<PropsWithChildren> = ({ children }) 
         if (data) setClientSecret(data.createPaymentIntent.clientSecret);
     };
 
-    const createOrder = async (cartData: CartData) => {
+    const createOrder = async (cartData: CreateOrderInput) => {
         const { data, errors } = await createOrderMutation({
             variables: {
                 input: {
                     shippingAddress: shippingData,
-                    billingAddress: billingData,
+                    billingAddress: cartData.billingData,
                     total: cartData.total,
                     subTotal: cartData.subTotal,
                     taxAmount: cartData.taxAmount,
@@ -96,10 +100,8 @@ export const BillingAndShippingProvider: FC<PropsWithChildren> = ({ children }) 
             },
         });
 
-        console.log('🚀 ~ createOrder ~ errors:', errors);
         // GET THE ORDER ID FROM DB AND CREATE PAYMENT INTENT
         if (data) {
-            console.log('🚀 ~ createOrder ~ data:', data);
             setOrderId(data.createOrder.id);
             setPaymentId(data.createOrder.payment.id);
             await createPaymentIntent(data.createOrder.total, data.createOrder.id);

@@ -1114,7 +1114,7 @@ export enum UserRole {
   User = 'USER'
 }
 
-export type OrderFieldsFragment = { __typename?: 'Order', id: string, total: number, status?: OrderStatus | null, createdAt: any, updatedAt: any, processedAt?: string | null, shippedAt?: string | null, fulfilledAt?: string | null, cancelledAt?: string | null, billingAddress: { __typename?: 'BillingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string }, shippingAddress: { __typename?: 'ShippingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string }, user: { __typename?: 'User', username: string, email: string, phone: string }, items: Array<{ __typename?: 'OrderItem', id: string, quantity: number, price: number, total?: number | null }>, payment: { __typename?: 'Payment', id: string, amount: number, type: PaymentType, provider: PaymentProvider } };
+export type OrderFieldsFragment = { __typename?: 'Order', id: string, total: number, status?: OrderStatus | null, subTotal: number, createdAt: any, updatedAt: any, processedAt?: string | null, shippedAt?: string | null, fulfilledAt?: string | null, cancelledAt?: string | null, taxAmount?: number | null, shippingAmount?: number | null, couponAmount?: number | null, discountAmount?: number | null, billingAddress: { __typename?: 'BillingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string }, shippingAddress: { __typename?: 'ShippingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string }, user: { __typename?: 'User', username: string, email: string, phone: string }, items: Array<{ __typename?: 'OrderItem', id: string, quantity: number, price: number, total?: number | null, product: { __typename?: 'Product', title: string, slug?: string | null } }>, payment: { __typename?: 'Payment', id: string, amount: number, type: PaymentType, provider: PaymentProvider, status: PaymentStatus } };
 
 export type CreateCategoryMutationVariables = Exact<{
   input: CreateCategoryInput;
@@ -1128,7 +1128,7 @@ export type CreateOrderMutationVariables = Exact<{
 }>;
 
 
-export type CreateOrderMutation = { __typename?: 'Mutation', createOrder: { __typename?: 'Order', id: string, total: number, status?: OrderStatus | null, createdAt: any, updatedAt: any, processedAt?: string | null, shippedAt?: string | null, fulfilledAt?: string | null, cancelledAt?: string | null, billingAddress: { __typename?: 'BillingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string }, shippingAddress: { __typename?: 'ShippingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string }, user: { __typename?: 'User', username: string, email: string, phone: string }, items: Array<{ __typename?: 'OrderItem', id: string, quantity: number, price: number, total?: number | null }>, payment: { __typename?: 'Payment', id: string, amount: number, type: PaymentType, provider: PaymentProvider } } };
+export type CreateOrderMutation = { __typename?: 'Mutation', createOrder: { __typename?: 'Order', id: string, total: number, status?: OrderStatus | null, subTotal: number, createdAt: any, updatedAt: any, processedAt?: string | null, shippedAt?: string | null, fulfilledAt?: string | null, cancelledAt?: string | null, taxAmount?: number | null, shippingAmount?: number | null, couponAmount?: number | null, discountAmount?: number | null, billingAddress: { __typename?: 'BillingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string }, shippingAddress: { __typename?: 'ShippingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string }, user: { __typename?: 'User', username: string, email: string, phone: string }, items: Array<{ __typename?: 'OrderItem', id: string, quantity: number, price: number, total?: number | null, product: { __typename?: 'Product', title: string, slug?: string | null } }>, payment: { __typename?: 'Payment', id: string, amount: number, type: PaymentType, provider: PaymentProvider, status: PaymentStatus } } };
 
 export type CreatePaymentIntentMutationVariables = Exact<{
   input: PaymentIntentInput;
@@ -1252,7 +1252,7 @@ export type GetDeliveryInfoQuery = { __typename?: 'Query', deliveryInfo: { __typ
 export type GetOrdersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetOrdersQuery = { __typename?: 'Query', orders: Array<{ __typename?: 'Order', id: string, total: number, status?: OrderStatus | null, createdAt: any, updatedAt: any, processedAt?: string | null, shippedAt?: string | null, fulfilledAt?: string | null, cancelledAt?: string | null, billingAddress: { __typename?: 'BillingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string }, shippingAddress: { __typename?: 'ShippingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string }, user: { __typename?: 'User', username: string, email: string, phone: string }, items: Array<{ __typename?: 'OrderItem', id: string, quantity: number, price: number, total?: number | null }>, payment: { __typename?: 'Payment', id: string, amount: number, type: PaymentType, provider: PaymentProvider } }> };
+export type GetOrdersQuery = { __typename?: 'Query', orders: Array<{ __typename?: 'Order', id: string, total: number, status?: OrderStatus | null, subTotal: number, createdAt: any, updatedAt: any, processedAt?: string | null, shippedAt?: string | null, fulfilledAt?: string | null, cancelledAt?: string | null, taxAmount?: number | null, shippingAmount?: number | null, couponAmount?: number | null, discountAmount?: number | null, billingAddress: { __typename?: 'BillingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string }, shippingAddress: { __typename?: 'ShippingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string }, user: { __typename?: 'User', username: string, email: string, phone: string }, items: Array<{ __typename?: 'OrderItem', id: string, quantity: number, price: number, total?: number | null, product: { __typename?: 'Product', title: string, slug?: string | null } }>, payment: { __typename?: 'Payment', id: string, amount: number, type: PaymentType, provider: PaymentProvider, status: PaymentStatus } }> };
 
 export type GetProductQueryVariables = Exact<{
   id?: InputMaybe<Scalars['String']['input']>;
@@ -1302,19 +1302,24 @@ export type GetUserQuery = { __typename?: 'Query', user: { __typename?: 'User', 
 export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', id: string, username: string, email: string, phone: string, emailVerified?: boolean | null, phoneVerified?: boolean | null, orders?: Array<{ __typename?: 'Order', id: string, total: number, status?: OrderStatus | null, createdAt: any, updatedAt: any, processedAt?: string | null, shippedAt?: string | null, fulfilledAt?: string | null, cancelledAt?: string | null, billingAddress: { __typename?: 'BillingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string }, shippingAddress: { __typename?: 'ShippingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string }, user: { __typename?: 'User', username: string, email: string, phone: string }, items: Array<{ __typename?: 'OrderItem', id: string, quantity: number, price: number, total?: number | null }>, payment: { __typename?: 'Payment', id: string, amount: number, type: PaymentType, provider: PaymentProvider } }> | null, profile?: { __typename?: 'Profile', id: string, firstName: string, lastName?: string | null, addressOne: string, city: string, state: string, country: string, zipcode: string, profileImage?: string | null } | null }> };
+export type GetUsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', id: string, username: string, email: string, phone: string, emailVerified?: boolean | null, phoneVerified?: boolean | null, orders?: Array<{ __typename?: 'Order', id: string, total: number, status?: OrderStatus | null, subTotal: number, createdAt: any, updatedAt: any, processedAt?: string | null, shippedAt?: string | null, fulfilledAt?: string | null, cancelledAt?: string | null, taxAmount?: number | null, shippingAmount?: number | null, couponAmount?: number | null, discountAmount?: number | null, billingAddress: { __typename?: 'BillingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string }, shippingAddress: { __typename?: 'ShippingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string }, user: { __typename?: 'User', username: string, email: string, phone: string }, items: Array<{ __typename?: 'OrderItem', id: string, quantity: number, price: number, total?: number | null, product: { __typename?: 'Product', title: string, slug?: string | null } }>, payment: { __typename?: 'Payment', id: string, amount: number, type: PaymentType, provider: PaymentProvider, status: PaymentStatus } }> | null, profile?: { __typename?: 'Profile', id: string, firstName: string, lastName?: string | null, addressOne: string, city: string, state: string, country: string, zipcode: string, profileImage?: string | null } | null }> };
 
 export const OrderFieldsFragmentDoc = gql`
     fragment OrderFields on Order {
   id
   total
   status
+  subTotal
   createdAt
   updatedAt
   processedAt
   shippedAt
   fulfilledAt
   cancelledAt
+  taxAmount
+  shippingAmount
+  couponAmount
+  discountAmount
   billingAddress {
     addressOne
     addressTwo
@@ -1341,12 +1346,17 @@ export const OrderFieldsFragmentDoc = gql`
     quantity
     price
     total
+    product {
+      title
+      slug
+    }
   }
   payment {
     id
     amount
     type
     provider
+    status
   }
 }
     `;
