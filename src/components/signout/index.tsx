@@ -10,7 +10,7 @@ interface SignOutComponentProps extends HTMLAttributes<HTMLDivElement> {
 
 export const SignOutComponent: FC<SignOutComponentProps> = ({ ...props }) => {
     return (
-        <div className="flex flex-col divide-y-[1px] rounded border border-default bg-white p-3">
+        <div className="border-default flex flex-col divide-y-[1px] rounded border bg-accent p-3">
             <Button
                 variant="secondary"
                 size="lg"

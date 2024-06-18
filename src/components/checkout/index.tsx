@@ -23,7 +23,7 @@ export const Checkout: FC<CheckoutProps> = ({ ...props }) => {
     return (
         <div>
             <Accordion type="single" collapsible className="space-y-6" value={activeForm}>
-                <AccordionItem value="shipping" className="divide-y rounded bg-white" onClick={() => toggleAccordian('shipping')}>
+                <AccordionItem value="shipping" className="divide-y rounded bg-card" onClick={() => toggleAccordian('shipping')}>
                     <AccordionTrigger className="px-6 py-4 hover:no-underline">
                         <div className="flex-col space-y-2 text-left">
                             <CardTitle>Shipping info</CardTitle>
@@ -34,7 +34,7 @@ export const Checkout: FC<CheckoutProps> = ({ ...props }) => {
                         <ShippingInfo />
                     </AccordionContent>
                 </AccordionItem>
-                <AccordionItem value="billing" className="divide-y rounded bg-white" onClick={() => toggleAccordian('billing')}>
+                <AccordionItem value="billing" className="divide-y rounded bg-card" onClick={() => toggleAccordian('billing')}>
                     <AccordionTrigger className="px-6 py-4 hover:no-underline">
                         <div className="flex-col space-y-2 text-left">
                             <CardTitle>Billing info</CardTitle>
@@ -45,7 +45,7 @@ export const Checkout: FC<CheckoutProps> = ({ ...props }) => {
                         <BillingInfo />
                     </AccordionContent>
                 </AccordionItem>
-                <AccordionItem value="payment" className="divide-y rounded bg-white" onClick={() => toggleAccordian('payment')}>
+                <AccordionItem value="payment" className="divide-y rounded bg-card" onClick={() => toggleAccordian('payment')}>
                     <AccordionTrigger className="px-6 py-4 hover:no-underline">
                         <div className="flex-col space-y-2 text-left">
                             <CardTitle>Payment</CardTitle>

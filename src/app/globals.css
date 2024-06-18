@@ -4,7 +4,7 @@
 
 @layer base {
     :root {
-        --background: #ffffff;
+        --background: #f7f7f7;
         --foreground: #333333;
         --card: #ffffff;
         --card-foreground: #333333;
@@ -16,14 +16,14 @@
         --secondary-foreground: #64748b;
         --muted: #f1f5f9;
         --muted-foreground: #64748b;
-        --accent: #f1f5f9;
-        --accent-foreground: #0f172a;
+        --accent: #ffffff;
+        --accent-foreground: #282828;
         --destructive: #ef4444;
         --destructive-foreground: #f8fafc;
         --success: #2a9d90;
         --success-foreground: #f1f5f9;
         --warning: #e8c468;
-        --warning-foreground: #333333;
+        --warning-foreground: #181c22;
         --info: #0582ca;
         --info-foreground: #ffffff;
         --border: #e2e8f0;
@@ -33,25 +33,27 @@
     }
 
     .dark {
-        --background: #020817;
-        --foreground: #f8fafc;
-        --card: #020817;
+        --background: #181c22;
+        --foreground: #ffffff;
+        --card: #2d3137;
         --card-foreground: #f8fafc;
-        --popover: #020817;
+        --popover: #75777b;
         --popover-foreground: #f8fafc;
-        --primary: #0582ca;
-        --primary-foreground: #0f172a;
-        --secondary: #0582ca;
-        --secondary-foreground: #f8fafc;
-        --muted: #0582ca;
-        --muted-foreground: #94a3b8;
-        --accent: #0582ca;
-        --accent-foreground: #f8fafc;
+        --primary: #92b8e2;
+        --primary-foreground: #181c22;
+        --secondary: #44474c;
+        /* --secondary-foreground: #f8fafc; */
+        --secondary-foreground: #8f9194;
+        --muted: #575757;
+        --muted-foreground: #8f9194;
+        --accent: #5c5f64;
+        --accent-foreground: #ffffff;
         --destructive: #7f1d1d;
         --destructive-foreground: #f8fafc;
-        --border: #0582ca;
-        --input: #0582ca;
-        --ring: #0582ca;
+        --border: #44474c;
+        --input: #181c22;
+        --ring: #44474c;
+        --tw-prose-links: #ffffff;
     }
 }
 

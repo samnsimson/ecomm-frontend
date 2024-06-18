@@ -11,7 +11,7 @@ const OrdersPage = async () => {
 
     if (!data.orders.length) {
         return (
-            <div className="border-default space-y-10 rounded border bg-white p-4">
+            <div className="border-default space-y-10 rounded border bg-accent p-4">
                 <Alert variant="outline" color="info">
                     <AlertTitle>Nothing to list!</AlertTitle>
                     <AlertDescription>You have not placed any orders</AlertDescription>

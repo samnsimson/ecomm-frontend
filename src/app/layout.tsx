@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
     return (
         <html lang="en">
-            <body className={cn('bg-muted', montserrat.className)} suppressHydrationWarning>
+            <body className={cn('bg-background', montserrat.className)} suppressHydrationWarning>
                 <Providers>{children}</Providers>
                 <Toaster richColors />
             </body>

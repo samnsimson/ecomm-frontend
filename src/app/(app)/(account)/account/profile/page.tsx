@@ -2,7 +2,7 @@ import { ProfileForm } from '@/components/form/profile';
 
 const ProfilePage = async () => {
     return (
-        <div className="rounded border border-default bg-white p-4">
+        <div className="border-default rounded border bg-accent p-4">
             <ProfileForm />
         </div>
     );

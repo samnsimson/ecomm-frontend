@@ -26,15 +26,15 @@ export const ProductList: FC<ProductListProps> = ({ page, ...props }) => {
                                 <div className="w-1/5"></div>
                                 <div className="w-3/5 space-y-1">
                                     <h4 className="my-0">
-                                        <Link href={`/dashboard/products?action=edit&id=${product.id}`} className="no-underline">
+                                        <Link href={`/dashboard/products?action=edit&id=${product.id}`} className="text-foreground no-underline">
                                             {product.title}
                                         </Link>
                                     </h4>
-                                    <p className="text-muted-foreground my-0 line-clamp-2 text-sm leading-snug">{product.description}</p>
+                                    <p className="my-0 line-clamp-2 text-sm leading-snug text-muted-foreground">{product.description}</p>
                                     <div className="flex items-center space-x-3">
                                         {product.brand && (
                                             <div className="flex items-center space-x-3">
-                                                <span className="font-semibold">Brand:</span> <Badge variant="secondary">{product.brand}</Badge>
+                                                <span className="font-semibold text-foreground">Brand:</span> <Badge variant="secondary">{product.brand}</Badge>
                                             </div>
                                         )}
                                         {!!product.categories?.length && (
@@ -51,8 +51,8 @@ export const ProductList: FC<ProductListProps> = ({ page, ...props }) => {
                                 </div>
 
                                 <div className="w-1/5">
-                                    <h4 className="my-0">Product Price</h4>
-                                    <ul className="my-0 list-none p-0">
+                                    <h4 className="my-0 text-foreground">Product Price</h4>
+                                    <ul className="my-0 list-none p-0 text-foreground">
                                         <li className="my-0 px-0">Sale: ${product.salePrice}</li>
                                         <li className="my-0 px-0">Retail: ${product.retailPrice}</li>
                                     </ul>

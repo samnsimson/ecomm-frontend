@@ -13,12 +13,12 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
 
     return (
         <Table>
-            <TableHeader className="bg-muted">
+            <TableHeader className="bg-secondary">
                 {table.getHeaderGroups().map((headerGroup) => (
                     <TableRow key={headerGroup.id}>
                         {headerGroup.headers.map((header) => {
                             return (
-                                <TableHead key={header.id} className={`w-[${header.getSize()}px]`}>
+                                <TableHead key={header.id} className={`w-[${header.getSize()}px] text-secondary-foreground`}>
                                     {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                                 </TableHead>
                             );

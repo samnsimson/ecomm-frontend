@@ -95,7 +95,7 @@ export const TaxesForm: FC<TaxesFormProps> = ({ ...props }) => {
                                     min={0}
                                     value={value ?? 0}
                                     disabled={type === TaxTypes.Percentage}
-                                    className="disabled:bg-border"
+                                    className="disabled:bg-muted"
                                     {...field}
                                 />
                             </FormControl>

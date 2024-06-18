@@ -55,7 +55,7 @@ export const ListOrders: FC<ListOrdersProps> = ({ orders, ...props }) => {
     return (
         <Accordion type="single" collapsible>
             {orders.map((order) => (
-                <AccordionItem key={order.id} value={order.id} className="divide-y rounded bg-white">
+                <AccordionItem key={order.id} value={order.id} className="divide-y rounded bg-accent">
                     <AccordionTrigger className="w-full px-6 py-4 hover:no-underline">
                         <div className="flex flex-1 justify-between">
                             <p>

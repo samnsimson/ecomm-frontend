@@ -47,7 +47,7 @@ const OrdersPage: NextPage = async ({}) => {
                             {tabList.map((tab) => (
                                 <TabsTrigger
                                     key={tab.name}
-                                    className="flex w-full items-center space-x-3 rounded-none bg-white p-3 text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-none"
+                                    className="flex w-full items-center space-x-3 rounded-none bg-accent p-3 text-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-none"
                                     value={tab.name}
                                 >
                                     {tab.icon}

@@ -16,7 +16,7 @@ export const SideNav: FC<SideNavProps> = ({ navs, title, description }) => {
     return (
         <div className="space-y-6">
             {(title || description) && <SectionTitle title={title ?? ''} description={description} />}
-            <div className="flex flex-col divide-y-[1px] rounded border border-default bg-white p-3">
+            <div className="border-default flex flex-col divide-y-[1px] rounded border bg-accent p-3 dark:divide-accent dark:bg-secondary">
                 {navs.map((list, key) => (
                     <Link
                         key={key}
@@ -30,7 +30,7 @@ export const SideNav: FC<SideNavProps> = ({ navs, title, description }) => {
                             {list.icon}
                             <span className="flex flex-col">
                                 <span className="font-bold">{list.name}</span>
-                                <span className="text-muted-foreground text-xs group-hover:text-primary-foreground">{list.description}</span>
+                                <span className="text-xs text-muted-foreground group-hover:text-primary-foreground">{list.description}</span>
                             </span>
                         </span>
                     </Link>

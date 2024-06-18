@@ -15,8 +15,8 @@ export const TaxList: FC<TaxListProps> = ({ ...props }) => {
             {taxes.map((tax) => (
                 <div key={tax.id} className="flex items-center justify-between px-6 py-3">
                     <div className="prose flex flex-col space-y-0.5">
-                        <h4 className="my-0">{tax.title}</h4>
-                        <p className="my-0 leading-tight">{tax.description}</p>
+                        <h4 className="my-0 text-foreground">{tax.title}</h4>
+                        <p className="my-0 leading-tight text-foreground">{tax.description}</p>
                     </div>
                     <div className="flex items-center space-x-2">
                         <Button variant="ghost" onClick={() => {}}>
