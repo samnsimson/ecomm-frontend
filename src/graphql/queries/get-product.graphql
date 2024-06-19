@@ -1,34 +1,5 @@
 query GetProduct($id: String, $slug: String) {
     product(id: $id, slug: $slug) {
-        id
-        title
-        description
-        slug
-        salePrice
-        retailPrice
-        brand
-        dimensions {
-            width
-            height
-            depth
-        }
-        categories {
-            id
-            title
-            description
-        }
-        reviews {
-            id
-            review
-            rating
-        }
-        shipping {
-            id
-            title
-            type
-            percentage
-            amount
-            enabled
-        }
+        ...ProductFields
     }
 }

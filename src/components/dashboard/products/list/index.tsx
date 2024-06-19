@@ -1,9 +1,9 @@
 'use client';
+import { DataTable } from '@/components/data-table';
 import { withPagination } from '@/components/hoc/pagination';
-import { List, ListItem } from '@/components/list';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useGetProductsQuery } from '@/graphql/generated';
+import { GetProductsQuery, useGetProductsQuery } from '@/graphql/generated';
+import { ColumnDef } from '@tanstack/react-table';
 import Link from 'next/link';
 import { FC, HTMLAttributes } from 'react';
 
@@ -11,59 +11,55 @@ interface ProductListProps extends HTMLAttributes<HTMLDivElement> {
     page: number;
 }
 
+type ProductList = {
+    id: string;
+    title: string;
+    slug: string;
+    description: string | null | undefined;
+    salePrice: number;
+    retailPrice: number;
+    brand: string | null | undefined;
+    category: Array<string>;
+};
+
+const productColumnDefs: Array<ColumnDef<ProductList>> = [
+    { accessorKey: 'title', header: 'Product', cell: ({ row: { original } }) => <ProductTitle id={original.id} title={original.title} /> },
+    { accessorKey: 'brand', header: 'Brand', cell: ({ row }) => <Badge variant="secondary">{row.original.brand ?? '-'}</Badge> },
+    { accessorKey: 'category', header: 'Category', cell: ({ row }) => <ProductCategories categories={row.original.category} /> },
+    { accessorKey: 'retailPrice', header: 'Retail Price', size: 120, cell: ({ row }) => `$${row.original.retailPrice}` },
+    { accessorKey: 'salePrice', header: 'Sale Price', size: 120, cell: ({ row }) => `$${row.original.salePrice}` },
+];
+
+const productData = (data: GetProductsQuery | undefined): Array<ProductList> => {
+    if (!data) return [];
+    return data.products.map((product) => ({
+        id: product.id,
+        title: product.title,
+        description: product.description,
+        slug: product.slug as string,
+        salePrice: product.salePrice,
+        retailPrice: product.retailPrice,
+        brand: product.brand,
+        category: product['categories'] ? product.categories.map((cat) => cat.title) : [],
+    }));
+};
+
+const ProductTitle: FC<{ id: string; title: string }> = ({ id, title }) => {
+    return (
+        <Link href={`/dashboard/products/edit/${id}`} className="group flex flex-col">
+            <span className="text-xs text-secondary-foreground">ID: {id}</span>
+            <span className="text-lg font-semibold group-hover:text-primary">{title}</span>
+        </Link>
+    );
+};
+
+const ProductCategories: FC<{ categories: Array<string> }> = ({ categories }) => {
+    return null;
+};
+
 export const ProductList: FC<ProductListProps> = ({ page, ...props }) => {
     const { data } = useGetProductsQuery({ variables: { take: 10, page } });
-    return (
-        <div className="flex flex-col space-y-6">
-            <Card className="divide-y">
-                <CardHeader>
-                    <CardTitle>All Products</CardTitle>
-                </CardHeader>
-                <CardContent className="p-0">
-                    <List>
-                        {data?.products.map((product) => (
-                            <ListItem key={product.id} className="prose flex min-w-full space-x-3 p-4">
-                                <div className="w-1/5"></div>
-                                <div className="w-3/5 space-y-1">
-                                    <h4 className="my-0">
-                                        <Link href={`/dashboard/products?action=edit&id=${product.id}`} className="text-foreground no-underline">
-                                            {product.title}
-                                        </Link>
-                                    </h4>
-                                    <p className="my-0 line-clamp-2 text-sm leading-snug text-muted-foreground">{product.description}</p>
-                                    <div className="flex items-center space-x-3">
-                                        {product.brand && (
-                                            <div className="flex items-center space-x-3">
-                                                <span className="font-semibold text-foreground">Brand:</span> <Badge variant="secondary">{product.brand}</Badge>
-                                            </div>
-                                        )}
-                                        {!!product.categories?.length && (
-                                            <div className="flex items-center space-x-3">
-                                                <span className="font-semibold">Categories:</span>
-                                                {product.categories.map((cat) => (
-                                                    <Badge key={cat.id} variant="secondary">
-                                                        {cat.title}
-                                                    </Badge>
-                                                ))}
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-
-                                <div className="w-1/5">
-                                    <h4 className="my-0 text-foreground">Product Price</h4>
-                                    <ul className="my-0 list-none p-0 text-foreground">
-                                        <li className="my-0 px-0">Sale: ${product.salePrice}</li>
-                                        <li className="my-0 px-0">Retail: ${product.retailPrice}</li>
-                                    </ul>
-                                </div>
-                            </ListItem>
-                        ))}
-                    </List>
-                </CardContent>
-            </Card>
-        </div>
-    );
+    return <DataTable columns={productColumnDefs} data={productData(data)} />;
 };
 
 export const ProductListWithPagination = withPagination(ProductList);

@@ -1116,6 +1116,8 @@ export enum UserRole {
 
 export type OrderFieldsFragment = { __typename?: 'Order', id: string, total: number, status?: OrderStatus | null, subTotal: number, createdAt: any, updatedAt: any, processedAt?: string | null, shippedAt?: string | null, fulfilledAt?: string | null, cancelledAt?: string | null, taxAmount?: number | null, shippingAmount?: number | null, couponAmount?: number | null, discountAmount?: number | null, billingAddress: { __typename?: 'BillingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string }, shippingAddress: { __typename?: 'ShippingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string }, user: { __typename?: 'User', username: string, email: string, phone: string }, items: Array<{ __typename?: 'OrderItem', id: string, quantity: number, price: number, total?: number | null, product: { __typename?: 'Product', title: string, slug?: string | null } }>, payment: { __typename?: 'Payment', id: string, amount: number, type: PaymentType, provider: PaymentProvider, status: PaymentStatus } };
 
+export type ProductFieldsFragment = { __typename?: 'Product', id: string, title: string, description?: string | null, slug?: string | null, salePrice: number, retailPrice: number, brand?: string | null, dimensions: { __typename?: 'DimensionsResponse', width: number, height: number, depth: number }, categories?: Array<{ __typename?: 'Category', id: string, title: string, description?: string | null }> | null, reviews?: Array<{ __typename?: 'Review', id: string, review: string, rating: number }> | null, shipping?: { __typename?: 'Shipping', id: string, title: string, type: ShippingType, percentage: number, amount: number, enabled: boolean } | null };
+
 export type CreateCategoryMutationVariables = Exact<{
   input: CreateCategoryInput;
 }>;
@@ -1208,6 +1210,13 @@ export type UpdatePaymentMutationVariables = Exact<{
 
 
 export type UpdatePaymentMutation = { __typename?: 'Mutation', updatePayment: { __typename?: 'Payment', id: string } };
+
+export type UpdateProductMutationVariables = Exact<{
+  input: UpdateProductInput;
+}>;
+
+
+export type UpdateProductMutation = { __typename?: 'Mutation', updateProduct: { __typename?: 'Product', id: string, title: string, description?: string | null, slug?: string | null, salePrice: number, retailPrice: number, brand?: string | null, dimensions: { __typename?: 'DimensionsResponse', width: number, height: number, depth: number }, categories?: Array<{ __typename?: 'Category', id: string, title: string, description?: string | null }> | null, reviews?: Array<{ __typename?: 'Review', id: string, review: string, rating: number }> | null, shipping?: { __typename?: 'Shipping', id: string, title: string, type: ShippingType, percentage: number, amount: number, enabled: boolean } | null } };
 
 export type UpdateProfileMutationVariables = Exact<{
   input: UpdateProfileInput;
@@ -1357,6 +1366,40 @@ export const OrderFieldsFragmentDoc = gql`
     type
     provider
     status
+  }
+}
+    `;
+export const ProductFieldsFragmentDoc = gql`
+    fragment ProductFields on Product {
+  id
+  title
+  description
+  slug
+  salePrice
+  retailPrice
+  brand
+  dimensions {
+    width
+    height
+    depth
+  }
+  categories {
+    id
+    title
+    description
+  }
+  reviews {
+    id
+    review
+    rating
+  }
+  shipping {
+    id
+    title
+    type
+    percentage
+    amount
+    enabled
   }
 }
     `;
@@ -1847,6 +1890,39 @@ export function useUpdatePaymentMutation(baseOptions?: Apollo.MutationHookOption
 export type UpdatePaymentMutationHookResult = ReturnType<typeof useUpdatePaymentMutation>;
 export type UpdatePaymentMutationResult = Apollo.MutationResult<UpdatePaymentMutation>;
 export type UpdatePaymentMutationOptions = Apollo.BaseMutationOptions<UpdatePaymentMutation, UpdatePaymentMutationVariables>;
+export const UpdateProductDocument = gql`
+    mutation UpdateProduct($input: UpdateProductInput!) {
+  updateProduct(updateProductInput: $input) {
+    ...ProductFields
+  }
+}
+    ${ProductFieldsFragmentDoc}`;
+export type UpdateProductMutationFn = Apollo.MutationFunction<UpdateProductMutation, UpdateProductMutationVariables>;
+
+/**
+ * __useUpdateProductMutation__
+ *
+ * To run a mutation, you first call `useUpdateProductMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProductMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProductMutation, { data, loading, error }] = useUpdateProductMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateProductMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProductMutation, UpdateProductMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProductMutation, UpdateProductMutationVariables>(UpdateProductDocument, options);
+      }
+export type UpdateProductMutationHookResult = ReturnType<typeof useUpdateProductMutation>;
+export type UpdateProductMutationResult = Apollo.MutationResult<UpdateProductMutation>;
+export type UpdateProductMutationOptions = Apollo.BaseMutationOptions<UpdateProductMutation, UpdateProductMutationVariables>;
 export const UpdateProfileDocument = gql`
     mutation UpdateProfile($input: UpdateProfileInput!) {
   updateProfile(updateProfileInput: $input) {
@@ -2176,39 +2252,10 @@ export type GetOrdersQueryResult = Apollo.QueryResult<GetOrdersQuery, GetOrdersQ
 export const GetProductDocument = gql`
     query GetProduct($id: String, $slug: String) {
   product(id: $id, slug: $slug) {
-    id
-    title
-    description
-    slug
-    salePrice
-    retailPrice
-    brand
-    dimensions {
-      width
-      height
-      depth
-    }
-    categories {
-      id
-      title
-      description
-    }
-    reviews {
-      id
-      review
-      rating
-    }
-    shipping {
-      id
-      title
-      type
-      percentage
-      amount
-      enabled
-    }
+    ...ProductFields
   }
 }
-    `;
+    ${ProductFieldsFragmentDoc}`;
 
 /**
  * __useGetProductQuery__

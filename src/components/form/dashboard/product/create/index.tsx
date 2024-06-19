@@ -4,10 +4,10 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { useCreateProductMutation } from '@/graphql/generated';
+import { GetProductQuery, useCreateProductMutation, useUpdateProductMutation } from '@/graphql/generated';
 import { CreateProductSchema } from '@/lib/zod/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { FC, HTMLAttributes, useEffect } from 'react';
+import { FC, HTMLAttributes, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
@@ -15,33 +15,75 @@ import { useShipping } from '@/providers/shipping.provider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useCategories } from '@/providers/caetgory.provider';
 import MultiSelect from '@/components/ui/multi-select';
+import { title } from 'process';
 
-interface CreateProductFormProps extends HTMLAttributes<HTMLDivElement> {
-    [x: string]: any;
+interface BaseProps extends HTMLAttributes<HTMLDivElement> {
+    isEditMode: boolean;
 }
+
+interface EditModeProps extends BaseProps {
+    isEditMode: true;
+    product: GetProductQuery['product'];
+}
+
+interface ViewModeProps extends BaseProps {
+    isEditMode: false;
+}
+
+type ProductFormProps = EditModeProps | ViewModeProps;
 
 type FormType = z.infer<typeof CreateProductSchema>;
 
-export const CreateProductForm: FC<CreateProductFormProps> = ({ ...props }) => {
+const getDefaultFormValue = (isEditMode: boolean, props: ProductFormProps): FormType => {
+    if (isEditMode && 'product' in props) {
+        return {
+            title: props.product.title,
+            description: props.product.description ?? '',
+            brand: props.product.brand ?? '',
+            retailPrice: props.product.retailPrice,
+            salePrice: props.product.salePrice,
+            shipping: { id: props.product['shipping'] ? props.product.shipping.id : '' },
+            dimensions: { ...props.product.dimensions },
+        };
+    } else {
+        return { title: '', description: '', brand: '', salePrice: 0, retailPrice: 0 };
+    }
+};
+
+export const ProductForm: FC<ProductFormProps> = ({ isEditMode, ...props }) => {
     const [createProduct] = useCreateProductMutation();
+    const [updateProduct] = useUpdateProductMutation();
+    const [productId, setProductId] = useState<string | undefined>(undefined);
     const { shippings } = useShipping();
     const { categories } = useCategories();
+
     const form = useForm<FormType>({
         resolver: zodResolver(CreateProductSchema),
-        defaultValues: { title: '', description: '', brand: '', salePrice: 0, retailPrice: 0 },
+        defaultValues: getDefaultFormValue(isEditMode, props as any),
     });
 
     const handleSubmit = async ({ salePrice, retailPrice, ...input }: FormType) => {
         try {
             salePrice = typeof salePrice === 'string' ? parseInt(salePrice) : salePrice;
             retailPrice = typeof retailPrice === 'string' ? parseInt(retailPrice) : retailPrice;
-            await createProduct({ variables: { input: { ...input, salePrice, retailPrice } } });
-            toast.success('Product Created', { description: `product "${input.title}" created successfully` });
+            if (isEditMode) await updateProduct({ variables: { input: { ...input, id: productId as string, salePrice, retailPrice } } });
+            else await createProduct({ variables: { input: { ...input, salePrice, retailPrice } } });
+            const successMessage = `Product ${isEditMode ? 'Updated' : 'Created'}`;
+            const successDescription = `product "${input.title}" ${isEditMode ? 'updated' : 'created'} successfully`;
+            toast.success(successMessage, { description: successDescription });
         } catch (error: any) {
             console.log('🚀 ~ handleSubmit ~ error:', error);
             toast.error('Error', { description: error.message });
         }
     };
+
+    useEffect(() => {
+        if (isEditMode) {
+            const { product } = props as EditModeProps;
+            setProductId(product.id);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isEditMode]);
 
     return (
         <Form {...form} {...props}>
@@ -209,7 +251,7 @@ export const CreateProductForm: FC<CreateProductFormProps> = ({ ...props }) => {
                 </Card>
 
                 <Button className="col-span-2 w-full" size="lg" variant="default" type="submit">
-                    Create Product
+                    {isEditMode ? 'Update product' : 'Create Product'}
                 </Button>
             </form>
         </Form>

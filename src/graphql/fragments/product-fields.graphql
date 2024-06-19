@@ -1,0 +1,32 @@
+fragment ProductFields on Product {
+    id
+    title
+    description
+    slug
+    salePrice
+    retailPrice
+    brand
+    dimensions {
+        width
+        height
+        depth
+    }
+    categories {
+        id
+        title
+        description
+    }
+    reviews {
+        id
+        review
+        rating
+    }
+    shipping {
+        id
+        title
+        type
+        percentage
+        amount
+        enabled
+    }
+}
