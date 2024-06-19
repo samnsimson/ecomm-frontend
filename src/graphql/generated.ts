@@ -426,7 +426,7 @@ export type MutationRemoveDiscountArgs = {
 
 
 export type MutationRemoveOrderArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['String']['input'];
 };
 
 
@@ -758,7 +758,7 @@ export type QueryDiscountArgs = {
 
 
 export type QueryOrderArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['String']['input'];
 };
 
 
@@ -1257,6 +1257,13 @@ export type GetDeliveryInfoQueryVariables = Exact<{
 
 
 export type GetDeliveryInfoQuery = { __typename?: 'Query', deliveryInfo: { __typename?: 'DeliveryInfoDto', id: string, createdAt: any, updatedAt: any, billingAddress?: { __typename?: 'BillingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string, email: string, phone: string } | null, shippingAddress?: { __typename?: 'BillingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string } | null } };
+
+export type GetOrderQueryVariables = Exact<{
+  id: Scalars['String']['input'];
+}>;
+
+
+export type GetOrderQuery = { __typename?: 'Query', order: { __typename?: 'Order', id: string, total: number, status?: OrderStatus | null, subTotal: number, createdAt: any, updatedAt: any, processedAt?: string | null, shippedAt?: string | null, fulfilledAt?: string | null, cancelledAt?: string | null, taxAmount?: number | null, shippingAmount?: number | null, couponAmount?: number | null, discountAmount?: number | null, billingAddress: { __typename?: 'BillingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string }, shippingAddress: { __typename?: 'ShippingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string }, user: { __typename?: 'User', username: string, email: string, phone: string }, items: Array<{ __typename?: 'OrderItem', id: string, quantity: number, price: number, total?: number | null, product: { __typename?: 'Product', title: string, slug?: string | null } }>, payment: { __typename?: 'Payment', id: string, amount: number, type: PaymentType, provider: PaymentProvider, status: PaymentStatus } } };
 
 export type GetOrdersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2210,6 +2217,46 @@ export type GetDeliveryInfoQueryHookResult = ReturnType<typeof useGetDeliveryInf
 export type GetDeliveryInfoLazyQueryHookResult = ReturnType<typeof useGetDeliveryInfoLazyQuery>;
 export type GetDeliveryInfoSuspenseQueryHookResult = ReturnType<typeof useGetDeliveryInfoSuspenseQuery>;
 export type GetDeliveryInfoQueryResult = Apollo.QueryResult<GetDeliveryInfoQuery, GetDeliveryInfoQueryVariables>;
+export const GetOrderDocument = gql`
+    query GetOrder($id: String!) {
+  order(id: $id) {
+    ...OrderFields
+  }
+}
+    ${OrderFieldsFragmentDoc}`;
+
+/**
+ * __useGetOrderQuery__
+ *
+ * To run a query within a React component, call `useGetOrderQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetOrderQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetOrderQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetOrderQuery(baseOptions: Apollo.QueryHookOptions<GetOrderQuery, GetOrderQueryVariables> & ({ variables: GetOrderQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetOrderQuery, GetOrderQueryVariables>(GetOrderDocument, options);
+      }
+export function useGetOrderLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetOrderQuery, GetOrderQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetOrderQuery, GetOrderQueryVariables>(GetOrderDocument, options);
+        }
+export function useGetOrderSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetOrderQuery, GetOrderQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetOrderQuery, GetOrderQueryVariables>(GetOrderDocument, options);
+        }
+export type GetOrderQueryHookResult = ReturnType<typeof useGetOrderQuery>;
+export type GetOrderLazyQueryHookResult = ReturnType<typeof useGetOrderLazyQuery>;
+export type GetOrderSuspenseQueryHookResult = ReturnType<typeof useGetOrderSuspenseQuery>;
+export type GetOrderQueryResult = Apollo.QueryResult<GetOrderQuery, GetOrderQueryVariables>;
 export const GetOrdersDocument = gql`
     query GetOrders {
   orders {

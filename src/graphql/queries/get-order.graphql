@@ -1,0 +1,5 @@
+query GetOrder($id: String!) {
+    order(id: $id) {
+        ...OrderFields
+    }
+}
