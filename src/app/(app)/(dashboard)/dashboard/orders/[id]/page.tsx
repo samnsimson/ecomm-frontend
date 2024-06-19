@@ -131,7 +131,16 @@ const OrderViewPage: NextPage = async ({ params: { id } }: Record<string, any>) 
                             <CardTitle className="text-base">Order Timeline</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <Timeline />
+                            <Timeline
+                                id={data.order.id}
+                                createdAt={data.order.createdAt}
+                                udpatedAt={data.order.updatedAt}
+                                processedAt={data.order.processedAt}
+                                shippedAt={data.order.shippedAt}
+                                fulfilledAt={data.order.fulfilledAt}
+                                cancelledAt={data.order.cancelledAt}
+                                refundedAt={null}
+                            />
                         </CardContent>
                     </Card>
                 </div>

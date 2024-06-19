@@ -33,7 +33,7 @@ const tabList = [
 const OrdersPage: NextPage = async ({}) => {
     const { data } = await gql.request<GetOrdersQuery, GetOrdersQueryVariables>(GetOrdersDocument);
     const tabData: Record<string, GetOrdersQuery['orders']> = {
-        allOrders: data.orders.filter((x) => x.status && [OrderStatus.Created, OrderStatus.Fullfilled].includes(x.status)),
+        allOrders: data.orders,
         newOrders: data.orders.filter((x) => x.status === OrderStatus.Created),
         fullfilledOrders: data.orders.filter((x) => x.status === OrderStatus.Fullfilled),
         cancelledOrders: data.orders.filter((x) => x.status === OrderStatus.Calcelled),
