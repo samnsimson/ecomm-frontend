@@ -48,7 +48,7 @@ const manageGraphQLErrors = async (
     for (const { extensions } of errors) {
         if (extensions.code === 'UNAUTHENTICATED') {
             const accessToken = await tokenRefresh(refreshToken);
-            if (!accessToken) await signOut({ redirect: false });
+            if (!accessToken) return await signOut({ redirect: false });
             accessToken && callback(accessToken);
             const { headers = {} } = operation.getContext();
             operation.setContext({ headers: { ...headers, authorization: `Bearer ${accessToken}` } });
@@ -73,6 +73,9 @@ export const apolloClient = (session: Session | null, updateSession: UpdateSessi
             typePolicies: {
                 ProductOutput: {
                     keyFields: ['id', 'quantity'],
+                },
+                Order: {
+                    keyFields: ['id'],
                 },
             },
         }),

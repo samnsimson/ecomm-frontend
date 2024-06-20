@@ -1,12 +1,13 @@
 'use client';
 import { DataTable } from '@/components/data-table';
 import { Badge } from '@/components/ui/badge';
-import { GetOrdersQuery } from '@/graphql/generated';
+import { GetOrdersQuery, OrderStatus } from '@/graphql/generated';
 import { localTime } from '@/lib/helpers';
 import { ColumnDef } from '@tanstack/react-table';
 import { ExternalLinkIcon } from 'lucide-react';
 import Link from 'next/link';
 import { FC, HTMLAttributes } from 'react';
+import { OrderStatusBadge } from '../status-badge';
 
 interface indexProps extends HTMLAttributes<HTMLDivElement> {
     orders: GetOrdersQuery['orders'];
@@ -36,7 +37,7 @@ const columnDefs: Array<ColumnDef<OrderList>> = [
     { accessorKey: 'id', header: 'Order Id', cell: ({ row }) => <OrderTitleRow id={row.original.id} /> },
     { accessorKey: 'total', header: 'Order Total', cell: ({ row }) => `$${row.original.total}` },
     { accessorKey: 'createdAt', header: 'Created At', cell: ({ row }) => localTime(row.original.createdAt) },
-    { accessorKey: 'status', header: 'Order Status', cell: ({ row }) => <Badge>{row.original.status}</Badge> },
+    { accessorKey: 'status', header: 'Order Status', cell: ({ row }) => <OrderStatusBadge status={row.original.status as OrderStatus} /> },
 ];
 
 export const ListOrders: FC<indexProps> = ({ orders, ...props }) => {

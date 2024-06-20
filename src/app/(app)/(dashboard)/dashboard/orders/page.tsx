@@ -1,7 +1,7 @@
 import { Page } from '@/components/page';
 import { NextPage } from 'next';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { BanIcon, CheckCheckIcon, ListIcon, StarsIcon } from 'lucide-react';
+import { BanIcon, CheckCheckIcon, ListIcon, LoaderIcon, ShoppingCartIcon, StarsIcon } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { gql } from '@/lib/graphql-client';
 import { GetOrdersDocument, GetOrdersQuery, GetOrdersQueryVariables, OrderStatus } from '@/graphql/generated';
@@ -26,6 +26,8 @@ import { ListOrders } from '@/components/dashboard/orders/list';
 const tabList = [
     { name: 'allOrders', label: 'All', icon: <ListIcon /> },
     { name: 'newOrders', label: 'New', icon: <StarsIcon /> },
+    { name: 'processedOrders', label: 'Processed', icon: <LoaderIcon /> },
+    { name: 'shippedOrders', label: 'Shipped', icon: <ShoppingCartIcon /> },
     { name: 'fullfilledOrders', label: 'Fullfilled', icon: <CheckCheckIcon /> },
     { name: 'cancelledOrders', label: 'Cancelled', icon: <BanIcon /> },
 ];
@@ -37,6 +39,8 @@ const OrdersPage: NextPage = async ({}) => {
         newOrders: data.orders.filter((x) => x.status === OrderStatus.Created),
         fullfilledOrders: data.orders.filter((x) => x.status === OrderStatus.Fullfilled),
         cancelledOrders: data.orders.filter((x) => x.status === OrderStatus.Calcelled),
+        processedOrders: data.orders.filter((x) => x.status === OrderStatus.Processing),
+        shippedOrders: data.orders.filter((x) => x.status === OrderStatus.Shipped),
     };
     return (
         <Page title="Orders" description="Manage all your orders here">

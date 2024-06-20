@@ -43,7 +43,7 @@ const getDefaultFormValue = (isEditMode: boolean, props: ProductFormProps): Form
             retailPrice: props.product.retailPrice,
             salePrice: props.product.salePrice,
             shipping: { id: props.product['shipping'] ? props.product.shipping.id : '' },
-            dimensions: { ...props.product.dimensions },
+            dimensions: { width: props.product.dimensions.width, height: props.product.dimensions.height, depth: props.product.dimensions.depth },
         };
     } else {
         return { title: '', description: '', brand: '', salePrice: 0, retailPrice: 0 };
@@ -71,6 +71,7 @@ export const ProductForm: FC<ProductFormProps> = ({ isEditMode, ...props }) => {
             const successMessage = `Product ${isEditMode ? 'Updated' : 'Created'}`;
             const successDescription = `product "${input.title}" ${isEditMode ? 'updated' : 'created'} successfully`;
             toast.success(successMessage, { description: successDescription });
+            if (!isEditMode) form.reset();
         } catch (error: any) {
             console.log('🚀 ~ handleSubmit ~ error:', error);
             toast.error('Error', { description: error.message });

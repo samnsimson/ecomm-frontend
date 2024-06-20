@@ -33,6 +33,7 @@ export const CartList: FC<CartListProps> = ({ ...props }) => {
 
     useEffect(() => {
         getCartProducts({ variables: { input: cart.map(({ id, quantity }) => ({ id, quantity })) } }).then(({ data }) => {
+            console.log('🚀 ~ getCartProducts ~ data:', data);
             if (data) {
                 setCartItem(data.cart);
                 setCartData({
