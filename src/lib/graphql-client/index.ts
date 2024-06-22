@@ -3,7 +3,7 @@ import axios from 'axios';
 import { auth } from '../auth';
 
 export const gql = {
-    auth: async <TData, TVariables>(document: DocumentNode, variables?: TVariables): Promise<{ data: TData }> => {
+    fetch: async <TData, TVariables>(document: DocumentNode, variables?: TVariables): Promise<{ data: TData }> => {
         try {
             const url = String(process.env.NEXT_PUBLIC_GRAPHQL_URL);
             const response = await axios.post(url, { query: print(document), variables });

@@ -33,7 +33,7 @@ const errorLink = (refreshToken: string | undefined, callback: (accessToken: str
 
 const tokenRefresh = async (token: string | undefined) => {
     if (!token) return null;
-    const { data } = await gql.auth<RefreshTokenMutation, RefreshTokenMutationVariables>(RefreshTokenDocument, { input: { token } });
+    const { data } = await gql.fetch<RefreshTokenMutation, RefreshTokenMutationVariables>(RefreshTokenDocument, { input: { token } });
     if (!data) return null;
     return null;
 };

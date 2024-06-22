@@ -9,7 +9,7 @@ import { NextPage } from 'next';
 import Link from 'next/link';
 
 type NextPageProps = {
-    params: { slug: string } & Record<string, string>;
+    params: Record<string, string>;
     searchParams: Record<string, string>;
 };
 
@@ -21,7 +21,7 @@ const BackLink = () => (
 
 const ProductPage: NextPage<NextPageProps> = async ({ params }) => {
     const { slug } = params;
-    const { data } = await gql.request<GetProductQuery, GetProductQueryVariables>(GetProductDocument, { slug });
+    const { data } = await gql.fetch<GetProductQuery, GetProductQueryVariables>(GetProductDocument, { slug });
     return (
         <Page title="Product" action={<BackLink />}>
             <ProductView product={data.product} />

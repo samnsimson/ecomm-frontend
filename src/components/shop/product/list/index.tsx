@@ -6,21 +6,20 @@ import { RetailPrice, SalePrice } from '@/components/price';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { useGetProductsQuery } from '@/graphql/generated';
+import { GetProductsQuery } from '@/graphql/generated';
 import { getProductProperty } from '@/lib/helpers';
 import { HeartIcon } from 'lucide-react';
 import Link from 'next/link';
 import { FC, HTMLAttributes } from 'react';
 
 interface ProductListProps extends HTMLAttributes<HTMLDivElement> {
-    [x: string]: any;
+    products: GetProductsQuery['products'];
 }
 
-export const ProductList: FC<ProductListProps> = ({ ...props }) => {
-    const { data } = useGetProductsQuery();
+export const ProductList: FC<ProductListProps> = ({ products = [], ...props }) => {
     return (
         <List className="grid grid-cols-3 gap-6" {...props}>
-            {data?.products.map((pdt) => (
+            {products.map((pdt) => (
                 <ListItem key={pdt.id}>
                     <Card className="h-full divide-y overflow-hidden border-0 hover:shadow-xl">
                         <CardContent className="prose flex flex-1 flex-col border-t-0 p-4">

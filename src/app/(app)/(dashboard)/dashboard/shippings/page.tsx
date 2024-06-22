@@ -35,3 +35,4 @@ const ShippingsPage = () => {
     );
 };
 export default ShippingsPage;
+export const dynamic = 'force-dynamic';

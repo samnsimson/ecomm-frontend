@@ -8,3 +8,4 @@ const ProfilePage = async () => {
     );
 };
 export default ProfilePage;
+export const dynamic = 'force-dynamic';

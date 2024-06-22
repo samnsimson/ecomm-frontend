@@ -1,7 +1,7 @@
 import { LoginForm } from '@/components/form/login';
-import { FC, PropsWithChildren } from 'react';
+import { NextPage } from 'next';
 
-const SignInPage: FC<PropsWithChildren> = ({}) => {
+const SignInPage: NextPage = () => {
     return (
         <div className="flex h-full w-full max-w-xl flex-col items-center justify-center">
             <LoginForm />
@@ -10,3 +10,4 @@ const SignInPage: FC<PropsWithChildren> = ({}) => {
 };
 
 export default SignInPage;
+export const dynamic = 'force-dynamic';

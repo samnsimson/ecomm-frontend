@@ -1,8 +1,8 @@
 import { auth } from '@/lib/auth';
+import { NextPage } from 'next';
 import { redirect } from 'next/navigation';
-import { FC, PropsWithChildren } from 'react';
 
-const AuthLayout: FC<PropsWithChildren> = async ({ children }) => {
+const AuthLayout: NextPage = async ({ children }: any) => {
     const session = await auth();
     if (!!session?.user && session.user.role === 'user') redirect('/account');
     if (!!session?.user && session.user.role === 'admin') redirect('/dashboard');

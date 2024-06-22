@@ -24,7 +24,7 @@ const ActionButton: FC = () => {
     );
 };
 
-const CategoriesPage: NextPage = async ({ searchParams }: Record<string, any>) => {
+const CategoriesPage: NextPage = async ({ searchParams }: any) => {
     return (
         <Page title="Categories" description="Manage all you categories" action={<ActionButton />}>
             <Card>
@@ -40,3 +40,4 @@ const CategoriesPage: NextPage = async ({ searchParams }: Record<string, any>) =
     );
 };
 export default CategoriesPage;
+export const dynamic = 'force-dynamic';

@@ -343,7 +343,7 @@ const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
             >
                 <div
                     className={cn(
-                        'border-input focus-within:ring-ring min-h-10 rounded-md border text-sm ring-offset-background focus-within:ring-2 focus-within:ring-offset-2',
+                        'min-h-10 rounded-md border border-input text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2',
                         {
                             'px-3 py-2': selected.length !== 0,
                             'cursor-text': !disabled && selected.length !== 0,
@@ -371,7 +371,7 @@ const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                                     {option.label}
                                     <button
                                         className={cn(
-                                            'focus:ring-ring ml-1 rounded-full outline-none ring-offset-background focus:ring-2 focus:ring-offset-2',
+                                            'ml-1 rounded-full outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2',
                                             (disabled || option.fixed) && 'hidden',
                                         )}
                                         onKeyDown={(e) => {
@@ -385,7 +385,7 @@ const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                                         }}
                                         onClick={() => handleUnselect(option)}
                                     >
-                                        <X className="h-3 w-3 text-default-foreground" />
+                                        <X className="text-default-foreground h-3 w-3" />
                                     </button>
                                 </Badge>
                             );
@@ -411,7 +411,7 @@ const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                             }}
                             placeholder={hidePlaceholderWhenSelected && selected.length !== 0 ? '' : placeholder}
                             className={cn(
-                                'placeholder:text-muted-foreground flex-1 bg-transparent outline-none',
+                                'flex-1 bg-transparent outline-none placeholder:text-muted-foreground',
                                 {
                                     'w-full': hidePlaceholderWhenSelected,
                                     'px-3 py-2': selected.length === 0,
@@ -424,7 +424,7 @@ const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                 </div>
                 <div className="relative">
                     {open && (
-                        <CommandList className="bg-popover text-popover-foreground animate-in absolute top-1 z-10 w-full rounded-md border shadow-md outline-none">
+                        <CommandList className="absolute top-1 z-10 w-full rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in">
                             {isLoading ? (
                                 <>{loadingIndicator}</>
                             ) : (
@@ -455,7 +455,7 @@ const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                                                                 setSelected(newOptions);
                                                                 onChange?.(newOptions);
                                                             }}
-                                                            className={cn('cursor-pointer', option.disable && 'text-muted-foreground cursor-default')}
+                                                            className={cn('cursor-pointer', option.disable && 'cursor-default text-muted-foreground')}
                                                         >
                                                             {option.label}
                                                         </CommandItem>

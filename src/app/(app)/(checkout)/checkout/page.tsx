@@ -30,3 +30,4 @@ const CheckoutPage: NextPage = () => {
     );
 };
 export default CheckoutPage;
+export const dynamic = 'force-dynamic';

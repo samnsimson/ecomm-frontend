@@ -26,3 +26,4 @@ const TaxesPage = () => {
     );
 };
 export default TaxesPage;
+export const dynamic = 'force-dynamic';

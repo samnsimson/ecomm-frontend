@@ -6,7 +6,6 @@ import { List, ListItem } from '../list';
 import { AddToCart } from '../add-to-cart';
 import { Button } from '../ui/button';
 import { HeartIcon } from 'lucide-react';
-import { AddToCartProduct } from '@/lib/types';
 import { getProductProperty } from '@/lib/helpers';
 
 interface ProductViewProps extends HTMLAttributes<HTMLDivElement> {

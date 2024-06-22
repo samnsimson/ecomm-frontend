@@ -39,3 +39,4 @@ const ProductsPage: NextPage = ({ searchParams }: any) => {
     );
 };
 export default ProductsPage;
+export const dynamic = 'force-dynamic';

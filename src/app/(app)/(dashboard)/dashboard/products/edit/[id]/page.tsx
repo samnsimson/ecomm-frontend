@@ -15,7 +15,7 @@ const PageActionGroup: FC<{ slug: string }> = ({ slug }) => {
     );
 };
 
-const ProductEditPage: NextPage = async ({ params }: Record<string, any>) => {
+const ProductEditPage: NextPage = async ({ params }: any) => {
     const { data } = await gql.request<GetProductQuery, GetProductQueryVariables>(GetProductDocument, { id: params['id'] });
     if (!data) throw new Error('Product not found');
     return (
@@ -25,3 +25,4 @@ const ProductEditPage: NextPage = async ({ params }: Record<string, any>) => {
     );
 };
 export default ProductEditPage;
+export const dynamic = 'force-dynamic';

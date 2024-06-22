@@ -73,3 +73,4 @@ const OrdersPage: NextPage = async ({}) => {
     );
 };
 export default OrdersPage;
+export const dynamic = 'force-dynamic';

@@ -11,7 +11,7 @@ interface RetailPriceProps extends HTMLAttributes<HTMLParagraphElement> {
 
 export const SalePrice: FC<SalePriceProps> = ({ price, className, ...props }) => {
     return (
-        <h2 className={cn('text-success my-0', className)} {...props}>
+        <h2 className={cn('my-0 text-success', className)} {...props}>
             ${price}
         </h2>
     );

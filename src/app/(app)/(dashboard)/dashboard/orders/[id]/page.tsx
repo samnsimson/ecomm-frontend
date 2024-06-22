@@ -19,7 +19,7 @@ const PageAction: FC = () => {
     );
 };
 
-const OrderViewPage: NextPage = async ({ params: { id } }: Record<string, any>) => {
+const OrderViewPage: NextPage = async ({ params: { id } }: any) => {
     const { data } = await gql.request<GetOrderQuery, GetOrderQueryVariables>(GetOrderDocument, { id });
     if (!data) throw new Error('Order not found');
     return (
@@ -31,3 +31,4 @@ const OrderViewPage: NextPage = async ({ params: { id } }: Record<string, any>) 
     );
 };
 export default OrderViewPage;
+export const dynamic = 'force-dynamic';

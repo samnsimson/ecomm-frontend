@@ -8,3 +8,4 @@ const SignUpPage = () => {
     );
 };
 export default SignUpPage;
+export const dynamic = 'force-dynamic';

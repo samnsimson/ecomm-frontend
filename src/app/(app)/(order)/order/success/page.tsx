@@ -13,7 +13,7 @@ import {
 } from '@/graphql/generated';
 import { gql } from '@/lib/graphql-client';
 
-const OrderSuccessPage = async ({ searchParams }: Record<string, any>) => {
+const OrderSuccessPage = async ({ searchParams }: any) => {
     const { orderId, paymentId, payment_intent } = searchParams;
     const paymentVar: UpdatePaymentMutationVariables = { input: { id: paymentId, status: PaymentStatus.Paid, paymentIntentId: payment_intent } };
     const ordervar: UpdateOrderMutationVariables = { input: { id: orderId, status: OrderStatus.Created } };
@@ -33,3 +33,4 @@ const OrderSuccessPage = async ({ searchParams }: Record<string, any>) => {
     );
 };
 export default OrderSuccessPage;
+export const dynamic = 'force-dynamic';

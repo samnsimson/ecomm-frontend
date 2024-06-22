@@ -1,11 +1,7 @@
 import { Stats } from '@/components/dashboard/stats';
-import { FC, HTMLAttributes } from 'react';
+import { NextPage } from 'next';
 
-interface DashboardProps extends HTMLAttributes<HTMLDivElement> {
-    [x: string]: any;
-}
-
-const Dashboard: FC<DashboardProps> = ({ ...props }) => {
+const Dashboard: NextPage = () => {
     return (
         <div>
             <Stats />
@@ -14,3 +10,4 @@ const Dashboard: FC<DashboardProps> = ({ ...props }) => {
 };
 
 export default Dashboard;
+export const dynamic = 'force-dynamic';

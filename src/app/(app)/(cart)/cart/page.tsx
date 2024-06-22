@@ -29,3 +29,4 @@ const CartPage: NextPage = () => {
     );
 };
 export default CartPage;
+export const dynamic = 'force-dynamic';
