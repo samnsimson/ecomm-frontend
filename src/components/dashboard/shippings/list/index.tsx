@@ -48,10 +48,15 @@ const shippingTypeValue = (data: ShippingList) => {
 };
 
 const columnDefs = (update: (input: UpdateShippingInput) => Promise<void>): Array<ColumnDef<ShippingList>> => [
-    { accessorKey: 'title', header: 'Title', cell: ({ row: { original } }) => <ShippingTitle data={original} /> },
+    {
+        accessorKey: 'title',
+        header: 'Title',
+        cell: ({ row: { original } }) => <ShippingTitle data={original} />,
+        meta: { columnClassName: 'hover:text-primary' },
+    },
     { accessorKey: 'description', header: 'Description' },
     { accessorKey: 'type', header: 'Shipping Type' },
-    { header: 'Value', cell: ({ row: { original } }) => shippingTypeValue(original) },
+    { header: 'Value', cell: ({ row: { original } }) => shippingTypeValue(original), meta: { columnClassName: 'text-right' } },
     {
         header: 'Elabled',
         cell: ({ row: { original } }) => <Switch checked={original.enabled} onCheckedChange={(enabled) => update({ id: original.id, enabled })} />,
