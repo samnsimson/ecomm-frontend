@@ -1,34 +1,39 @@
 import { ListCategories } from '@/components/dashboard/categories/list';
+import { Drawer } from '@/components/drawer';
+import { CategoryForm } from '@/components/form/dashboard/categories';
 import { Page } from '@/components/page';
-import { buttonVariants } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { GetCategoriesDocument, GetCategoriesQuery, GetCategoriesQueryVariables } from '@/graphql/generated';
-import { gql } from '@/lib/graphql-client';
-import { cn } from '@/lib/utils';
 import { PlusIcon } from 'lucide-react';
 import { NextPage } from 'next';
-import Link from 'next/link';
 import { FC } from 'react';
 
-const ActionButton: FC = () => (
-    <Link href={`dashboard/categories/create`} className={cn('flex items-center space-x-2', buttonVariants({ size: 'lg' }))}>
-        <PlusIcon />
-        <span>Create new category</span>
-    </Link>
-);
+const TriggerComp: FC = () => {
+    return (
+        <Button size="lg" startContent={<PlusIcon />}>
+            Create new category
+        </Button>
+    );
+};
+
+const ActionButton: FC = () => {
+    return (
+        <Drawer trigger={<TriggerComp />} title="Create Category" description="Create new category" size="medium">
+            <CategoryForm action="create" />
+        </Drawer>
+    );
+};
 
 const CategoriesPage: NextPage = async ({ searchParams }: Record<string, any>) => {
-    const { data } = await gql.request<GetCategoriesQuery, GetCategoriesQueryVariables>(GetCategoriesDocument);
-    if (!data) throw new Error('Error fetching categories');
     return (
         <Page title="Categories" description="Manage all you categories" action={<ActionButton />}>
             <Card>
                 <CardHeader>
-                    <CardTitle>Categories</CardTitle>
+                    <CardTitle>All Categories</CardTitle>
                     <CardDescription>View and manage all product categories</CardDescription>
                 </CardHeader>
                 <CardContent className="p-0">
-                    <ListCategories categories={data.categories} />
+                    <ListCategories />
                 </CardContent>
             </Card>
         </Page>

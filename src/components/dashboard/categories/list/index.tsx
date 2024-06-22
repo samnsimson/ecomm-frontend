@@ -1,16 +1,15 @@
 'use client';
 import { DataTable } from '@/components/data-table';
+import { Drawer } from '@/components/drawer';
+import { CategoryForm } from '@/components/form/dashboard/categories';
 import { withPagination } from '@/components/hoc/pagination';
-import { badgeVariants } from '@/components/ui/badge';
+import { Badge } from '@/components/ui/badge';
 import { GetCategoriesQuery } from '@/graphql/generated';
-import { cn } from '@/lib/utils';
+import { useCategories } from '@/providers/caetgory.provider';
 import { ColumnDef } from '@tanstack/react-table';
-import Link from 'next/link';
 import { FC, HTMLAttributes } from 'react';
 
-interface ListCategoriesProps extends HTMLAttributes<HTMLDivElement> {
-    categories: GetCategoriesQuery['categories'];
-}
+interface ListCategoriesProps extends HTMLAttributes<HTMLDivElement> {}
 
 type CategoryList = {
     id: string;
@@ -28,14 +27,24 @@ const columnDefs: Array<ColumnDef<CategoryList>> = [
     {
         header: 'Action',
         cell: ({ row: { original } }) => (
-            <Link href={`dashboard/categories/edit/${original.id}`} className={cn(badgeVariants({ variant: 'warning' }))}>
-                Edit
-            </Link>
+            <Drawer
+                trigger={
+                    <Badge variant="secondary" className="cursor-pointer">
+                        Edit
+                    </Badge>
+                }
+                title="Create Category"
+                description="Create new category"
+                size="medium"
+            >
+                <CategoryForm action="edit" id={original.id} />
+            </Drawer>
         ),
     },
 ];
 
-export const ListCategories: FC<ListCategoriesProps> = ({ categories, ...props }) => {
+export const ListCategories: FC<ListCategoriesProps> = ({ ...props }) => {
+    const { categories } = useCategories();
     return <DataTable columns={columnDefs} data={categoryData(categories)} />;
 };
 

@@ -1,42 +1,62 @@
 'use client';
-import { Category, CreateCategoryInput, CreateCategoryMutation, useCreateCategoryMutation, useGetCategoriesQuery } from '@/graphql/generated';
-import { FC, PropsWithChildren, createContext, useContext, useEffect, useMemo, useState } from 'react';
+import {
+    Category,
+    CreateCategoryInput,
+    UpdateCategoryInput,
+    useCreateCategoryMutation,
+    useGetCategoriesLazyQuery,
+    useUpdateCategoryMutation,
+} from '@/graphql/generated';
+import { FC, PropsWithChildren, createContext, useContext, useState } from 'react';
 
 export type CategoryContextType = {
     loading: boolean;
     categories: Array<Category>;
-    create: (input: CreateCategoryInput) => Promise<CreateCategoryMutation['createCategory'] | null | undefined>;
+    create: (input: CreateCategoryInput) => Promise<void>;
+    update: (input: UpdateCategoryInput) => Promise<void>;
 };
 
 export const CategoryContext = createContext<CategoryContextType>({
     loading: false,
     categories: [],
-    create: async () => null,
+    create: async () => {},
+    update: async () => {},
 });
 
-export const CategoryProvider: FC<PropsWithChildren> = ({ children }) => {
+export const CategoryProvider: FC<PropsWithChildren & { inititalCategories: Array<Category> }> = ({ children, inititalCategories = [] }) => {
     const [loading, setLoading] = useState<boolean>(false);
-    const { data, loading: loadingGetCategories, refetch } = useGetCategoriesQuery();
+    const [getCategories, { refetch }] = useGetCategoriesLazyQuery();
     const [createCategroy] = useCreateCategoryMutation();
-    const categories = useMemo(() => (!data ? [] : data.categories), [data]);
+    const [updateCategory] = useUpdateCategoryMutation();
+    const [categories, setCategories] = useState(inititalCategories);
 
-    const create = async (input: CreateCategoryInput) => {
+    const update = async (input: UpdateCategoryInput) => {
         try {
-            const { data } = await createCategroy({ variables: { input } });
-            if (!data) return;
-            await refetch();
-            return data.createCategory;
+            setLoading(true);
+            await updateCategory({ variables: { input } });
+            const { data } = await refetch();
+            setCategories(data.categories);
         } catch (error) {
-            console.log('🚀 ~ create ~ error:', error);
+            console.log('🚀 ~ update ~ error:', error);
+        } finally {
+            setLoading(false);
         }
     };
 
-    useEffect(() => {
-        if (loadingGetCategories) setLoading(true);
-        else setLoading(false);
-    }, [loadingGetCategories]);
+    const create = async (input: CreateCategoryInput) => {
+        try {
+            setLoading(true);
+            await createCategroy({ variables: { input } });
+            const { data } = await refetch();
+            setCategories(data.categories);
+        } catch (error) {
+            console.log('🚀 ~ create ~ error:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-    return <CategoryContext.Provider value={{ loading, categories, create }}>{children}</CategoryContext.Provider>;
+    return <CategoryContext.Provider value={{ loading, categories, create, update }}>{children}</CategoryContext.Provider>;
 };
 
 export const useCategories = () => {
