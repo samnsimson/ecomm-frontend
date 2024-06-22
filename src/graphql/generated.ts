@@ -1303,12 +1303,12 @@ export type GetShippingQueryVariables = Exact<{
 }>;
 
 
-export type GetShippingQuery = { __typename?: 'Query', shipping: { __typename?: 'Shipping', id: string, title: string, description: string, enabled: boolean, type: ShippingType, amount: number, percentage: number } };
+export type GetShippingQuery = { __typename?: 'Query', shipping: { __typename?: 'Shipping', id: string, title: string, description: string, enabled: boolean, type: ShippingType, amount: number, percentage: number, createdAt: any, updatedAt: any } };
 
 export type GetShippingsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetShippingsQuery = { __typename?: 'Query', shippings: Array<{ __typename?: 'Shipping', id: string, title: string, description: string, enabled: boolean, type: ShippingType, amount: number, percentage: number }> };
+export type GetShippingsQuery = { __typename?: 'Query', shippings: Array<{ __typename?: 'Shipping', id: string, title: string, description: string, enabled: boolean, type: ShippingType, amount: number, percentage: number, createdAt: any, updatedAt: any }> };
 
 export type GetTaxesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2514,6 +2514,8 @@ export const GetShippingDocument = gql`
     type
     amount
     percentage
+    createdAt
+    updatedAt
   }
 }
     `;
@@ -2560,6 +2562,8 @@ export const GetShippingsDocument = gql`
     type
     amount
     percentage
+    createdAt
+    updatedAt
   }
 }
     `;

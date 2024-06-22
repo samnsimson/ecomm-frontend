@@ -7,5 +7,7 @@ query GetShipping($id: String!) {
         type
         amount
         percentage
+        createdAt
+        updatedAt
     }
 }

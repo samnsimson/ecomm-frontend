@@ -7,5 +7,7 @@ query GetShippings {
         type
         amount
         percentage
+        createdAt
+        updatedAt
     }
 }

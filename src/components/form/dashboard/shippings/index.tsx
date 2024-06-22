@@ -4,66 +4,54 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { ShippingType, useCreateShippingMutation } from '@/graphql/generated';
-import { cn } from '@/lib/utils';
+import { ShippingType } from '@/graphql/generated';
 import { ShippingsSchema } from '@/lib/zod/schemas';
 import { useShipping } from '@/providers/shipping.provider';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { FC, HTMLAttributes, useEffect, useId, useState } from 'react';
+import { FC, HTMLAttributes, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
 import { z } from 'zod';
 
-interface ShippingFormProps extends HTMLAttributes<HTMLFormElement> {
-    [x: string]: any;
+interface BaseFormProps extends HTMLAttributes<HTMLFormElement> {
+    action: 'create' | 'edit';
 }
 
+interface CreateForm extends BaseFormProps {
+    action: 'create';
+}
+
+interface UpdateForm extends BaseFormProps {
+    action: 'edit';
+    id: string;
+}
+
+type ShippingFormProps = CreateForm | UpdateForm;
 type FormType = z.infer<typeof ShippingsSchema>;
 
-export const ShippingForm: FC<ShippingFormProps> = ({ ...props }) => {
-    const { refetch, context, update, setContext } = useShipping();
-    const [type, setType] = useState(ShippingType.Free);
-    const [createShipping] = useCreateShippingMutation();
+export const ShippingForm: FC<ShippingFormProps> = ({ action, id, ...props }) => {
+    const { shippings, create, update } = useShipping();
+
     const form = useForm<FormType>({
         resolver: zodResolver(ShippingsSchema),
         defaultValues: { title: '', description: '', type: ShippingType.Free, amount: 0, percentage: 0 },
     });
 
-    const handleShippingTypeChange = (data: string, field: any) => {
-        if (data === 'FREE') setType(ShippingType.Free);
-        if (data === 'FLAT') setType(ShippingType.Flat);
-        if (data === 'PERCENTAGE') setType(ShippingType.Percentage);
-        return field.onChange(data);
-    };
-
-    const handleSubmit = async (input: FormType) => {
-        try {
-            if (context) await update(context.id, input);
-            else await createShipping({ variables: { input } });
-            toast.success('Success', { description: 'Shipping type created successfully' });
-            refetch();
-        } catch (error: any) {
-            toast.error('Error', { description: error.message });
-        } finally {
-            form.reset();
-            setContext(undefined);
-        }
-    };
-
-    const clearForm = () => {
-        setContext(undefined);
-        form.reset();
+    const handleSubmit = async (formData: FormType) => {
+        if (action === 'create') await create({ ...formData, enabled: true });
+        if (action === 'edit') await update({ id, ...formData });
     };
 
     useEffect(() => {
-        if (context) {
-            form.setValue('title', context.title);
-            form.setValue('description', context.description);
-            form.setValue('type', context.type);
-            form.setValue('amount', context.amount);
-            form.setValue('percentage', context.percentage);
+        if (action === 'edit') {
+            const shipping = shippings.find((x) => x.id === id);
+            if (!shipping) return;
+            form.setValue('title', shipping.title);
+            form.setValue('description', shipping.description);
+            form.setValue('type', shipping.type);
+            form.setValue('amount', shipping.amount);
+            form.setValue('percentage', shipping.percentage);
         }
-    }, [context, form]);
+    }, [action, id, shippings, form]);
 
     return (
         <Form {...form} {...props}>
@@ -74,7 +62,6 @@ export const ShippingForm: FC<ShippingFormProps> = ({ ...props }) => {
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Title</FormLabel>
-                            <FormDescription>Enter the titie of your shipping option</FormDescription>
                             <FormControl>
                                 <Input type="text" {...field} />
                             </FormControl>
@@ -88,7 +75,6 @@ export const ShippingForm: FC<ShippingFormProps> = ({ ...props }) => {
                     render={({ field: { value, ...field } }) => (
                         <FormItem>
                             <FormLabel>Description</FormLabel>
-                            <FormDescription>Enter a short description for the shipping option</FormDescription>
                             <FormControl>
                                 <Textarea rows={6} value={value ?? ''} {...field} />
                             </FormControl>
@@ -96,82 +82,59 @@ export const ShippingForm: FC<ShippingFormProps> = ({ ...props }) => {
                         </FormItem>
                     )}
                 />
-                <div className="grid grid-cols-3 gap-6">
-                    <FormField
-                        name="type"
-                        control={form.control}
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Shipping Type</FormLabel>
-                                <FormControl>
-                                    <Select onValueChange={(val) => handleShippingTypeChange(val, field)} defaultValue={field.value}>
-                                        <SelectTrigger className="w-full">
-                                            <SelectValue placeholder="Shipping Type" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value={ShippingType.Free}>FREE</SelectItem>
-                                            <SelectItem value={ShippingType.Flat}>FLAT RATE</SelectItem>
-                                            <SelectItem value={ShippingType.Percentage}>PERCENTAGE</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        name="amount"
-                        control={form.control}
-                        render={({ field: { value, ...field } }) => (
-                            <FormItem>
-                                <FormLabel>Shipping Amount</FormLabel>
-                                <FormControl>
-                                    <Input
-                                        type="number"
-                                        min={0}
-                                        value={value ?? 0}
-                                        disabled={[ShippingType.Free, ShippingType.Percentage].includes(type)}
-                                        className="disabled:bg-border"
-                                        {...field}
-                                    />
-                                </FormControl>
-                                <FormDescription>If Shipping Type = &quot;Flat&quot;</FormDescription>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        name="percentage"
-                        control={form.control}
-                        render={({ field: { value, ...field } }) => (
-                            <FormItem>
-                                <FormLabel>Shipping Percentage</FormLabel>
-                                <FormControl>
-                                    <Input
-                                        type="number"
-                                        min={0}
-                                        value={value ?? 0}
-                                        disabled={[ShippingType.Free, ShippingType.Flat].includes(type)}
-                                        className="disabled:bg-border"
-                                        {...field}
-                                    />
-                                </FormControl>
-                                <FormDescription>If Shipping Type = &quot;Percentage&quot;</FormDescription>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                </div>
-                <div className="grid grid-cols-2 gap-6">
-                    {!!context && (
-                        <Button type="button" size="lg" variant="outline" onClick={() => clearForm()} className="col-span-1">
-                            Clear form
-                        </Button>
+                <FormField
+                    name="type"
+                    control={form.control}
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Shipping Type</FormLabel>
+                            <FormControl>
+                                <Select onValueChange={(val) => {}} defaultValue={field.value}>
+                                    <SelectTrigger className="w-full">
+                                        <SelectValue placeholder="Shipping Type" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value={ShippingType.Free}>FREE</SelectItem>
+                                        <SelectItem value={ShippingType.Flat}>FLAT RATE</SelectItem>
+                                        <SelectItem value={ShippingType.Percentage}>PERCENTAGE</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
                     )}
-                    <Button type="submit" size="lg" className={cn(!!context ? 'col-span-1' : 'col-span-2')}>
-                        {!!context ? 'Update' : 'Create'} Shipping
-                    </Button>
-                </div>
+                />
+                <FormField
+                    name="amount"
+                    control={form.control}
+                    render={({ field: { value, ...field } }) => (
+                        <FormItem>
+                            <FormLabel>Shipping Amount</FormLabel>
+                            <FormControl>
+                                <Input type="number" min={0} value={value ?? 0} className="disabled:bg-border" {...field} />
+                            </FormControl>
+                            <FormDescription>If Shipping Type = &quot;Flat&quot;</FormDescription>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    name="percentage"
+                    control={form.control}
+                    render={({ field: { value, ...field } }) => (
+                        <FormItem>
+                            <FormLabel>Shipping Percentage</FormLabel>
+                            <FormControl>
+                                <Input type="number" min={0} value={value ?? 0} className="disabled:bg-border" {...field} />
+                            </FormControl>
+                            <FormDescription>If Shipping Type = &quot;Percentage&quot;</FormDescription>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <Button type="submit" size="lg" className="w-full">
+                    {action === 'create' ? 'Create shipping' : 'Update Shipping'}
+                </Button>
             </form>
         </Form>
     );

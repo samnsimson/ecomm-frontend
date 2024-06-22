@@ -1,56 +1,67 @@
 'use client';
-import { GetShippingQuery, useGetShippingLazyQuery, useGetShippingsQuery, useUpdateShippingMutation } from '@/graphql/generated';
-import { Dispatch, FC, PropsWithChildren, SetStateAction, createContext, useContext, useEffect, useState } from 'react';
+import {
+    CreateShippingInput,
+    GetShippingQuery,
+    UpdateShippingInput,
+    useCreateShippingMutation,
+    useGetShippingsLazyQuery,
+    useUpdateShippingMutation,
+} from '@/graphql/generated';
+import { FC, PropsWithChildren, createContext, useContext, useState } from 'react';
 
 type Shipping = GetShippingQuery['shipping'];
 
 export type ShippingContext = {
     loading: boolean;
     shippings: Array<Shipping>;
-    fetchShipping: (id: string) => Promise<Shipping | null>;
-    refetch: () => void;
-    update: (id: string, input: Partial<Shipping>) => Promise<Shipping | null>;
-    context: Shipping | undefined;
-    setContext: Dispatch<SetStateAction<Shipping | undefined>>;
+    create: (input: CreateShippingInput) => Promise<void>;
+    update: (input: UpdateShippingInput) => Promise<void>;
 };
 
 export const ShippingContext = createContext<ShippingContext>({
     loading: false,
     shippings: [],
-    fetchShipping: async () => null,
-    refetch: () => {},
-    update: async () => null,
-    context: undefined,
-    setContext: () => null,
+    create: async () => {},
+    update: async () => {},
 });
 
-export const ShippingProvider: FC<PropsWithChildren> = ({ children }) => {
-    const [shippings, setShippings] = useState<ShippingContext['shippings']>([]);
-    const [context, setContext] = useState<Shipping | undefined>(undefined);
-    const { data, loading, refetch: refetchShippings } = useGetShippingsQuery();
-    const [getShipping] = useGetShippingLazyQuery();
+export const ShippingProvider: FC<PropsWithChildren & { initialShippingData: Array<Shipping> }> = ({ children, initialShippingData = [] }) => {
+    const [shippings, setShippings] = useState<Array<Shipping>>(initialShippingData);
+    const [loading, setLoading] = useState(false);
+    const [_, { refetch }] = useGetShippingsLazyQuery();
     const [updateShipping] = useUpdateShippingMutation();
+    const [createShipping] = useCreateShippingMutation();
 
-    const fetchShipping = async (id: string) => {
-        const { data } = await getShipping({ variables: { id } });
-        if (!data) return null;
-        return data.shipping;
+    const create = async (input: CreateShippingInput) => {
+        try {
+            setLoading(true);
+            await createShipping({ variables: { input } });
+            await refetchShipping();
+        } catch (error) {
+            console.log('🚀 ~ create ~ error:', error);
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const update = async (id: string, input: Partial<Shipping>) => {
-        const { data } = await updateShipping({ variables: { input: { id, ...input } } });
-        if (!data) return null;
-        refetchShippings();
-        return data.updateShipping;
+    const update = async (input: UpdateShippingInput) => {
+        try {
+            setLoading(true);
+            await updateShipping({ variables: { input } });
+            await refetchShipping();
+        } catch (error) {
+            console.log('🚀 ~ update ~ error:', error);
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const refetch = () => refetchShippings();
+    const refetchShipping = async () => {
+        const { data } = await refetch();
+        setShippings(data.shippings);
+    };
 
-    useEffect(() => {
-        if (data) setShippings(data.shippings);
-    }, [data]);
-
-    return <ShippingContext.Provider value={{ loading, shippings, context, setContext, fetchShipping, refetch, update }}>{children}</ShippingContext.Provider>;
+    return <ShippingContext.Provider value={{ loading, shippings, create, update }}>{children}</ShippingContext.Provider>;
 };
 
 export const useShipping = () => useContext(ShippingContext);

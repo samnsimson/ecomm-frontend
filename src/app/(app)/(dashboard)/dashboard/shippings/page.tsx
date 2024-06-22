@@ -1,18 +1,29 @@
-import { SectionTitle } from '@/components/dashboard/section-title';
 import { ShippingsList } from '@/components/dashboard/shippings/list';
+import { Drawer } from '@/components/drawer';
 import { ShippingForm } from '@/components/form/dashboard/shippings';
+import { Page } from '@/components/page';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { PlusIcon } from 'lucide-react';
+
+const Trigger = () => (
+    <Button size="lg" startContent={<PlusIcon />}>
+        Create new shipping
+    </Button>
+);
+
+const ShippingsAction = () => {
+    return (
+        <Drawer title="Create Shipping" description="Create new shipping" trigger={<Trigger />} size="medium">
+            <ShippingForm action="create" />
+        </Drawer>
+    );
+};
 
 const ShippingsPage = () => {
     return (
-        <div className="space-y-6">
-            <SectionTitle title="Shippings" description="Manage shippings" />
+        <Page title="Shippings" description="Manage shippings" action={<ShippingsAction />}>
             <Card>
-                <CardContent className="p-6">
-                    <ShippingForm />
-                </CardContent>
-            </Card>
-            <Card className="divide-y">
                 <CardHeader>
                     <CardTitle>All shippings</CardTitle>
                 </CardHeader>
@@ -20,7 +31,7 @@ const ShippingsPage = () => {
                     <ShippingsList />
                 </CardContent>
             </Card>
-        </div>
+        </Page>
     );
 };
 export default ShippingsPage;
