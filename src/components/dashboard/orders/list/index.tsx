@@ -36,7 +36,7 @@ const OrderTitleRow: FC<{ id: string }> = ({ id }) => {
 const columnDefs: Array<ColumnDef<OrderList>> = [
     { accessorKey: 'id', header: 'Order Id', cell: ({ row }) => <OrderTitleRow id={row.original.id} /> },
     { accessorKey: 'total', header: 'Order Total', cell: ({ row }) => `$${row.original.total}` },
-    { accessorKey: 'createdAt', header: 'Created At', cell: ({ row }) => localTime(row.original.createdAt) },
+    { accessorKey: 'createdAt', header: 'Created At', cell: ({ row }) => <span suppressHydrationWarning>{localTime(row.original.createdAt)}</span> },
     { accessorKey: 'status', header: 'Order Status', cell: ({ row }) => <OrderStatusBadge status={row.original.status as OrderStatus} /> },
 ];
 

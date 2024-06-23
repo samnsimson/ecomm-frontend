@@ -4,6 +4,7 @@ import './globals.css';
 import { cn } from '@/lib/utils';
 import Providers from '@/providers';
 import { Toaster } from 'sonner';
+import NextTopLoader from 'nextjs-toploader';
 
 const montserrat = Montserrat({ subsets: ['latin'] });
 
@@ -16,6 +17,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     return (
         <html lang="en">
             <body className={cn('bg-background', montserrat.className)} suppressHydrationWarning>
+                <NextTopLoader crawl={true} showSpinner={true} height={6} />
                 <Providers>{children}</Providers>
                 <Toaster richColors />
             </body>
