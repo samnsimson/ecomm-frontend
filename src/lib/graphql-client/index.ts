@@ -27,6 +27,7 @@ export const gql = {
             if (!data) throw new Error('No data returned from GraphQL endpoint');
             return { data };
         } catch (error: any) {
+            console.log('🚀 ~ error:', JSON.stringify(error));
             throw new Error(`GraphQL request failed: ${error.message}`);
         }
     },
