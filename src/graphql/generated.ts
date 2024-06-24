@@ -18,6 +18,11 @@ export type Scalars = {
   DateTime: { input: any; output: any; }
 };
 
+export type ApplyCouponDto = {
+  code: Scalars['String']['input'];
+  orderId: Scalars['String']['input'];
+};
+
 export type BillingInfoDto = {
   __typename?: 'BillingInfoDto';
   addressOne: Scalars['String']['output'];
@@ -109,9 +114,31 @@ export type CategoryProductsArgs = {
 
 export type Coupon = {
   __typename?: 'Coupon';
-  /** Example field (placeholder) */
-  exampleField: Scalars['Int']['output'];
+  amount?: Maybe<Scalars['Int']['output']>;
+  code: Scalars['String']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  description?: Maybe<Scalars['String']['output']>;
+  enabled?: Maybe<Scalars['Boolean']['output']>;
+  id: Scalars['ID']['output'];
+  lastUsedAt?: Maybe<Scalars['DateTime']['output']>;
+  percentage?: Maybe<Scalars['Int']['output']>;
+  title: Scalars['String']['output'];
+  type?: Maybe<CouponType>;
+  updatedAt: Scalars['DateTime']['output'];
+  usageType?: Maybe<CouponUsageType>;
+  validFrom?: Maybe<Scalars['DateTime']['output']>;
+  validThrough?: Maybe<Scalars['DateTime']['output']>;
 };
+
+export enum CouponType {
+  Flat = 'FLAT',
+  Percentage = 'PERCENTAGE'
+}
+
+export enum CouponUsageType {
+  MultiUse = 'MULTI_USE',
+  SingleUse = 'SINGLE_USE'
+}
 
 export type CreateCategoryInput = {
   description?: InputMaybe<Scalars['String']['input']>;
@@ -120,8 +147,16 @@ export type CreateCategoryInput = {
 };
 
 export type CreateCouponInput = {
-  /** Example field (placeholder) */
-  exampleField: Scalars['Int']['input'];
+  amount?: InputMaybe<Scalars['Int']['input']>;
+  code: Scalars['String']['input'];
+  description?: InputMaybe<Scalars['String']['input']>;
+  enabled?: InputMaybe<Scalars['Boolean']['input']>;
+  percentage?: InputMaybe<Scalars['Int']['input']>;
+  title: Scalars['String']['input'];
+  type?: InputMaybe<CouponType>;
+  usageType?: InputMaybe<CouponUsageType>;
+  validFrom?: InputMaybe<Scalars['DateTime']['input']>;
+  validThrough?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type CreateDeliveryInfoInput = {
@@ -291,6 +326,7 @@ export type LoginResponse = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  applyCoupon: Scalars['String']['output'];
   createCategory: Category;
   createCoupon: Coupon;
   createDeliveryInfo: DeliveryInfoDto;
@@ -331,6 +367,11 @@ export type Mutation = {
   updateShipping: Shipping;
   updateTax: Tax;
   updateUser: User;
+};
+
+
+export type MutationApplyCouponArgs = {
+  applyCouponInput: ApplyCouponDto;
 };
 
 
@@ -411,7 +452,7 @@ export type MutationRemoveCategoryArgs = {
 
 
 export type MutationRemoveCouponArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['String']['input'];
 };
 
 
@@ -737,7 +778,13 @@ export type QueryCategoryArgs = {
 
 
 export type QueryCouponArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['String']['input'];
+};
+
+
+export type QueryCouponsArgs = {
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  take?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -991,9 +1038,17 @@ export type UpdateCategoryInput = {
 };
 
 export type UpdateCouponInput = {
-  /** Example field (placeholder) */
-  exampleField?: InputMaybe<Scalars['Int']['input']>;
-  id: Scalars['Int']['input'];
+  amount?: InputMaybe<Scalars['Int']['input']>;
+  code?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  enabled?: InputMaybe<Scalars['Boolean']['input']>;
+  id: Scalars['String']['input'];
+  percentage?: InputMaybe<Scalars['Int']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  type?: InputMaybe<CouponType>;
+  usageType?: InputMaybe<CouponUsageType>;
+  validFrom?: InputMaybe<Scalars['DateTime']['input']>;
+  validThrough?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type UpdateDeliveryInfoInput = {
@@ -1114,6 +1169,8 @@ export enum UserRole {
   User = 'USER'
 }
 
+export type CouponFieldFragment = { __typename?: 'Coupon', id: string, title: string, description?: string | null, code: string, type?: CouponType | null, usageType?: CouponUsageType | null, amount?: number | null, percentage?: number | null, enabled?: boolean | null, lastUsedAt?: any | null, validFrom?: any | null, validThrough?: any | null, createdAt: any, updatedAt: any };
+
 export type OrderFieldsFragment = { __typename?: 'Order', id: string, total: number, status?: OrderStatus | null, subTotal: number, createdAt: any, updatedAt: any, processedAt?: any | null, shippedAt?: any | null, fulfilledAt?: any | null, cancelledAt?: any | null, taxAmount?: number | null, shippingAmount?: number | null, couponAmount?: number | null, discountAmount?: number | null, billingAddress: { __typename?: 'BillingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string }, shippingAddress: { __typename?: 'ShippingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string }, user: { __typename?: 'User', username: string, email: string, phone: string }, items: Array<{ __typename?: 'OrderItem', id: string, quantity: number, price: number, total?: number | null, product: { __typename?: 'Product', title: string, slug?: string | null } }>, payment: { __typename?: 'Payment', id: string, amount: number, type: PaymentType, provider: PaymentProvider, status: PaymentStatus } };
 
 export type ProductFieldsFragment = { __typename?: 'Product', id: string, title: string, description?: string | null, slug?: string | null, salePrice: number, retailPrice: number, brand?: string | null, dimensions: { __typename?: 'DimensionsResponse', width: number, height: number, depth: number }, categories?: Array<{ __typename?: 'Category', id: string, title: string, description?: string | null }> | null, reviews?: Array<{ __typename?: 'Review', id: string, review: string, rating: number }> | null, shipping?: { __typename?: 'Shipping', id: string, title: string, type: ShippingType, percentage: number, amount: number, enabled: boolean } | null };
@@ -1124,6 +1181,13 @@ export type CreateCategoryMutationVariables = Exact<{
 
 
 export type CreateCategoryMutation = { __typename?: 'Mutation', createCategory: { __typename?: 'Category', id: string, title: string, description?: string | null, slug?: string | null } };
+
+export type CreateCouponMutationVariables = Exact<{
+  input: CreateCouponInput;
+}>;
+
+
+export type CreateCouponMutation = { __typename?: 'Mutation', createCoupon: { __typename?: 'Coupon', id: string, title: string, description?: string | null, code: string, type?: CouponType | null, usageType?: CouponUsageType | null, amount?: number | null, percentage?: number | null, enabled?: boolean | null, lastUsedAt?: any | null, validFrom?: any | null, validThrough?: any | null, createdAt: any, updatedAt: any } };
 
 export type CreateOrderMutationVariables = Exact<{
   input: CreateOrderInput;
@@ -1258,6 +1322,11 @@ export type GetCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetCategoriesQuery = { __typename?: 'Query', categories: Array<{ __typename?: 'Category', id: string, title: string, description?: string | null, slug?: string | null, createdAt: any, updatedAt: any }> };
 
+export type GetCouponsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetCouponsQuery = { __typename?: 'Query', coupons: Array<{ __typename?: 'Coupon', id: string, title: string, description?: string | null, code: string, type?: CouponType | null, usageType?: CouponUsageType | null, amount?: number | null, percentage?: number | null, enabled?: boolean | null, lastUsedAt?: any | null, validFrom?: any | null, validThrough?: any | null, createdAt: any, updatedAt: any }> };
+
 export type GetDeliveryInfoQueryVariables = Exact<{
   id: Scalars['String']['input'];
 }>;
@@ -1327,6 +1396,24 @@ export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetUsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', id: string, username: string, email: string, phone: string, emailVerified?: boolean | null, phoneVerified?: boolean | null, orders?: Array<{ __typename?: 'Order', id: string, total: number, status?: OrderStatus | null, subTotal: number, createdAt: any, updatedAt: any, processedAt?: any | null, shippedAt?: any | null, fulfilledAt?: any | null, cancelledAt?: any | null, taxAmount?: number | null, shippingAmount?: number | null, couponAmount?: number | null, discountAmount?: number | null, billingAddress: { __typename?: 'BillingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string }, shippingAddress: { __typename?: 'ShippingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string }, user: { __typename?: 'User', username: string, email: string, phone: string }, items: Array<{ __typename?: 'OrderItem', id: string, quantity: number, price: number, total?: number | null, product: { __typename?: 'Product', title: string, slug?: string | null } }>, payment: { __typename?: 'Payment', id: string, amount: number, type: PaymentType, provider: PaymentProvider, status: PaymentStatus } }> | null, profile?: { __typename?: 'Profile', id: string, firstName: string, lastName?: string | null, addressOne: string, city: string, state: string, country: string, zipcode: string, profileImage?: string | null } | null }> };
 
+export const CouponFieldFragmentDoc = gql`
+    fragment CouponField on Coupon {
+  id
+  title
+  description
+  code
+  type
+  usageType
+  amount
+  percentage
+  enabled
+  lastUsedAt
+  validFrom
+  validThrough
+  createdAt
+  updatedAt
+}
+    `;
 export const OrderFieldsFragmentDoc = gql`
     fragment OrderFields on Order {
   id
@@ -1453,6 +1540,39 @@ export function useCreateCategoryMutation(baseOptions?: Apollo.MutationHookOptio
 export type CreateCategoryMutationHookResult = ReturnType<typeof useCreateCategoryMutation>;
 export type CreateCategoryMutationResult = Apollo.MutationResult<CreateCategoryMutation>;
 export type CreateCategoryMutationOptions = Apollo.BaseMutationOptions<CreateCategoryMutation, CreateCategoryMutationVariables>;
+export const CreateCouponDocument = gql`
+    mutation CreateCoupon($input: CreateCouponInput!) {
+  createCoupon(createCouponInput: $input) {
+    ...CouponField
+  }
+}
+    ${CouponFieldFragmentDoc}`;
+export type CreateCouponMutationFn = Apollo.MutationFunction<CreateCouponMutation, CreateCouponMutationVariables>;
+
+/**
+ * __useCreateCouponMutation__
+ *
+ * To run a mutation, you first call `useCreateCouponMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCouponMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCouponMutation, { data, loading, error }] = useCreateCouponMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateCouponMutation(baseOptions?: Apollo.MutationHookOptions<CreateCouponMutation, CreateCouponMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateCouponMutation, CreateCouponMutationVariables>(CreateCouponDocument, options);
+      }
+export type CreateCouponMutationHookResult = ReturnType<typeof useCreateCouponMutation>;
+export type CreateCouponMutationResult = Apollo.MutationResult<CreateCouponMutation>;
+export type CreateCouponMutationOptions = Apollo.BaseMutationOptions<CreateCouponMutation, CreateCouponMutationVariables>;
 export const CreateOrderDocument = gql`
     mutation CreateOrder($input: CreateOrderInput!) {
   createOrder(createOrderInput: $input) {
@@ -2202,6 +2322,45 @@ export type GetCategoriesQueryHookResult = ReturnType<typeof useGetCategoriesQue
 export type GetCategoriesLazyQueryHookResult = ReturnType<typeof useGetCategoriesLazyQuery>;
 export type GetCategoriesSuspenseQueryHookResult = ReturnType<typeof useGetCategoriesSuspenseQuery>;
 export type GetCategoriesQueryResult = Apollo.QueryResult<GetCategoriesQuery, GetCategoriesQueryVariables>;
+export const GetCouponsDocument = gql`
+    query GetCoupons {
+  coupons {
+    ...CouponField
+  }
+}
+    ${CouponFieldFragmentDoc}`;
+
+/**
+ * __useGetCouponsQuery__
+ *
+ * To run a query within a React component, call `useGetCouponsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCouponsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCouponsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetCouponsQuery(baseOptions?: Apollo.QueryHookOptions<GetCouponsQuery, GetCouponsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCouponsQuery, GetCouponsQueryVariables>(GetCouponsDocument, options);
+      }
+export function useGetCouponsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCouponsQuery, GetCouponsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCouponsQuery, GetCouponsQueryVariables>(GetCouponsDocument, options);
+        }
+export function useGetCouponsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetCouponsQuery, GetCouponsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetCouponsQuery, GetCouponsQueryVariables>(GetCouponsDocument, options);
+        }
+export type GetCouponsQueryHookResult = ReturnType<typeof useGetCouponsQuery>;
+export type GetCouponsLazyQueryHookResult = ReturnType<typeof useGetCouponsLazyQuery>;
+export type GetCouponsSuspenseQueryHookResult = ReturnType<typeof useGetCouponsSuspenseQuery>;
+export type GetCouponsQueryResult = Apollo.QueryResult<GetCouponsQuery, GetCouponsQueryVariables>;
 export const GetDeliveryInfoDocument = gql`
     query GetDeliveryInfo($id: String!) {
   deliveryInfo(id: $id) {

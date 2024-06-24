@@ -1,6 +1,12 @@
+import { CouponsList } from '@/components/coupons/list';
 import { Drawer } from '@/components/drawer';
+import { CouponForm } from '@/components/form/coupon';
 import { Page } from '@/components/page';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { GetCouponsDocument, GetCouponsQuery, GetCouponsQueryVariables } from '@/graphql/generated';
+import { gql } from '@/lib/graphql-client';
+import { CouponProvider } from '@/providers/coupon.provider';
 import { PlusIcon } from 'lucide-react';
 
 const ActionButton = () => (
@@ -10,14 +16,30 @@ const ActionButton = () => (
 );
 
 const PageAction = () => {
-    return <Drawer title="Create coupon" description="Create your store coupons" trigger={<ActionButton />} size="medium"></Drawer>;
+    return (
+        <Drawer title="Create coupon" description="Create your store coupons" trigger={<ActionButton />} size="medium">
+            <CouponForm action="create" />
+        </Drawer>
+    );
 };
 
-const CouponsPage = () => {
+const CouponsPage = async () => {
+    const { data } = await gql.request<GetCouponsQuery, GetCouponsQueryVariables>(GetCouponsDocument);
+    if (!data) throw new Error('Unable to fetch coupons');
     return (
-        <Page title="Coupons" description="Create coupons to be used in store" action={<PageAction />}>
-            CouponsPage
-        </Page>
+        <CouponProvider initialCoupons={data.coupons}>
+            <Page title="Coupons" description="Create coupons to be used in store" action={<PageAction />}>
+                <Card>
+                    <CardHeader>
+                        <CardTitle>All coupons</CardTitle>
+                        <CardDescription>View all coupons from the store</CardDescription>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                        <CouponsList />
+                    </CardContent>
+                </Card>
+            </Page>
+        </CouponProvider>
     );
 };
 export default CouponsPage;
