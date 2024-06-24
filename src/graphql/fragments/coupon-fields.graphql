@@ -1,0 +1,16 @@
+fragment CouponField on Coupon {
+    id
+    title
+    description
+    code
+    type
+    usageType
+    amount
+    percentage
+    enabled
+    lastUsedAt
+    validFrom
+    validThrough
+    createdAt
+    updatedAt
+}
