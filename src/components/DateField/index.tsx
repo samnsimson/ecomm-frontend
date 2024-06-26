@@ -3,7 +3,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { FormControl } from '../ui/form';
 import { Button } from '../ui/button';
 import { CalendarIcon } from 'lucide-react';
-import { localTime } from '@/lib/helpers';
+import { localDate } from '@/lib/helpers';
 import { Calendar } from '../ui/calendar';
 
 interface DateFieldProps extends HTMLAttributes<HTMLDivElement> {
@@ -22,7 +22,7 @@ export const DateField: FC<DateFieldProps> = ({ field, disabled, ...props }) => 
                         className="justify-start px-3 text-left text-muted-foreground"
                         size="lg"
                     >
-                        {field.value ? localTime(field.value) : 'Pick a date'}
+                        {field.value ? localDate(field.value) : 'Pick a date'}
                     </Button>
                 </FormControl>
             </PopoverTrigger>

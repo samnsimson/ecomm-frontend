@@ -1,4 +1,5 @@
 import { BillingInfoInput, CouponType, CouponUsageType, ShippingInfoInput, ShippingType, TaxTypes } from '@/graphql/generated';
+import { normalizeDate } from '@/lib/utils';
 import { z } from 'zod';
 
 export const signInSchema = z.object({
@@ -97,13 +98,6 @@ export const BillingInfoSchema: z.ZodType<BillingInfoInput> = z.object({
     email: z.string().email(),
     phone: z.string().min(1),
 });
-
-const normalizeDate = (date: Date) => {
-    const yyyy = date.getFullYear();
-    const mm = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-    const dd = String(date.getDate()).padStart(2, '0');
-    return `${yyyy}-${mm}-${dd}`;
-};
 
 const currentDate = normalizeDate(new Date());
 const DateSchema = z.coerce.date().optional().nullable();

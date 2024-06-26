@@ -26,7 +26,7 @@ const errorLink = (refreshToken: string | undefined, callback: (accessToken: str
     return onError(({ graphQLErrors, operation, forward }) => {
         if (graphQLErrors) {
             const promise = manageGraphQLErrors(graphQLErrors, refreshToken, operation, forward, callback);
-            return fromPromise(promise).flatMap(() => forward(operation));
+            if (operation.operationName === 'query') fromPromise(promise).flatMap(() => forward(operation));
         }
     });
 };

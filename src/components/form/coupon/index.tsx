@@ -9,8 +9,10 @@ import { CouponType, CouponUsageType } from '@/graphql/generated';
 import { CouponSchema } from '@/lib/zod/schemas';
 import { useCoupons } from '@/providers/coupon.provider';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { LoaderIcon } from 'lucide-react';
 import { FC, HTMLAttributes } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { z } from 'zod';
 
 interface CouponFormProps extends HTMLAttributes<HTMLFormElement> {
@@ -23,12 +25,17 @@ const couponType = Object.values(CouponType);
 const couponUsageType = Object.values(CouponUsageType);
 
 export const CouponForm: FC<CouponFormProps> = ({ action, ...props }) => {
-    const { create } = useCoupons();
+    const { loading, create } = useCoupons();
     const form = useForm<FormData>({ resolver: zodResolver(CouponSchema) });
+
+    const handleSubmit = async (formData: FormData) => {
+        await create(formData);
+        form.reset(undefined);
+    };
 
     return (
         <Form {...form} {...props}>
-            <form onSubmit={form.handleSubmit(create)} className="space-y-6">
+            <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
                 <FormField
                     name="title"
                     control={form.control}
@@ -139,7 +146,7 @@ export const CouponForm: FC<CouponFormProps> = ({ action, ...props }) => {
                         )}
                     />
                 </div>
-                <Button type="submit" size="lg" className="w-full">
+                <Button type="submit" size="lg" className="w-full" endContent={loading && <LoaderIcon className="animate-spin" />} disabled={loading}>
                     {action === 'create' ? 'Create' : 'Update'} Coupon
                 </Button>
             </form>

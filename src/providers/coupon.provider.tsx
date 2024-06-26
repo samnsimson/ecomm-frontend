@@ -1,6 +1,7 @@
 'use client';
 import { Coupon, CreateCouponInput, useCreateCouponMutation, useGetCouponsLazyQuery } from '@/graphql/generated';
 import { FC, PropsWithChildren, createContext, useContext, useState } from 'react';
+import { toast } from 'sonner';
 
 type CouponContext = {
     coupons: Array<Coupon>;
@@ -23,11 +24,14 @@ export const CouponProvider: FC<PropsWithChildren & { initialCoupons: Array<Coup
     const create = async (input: CreateCouponInput) => {
         try {
             setLoading(true);
-            await createCoupon({ variables: { input } });
+            const { errors } = await createCoupon({ variables: { input } });
+            if (errors) throw new Error(JSON.stringify(errors));
             const { data } = await refetch();
-            if (data) setCoupons(data.coupons);
+            setCoupons(data.coupons);
+            toast.success('Coupon Created', { description: `Coupon code "${input.code}" created successfully` });
         } catch (error) {
             console.log('🚀 ~ create ~ error:', error);
+            toast.error('Error creating coupon');
         } finally {
             setLoading(false);
         }
