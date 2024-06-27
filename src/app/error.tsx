@@ -17,10 +17,11 @@ const ErrorBoundry: FC<{ error: Error }> = ({ error }) => {
 
     if (typeof errors === 'string') return <div>ErrorBoundry</div>;
 
-    for (const err of errors) {
-        if ('code' in err && err.code === 'UNAUTHENTICATED') signOut();
+    if (errors.length) {
+        for (const err of errors) {
+            if ('code' in err && err.code === 'UNAUTHENTICATED') signOut();
+        }
     }
-
-    return <div>Object error</div>;
+    return <div>{error.message}</div>;
 };
 export default ErrorBoundry;

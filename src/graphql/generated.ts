@@ -166,14 +166,14 @@ export type CreateDeliveryInfoInput = {
 };
 
 export type CreateDiscountInput = {
-  amount: Scalars['Int']['input'];
-  description: Scalars['String']['input'];
-  enabled: Scalars['Boolean']['input'];
-  percentage: Scalars['Int']['input'];
+  amount?: InputMaybe<Scalars['Int']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  enabled?: InputMaybe<Scalars['Boolean']['input']>;
+  percentage?: InputMaybe<Scalars['Int']['input']>;
   title: Scalars['String']['input'];
   type: DiscountType;
-  validFrom: Scalars['DateTime']['input'];
-  validThrough: Scalars['DateTime']['input'];
+  validFrom?: InputMaybe<Scalars['DateTime']['input']>;
+  validThrough?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type CreateOrderInput = {

@@ -7,19 +7,19 @@ export const getProductProperty = (product: GetProductQuery['product']) => {
     return { id, title, slug, salePrice, quantity: 1 };
 };
 
-export const localDate = (date: string) => {
+export const localDate = (date: string | Date) => {
     if (!date) return '-';
     const dateString = new Date(date);
     const formattedDate = format(dateString, 'MMMM d, yyyy');
     return formattedDate;
 };
 
-export const localTime = (date: string) => {
+export const localTime = (date: string | Date) => {
     if (!date) return '-';
     return moment(date).utc().local().format('LLL');
 };
 
-export const relativeTime = (date: string) => {
+export const relativeTime = (date: string | Date) => {
     if (!date) return '-';
     return moment(localTime(date), 'LLL').fromNow();
 };

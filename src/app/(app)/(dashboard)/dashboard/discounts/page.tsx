@@ -1,5 +1,6 @@
 import { DiscountsList } from '@/components/dashboard/discounts/list';
 import { Drawer } from '@/components/drawer';
+import { DiscountForm } from '@/components/form/discount';
 import { Page } from '@/components/page';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -21,7 +22,9 @@ const PageAction: FC = () => {
                     Create New Discounts
                 </Button>
             }
-        ></Drawer>
+        >
+            <DiscountForm action="create" />
+        </Drawer>
     );
 };
 

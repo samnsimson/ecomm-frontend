@@ -1,4 +1,4 @@
-import { BillingInfoInput, CouponType, CouponUsageType, ShippingInfoInput, ShippingType, TaxTypes } from '@/graphql/generated';
+import { BillingInfoInput, CouponType, CouponUsageType, DiscountType, ShippingInfoInput, ShippingType, TaxTypes } from '@/graphql/generated';
 import { normalizeDate } from '@/lib/utils';
 import { z } from 'zod';
 
@@ -130,3 +130,14 @@ export const CouponSchema = z
             });
         }
     });
+
+export const DiscountSchema = z.object({
+    title: z.string(),
+    description: z.string().optional().nullable(),
+    type: z.enum(Object.values(DiscountType) as [DiscountType, ...DiscountType[]]),
+    amount: z.coerce.number().min(0).optional(),
+    percentage: z.coerce.number().min(0).optional(),
+    validFrom: DateSchema.refine((date) => !date || normalizeDate(date) >= currentDate, { message: 'Date cannot be in the past' }),
+    validThrough: DateSchema.refine((date) => !date || normalizeDate(date) >= currentDate, { message: 'Date cannot be in the past' }),
+    enabled: z.boolean().optional().nullable(),
+});
