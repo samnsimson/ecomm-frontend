@@ -1,0 +1,5 @@
+mutation CreateDiscount($input: CreateDiscountInput!) {
+    createDiscount(createDiscountInput: $input) {
+        ...DiscountFields
+    }
+}

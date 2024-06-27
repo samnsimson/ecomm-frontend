@@ -1,0 +1,5 @@
+query GetDiscount($id: String!) {
+    discount(id: $id) {
+        ...DiscountFields
+    }
+}

@@ -1,0 +1,13 @@
+fragment DiscountFields on Discount {
+    id
+    title
+    description
+    type
+    amount
+    percentage
+    validFrom
+    validThrough
+    enabled
+    createdAt
+    updatedAt
+}

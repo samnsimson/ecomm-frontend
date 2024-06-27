@@ -166,8 +166,14 @@ export type CreateDeliveryInfoInput = {
 };
 
 export type CreateDiscountInput = {
-  /** Example field (placeholder) */
-  exampleField: Scalars['Int']['input'];
+  amount: Scalars['Int']['input'];
+  description: Scalars['String']['input'];
+  enabled: Scalars['Boolean']['input'];
+  percentage: Scalars['Int']['input'];
+  title: Scalars['String']['input'];
+  type: DiscountType;
+  validFrom: Scalars['DateTime']['input'];
+  validThrough: Scalars['DateTime']['input'];
 };
 
 export type CreateOrderInput = {
@@ -303,9 +309,23 @@ export type DimensionsResponse = {
 
 export type Discount = {
   __typename?: 'Discount';
-  /** Example field (placeholder) */
-  exampleField: Scalars['Int']['output'];
+  amount?: Maybe<Scalars['Int']['output']>;
+  createdAt: Scalars['DateTime']['output'];
+  description?: Maybe<Scalars['String']['output']>;
+  enabled?: Maybe<Scalars['Boolean']['output']>;
+  id: Scalars['ID']['output'];
+  percentage?: Maybe<Scalars['Int']['output']>;
+  title: Scalars['String']['output'];
+  type: DiscountType;
+  updatedAt: Scalars['DateTime']['output'];
+  validFrom?: Maybe<Scalars['DateTime']['output']>;
+  validThrough?: Maybe<Scalars['DateTime']['output']>;
 };
+
+export enum DiscountType {
+  Flat = 'FLAT',
+  Percentage = 'PERCENTAGE'
+}
 
 export type LoginInput = {
   password: Scalars['String']['input'];
@@ -462,7 +482,7 @@ export type MutationRemoveDeliveryInfoArgs = {
 
 
 export type MutationRemoveDiscountArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['String']['input'];
 };
 
 
@@ -800,7 +820,13 @@ export type QueryDeliveryInfosArgs = {
 
 
 export type QueryDiscountArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['String']['input'];
+};
+
+
+export type QueryDiscountsArgs = {
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  take?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -1059,9 +1085,15 @@ export type UpdateDeliveryInfoInput = {
 };
 
 export type UpdateDiscountInput = {
-  /** Example field (placeholder) */
-  exampleField?: InputMaybe<Scalars['Int']['input']>;
-  id: Scalars['Int']['input'];
+  amount?: InputMaybe<Scalars['Int']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  enabled?: InputMaybe<Scalars['Boolean']['input']>;
+  id: Scalars['String']['input'];
+  percentage?: InputMaybe<Scalars['Int']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  type?: InputMaybe<DiscountType>;
+  validFrom?: InputMaybe<Scalars['DateTime']['input']>;
+  validThrough?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type UpdateOrderInput = {
@@ -1171,6 +1203,8 @@ export enum UserRole {
 
 export type CouponFieldFragment = { __typename?: 'Coupon', id: string, title: string, description?: string | null, code: string, type?: CouponType | null, usageType?: CouponUsageType | null, amount?: number | null, percentage?: number | null, enabled?: boolean | null, lastUsedAt?: any | null, validFrom?: any | null, validThrough?: any | null, createdAt: any, updatedAt: any };
 
+export type DiscountFieldsFragment = { __typename?: 'Discount', id: string, title: string, description?: string | null, type: DiscountType, amount?: number | null, percentage?: number | null, validFrom?: any | null, validThrough?: any | null, enabled?: boolean | null, createdAt: any, updatedAt: any };
+
 export type OrderFieldsFragment = { __typename?: 'Order', id: string, total: number, status?: OrderStatus | null, subTotal: number, createdAt: any, updatedAt: any, processedAt?: any | null, shippedAt?: any | null, fulfilledAt?: any | null, cancelledAt?: any | null, taxAmount?: number | null, shippingAmount?: number | null, couponAmount?: number | null, discountAmount?: number | null, billingAddress: { __typename?: 'BillingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string }, shippingAddress: { __typename?: 'ShippingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string }, user: { __typename?: 'User', username: string, email: string, phone: string }, items: Array<{ __typename?: 'OrderItem', id: string, quantity: number, price: number, total?: number | null, product: { __typename?: 'Product', title: string, slug?: string | null } }>, payment: { __typename?: 'Payment', id: string, amount: number, type: PaymentType, provider: PaymentProvider, status: PaymentStatus } };
 
 export type ProductFieldsFragment = { __typename?: 'Product', id: string, title: string, description?: string | null, slug?: string | null, salePrice: number, retailPrice: number, brand?: string | null, dimensions: { __typename?: 'DimensionsResponse', width: number, height: number, depth: number }, categories?: Array<{ __typename?: 'Category', id: string, title: string, description?: string | null }> | null, reviews?: Array<{ __typename?: 'Review', id: string, review: string, rating: number }> | null, shipping?: { __typename?: 'Shipping', id: string, title: string, type: ShippingType, percentage: number, amount: number, enabled: boolean } | null };
@@ -1188,6 +1222,13 @@ export type CreateCouponMutationVariables = Exact<{
 
 
 export type CreateCouponMutation = { __typename?: 'Mutation', createCoupon: { __typename?: 'Coupon', id: string, title: string, description?: string | null, code: string, type?: CouponType | null, usageType?: CouponUsageType | null, amount?: number | null, percentage?: number | null, enabled?: boolean | null, lastUsedAt?: any | null, validFrom?: any | null, validThrough?: any | null, createdAt: any, updatedAt: any } };
+
+export type CreateDiscountMutationVariables = Exact<{
+  input: CreateDiscountInput;
+}>;
+
+
+export type CreateDiscountMutation = { __typename?: 'Mutation', createDiscount: { __typename?: 'Discount', id: string, title: string, description?: string | null, type: DiscountType, amount?: number | null, percentage?: number | null, validFrom?: any | null, validThrough?: any | null, enabled?: boolean | null, createdAt: any, updatedAt: any } };
 
 export type CreateOrderMutationVariables = Exact<{
   input: CreateOrderInput;
@@ -1282,6 +1323,13 @@ export type UpdateCategoryMutationVariables = Exact<{
 
 export type UpdateCategoryMutation = { __typename?: 'Mutation', updateCategory: { __typename?: 'Category', id: string, title: string, description?: string | null, slug?: string | null, createdAt: any, updatedAt: any } };
 
+export type UpdateDiscountMutationVariables = Exact<{
+  input: UpdateDiscountInput;
+}>;
+
+
+export type UpdateDiscountMutation = { __typename?: 'Mutation', updateDiscount: { __typename?: 'Discount', id: string, title: string, description?: string | null, type: DiscountType, amount?: number | null, percentage?: number | null, validFrom?: any | null, validThrough?: any | null, enabled?: boolean | null, createdAt: any, updatedAt: any } };
+
 export type UpdatePaymentMutationVariables = Exact<{
   input: UpdatePaymentInput;
 }>;
@@ -1340,6 +1388,18 @@ export type GetDeliveryInfoQueryVariables = Exact<{
 
 
 export type GetDeliveryInfoQuery = { __typename?: 'Query', deliveryInfo: { __typename?: 'DeliveryInfoDto', id: string, createdAt: any, updatedAt: any, billingAddress?: { __typename?: 'BillingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string, email: string, phone: string } | null, shippingAddress?: { __typename?: 'BillingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string } | null } };
+
+export type GetDiscountQueryVariables = Exact<{
+  id: Scalars['String']['input'];
+}>;
+
+
+export type GetDiscountQuery = { __typename?: 'Query', discount: { __typename?: 'Discount', id: string, title: string, description?: string | null, type: DiscountType, amount?: number | null, percentage?: number | null, validFrom?: any | null, validThrough?: any | null, enabled?: boolean | null, createdAt: any, updatedAt: any } };
+
+export type GetDiscountsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetDiscountsQuery = { __typename?: 'Query', discounts: Array<{ __typename?: 'Discount', id: string, title: string, description?: string | null, type: DiscountType, amount?: number | null, percentage?: number | null, validFrom?: any | null, validThrough?: any | null, enabled?: boolean | null, createdAt: any, updatedAt: any }> };
 
 export type GetOrderQueryVariables = Exact<{
   id: Scalars['String']['input'];
@@ -1417,6 +1477,21 @@ export const CouponFieldFragmentDoc = gql`
   lastUsedAt
   validFrom
   validThrough
+  createdAt
+  updatedAt
+}
+    `;
+export const DiscountFieldsFragmentDoc = gql`
+    fragment DiscountFields on Discount {
+  id
+  title
+  description
+  type
+  amount
+  percentage
+  validFrom
+  validThrough
+  enabled
   createdAt
   updatedAt
 }
@@ -1580,6 +1655,39 @@ export function useCreateCouponMutation(baseOptions?: Apollo.MutationHookOptions
 export type CreateCouponMutationHookResult = ReturnType<typeof useCreateCouponMutation>;
 export type CreateCouponMutationResult = Apollo.MutationResult<CreateCouponMutation>;
 export type CreateCouponMutationOptions = Apollo.BaseMutationOptions<CreateCouponMutation, CreateCouponMutationVariables>;
+export const CreateDiscountDocument = gql`
+    mutation CreateDiscount($input: CreateDiscountInput!) {
+  createDiscount(createDiscountInput: $input) {
+    ...DiscountFields
+  }
+}
+    ${DiscountFieldsFragmentDoc}`;
+export type CreateDiscountMutationFn = Apollo.MutationFunction<CreateDiscountMutation, CreateDiscountMutationVariables>;
+
+/**
+ * __useCreateDiscountMutation__
+ *
+ * To run a mutation, you first call `useCreateDiscountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateDiscountMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createDiscountMutation, { data, loading, error }] = useCreateDiscountMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateDiscountMutation(baseOptions?: Apollo.MutationHookOptions<CreateDiscountMutation, CreateDiscountMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateDiscountMutation, CreateDiscountMutationVariables>(CreateDiscountDocument, options);
+      }
+export type CreateDiscountMutationHookResult = ReturnType<typeof useCreateDiscountMutation>;
+export type CreateDiscountMutationResult = Apollo.MutationResult<CreateDiscountMutation>;
+export type CreateDiscountMutationOptions = Apollo.BaseMutationOptions<CreateDiscountMutation, CreateDiscountMutationVariables>;
 export const CreateOrderDocument = gql`
     mutation CreateOrder($input: CreateOrderInput!) {
   createOrder(createOrderInput: $input) {
@@ -2069,6 +2177,39 @@ export function useUpdateCategoryMutation(baseOptions?: Apollo.MutationHookOptio
 export type UpdateCategoryMutationHookResult = ReturnType<typeof useUpdateCategoryMutation>;
 export type UpdateCategoryMutationResult = Apollo.MutationResult<UpdateCategoryMutation>;
 export type UpdateCategoryMutationOptions = Apollo.BaseMutationOptions<UpdateCategoryMutation, UpdateCategoryMutationVariables>;
+export const UpdateDiscountDocument = gql`
+    mutation UpdateDiscount($input: UpdateDiscountInput!) {
+  updateDiscount(updateDiscountInput: $input) {
+    ...DiscountFields
+  }
+}
+    ${DiscountFieldsFragmentDoc}`;
+export type UpdateDiscountMutationFn = Apollo.MutationFunction<UpdateDiscountMutation, UpdateDiscountMutationVariables>;
+
+/**
+ * __useUpdateDiscountMutation__
+ *
+ * To run a mutation, you first call `useUpdateDiscountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateDiscountMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateDiscountMutation, { data, loading, error }] = useUpdateDiscountMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateDiscountMutation(baseOptions?: Apollo.MutationHookOptions<UpdateDiscountMutation, UpdateDiscountMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateDiscountMutation, UpdateDiscountMutationVariables>(UpdateDiscountDocument, options);
+      }
+export type UpdateDiscountMutationHookResult = ReturnType<typeof useUpdateDiscountMutation>;
+export type UpdateDiscountMutationResult = Apollo.MutationResult<UpdateDiscountMutation>;
+export type UpdateDiscountMutationOptions = Apollo.BaseMutationOptions<UpdateDiscountMutation, UpdateDiscountMutationVariables>;
 export const UpdatePaymentDocument = gql`
     mutation UpdatePayment($input: UpdatePaymentInput!) {
   updatePayment(updatePaymentInput: $input) {
@@ -2461,6 +2602,85 @@ export type GetDeliveryInfoQueryHookResult = ReturnType<typeof useGetDeliveryInf
 export type GetDeliveryInfoLazyQueryHookResult = ReturnType<typeof useGetDeliveryInfoLazyQuery>;
 export type GetDeliveryInfoSuspenseQueryHookResult = ReturnType<typeof useGetDeliveryInfoSuspenseQuery>;
 export type GetDeliveryInfoQueryResult = Apollo.QueryResult<GetDeliveryInfoQuery, GetDeliveryInfoQueryVariables>;
+export const GetDiscountDocument = gql`
+    query GetDiscount($id: String!) {
+  discount(id: $id) {
+    ...DiscountFields
+  }
+}
+    ${DiscountFieldsFragmentDoc}`;
+
+/**
+ * __useGetDiscountQuery__
+ *
+ * To run a query within a React component, call `useGetDiscountQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDiscountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetDiscountQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetDiscountQuery(baseOptions: Apollo.QueryHookOptions<GetDiscountQuery, GetDiscountQueryVariables> & ({ variables: GetDiscountQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetDiscountQuery, GetDiscountQueryVariables>(GetDiscountDocument, options);
+      }
+export function useGetDiscountLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDiscountQuery, GetDiscountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetDiscountQuery, GetDiscountQueryVariables>(GetDiscountDocument, options);
+        }
+export function useGetDiscountSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetDiscountQuery, GetDiscountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetDiscountQuery, GetDiscountQueryVariables>(GetDiscountDocument, options);
+        }
+export type GetDiscountQueryHookResult = ReturnType<typeof useGetDiscountQuery>;
+export type GetDiscountLazyQueryHookResult = ReturnType<typeof useGetDiscountLazyQuery>;
+export type GetDiscountSuspenseQueryHookResult = ReturnType<typeof useGetDiscountSuspenseQuery>;
+export type GetDiscountQueryResult = Apollo.QueryResult<GetDiscountQuery, GetDiscountQueryVariables>;
+export const GetDiscountsDocument = gql`
+    query GetDiscounts {
+  discounts {
+    ...DiscountFields
+  }
+}
+    ${DiscountFieldsFragmentDoc}`;
+
+/**
+ * __useGetDiscountsQuery__
+ *
+ * To run a query within a React component, call `useGetDiscountsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDiscountsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetDiscountsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetDiscountsQuery(baseOptions?: Apollo.QueryHookOptions<GetDiscountsQuery, GetDiscountsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetDiscountsQuery, GetDiscountsQueryVariables>(GetDiscountsDocument, options);
+      }
+export function useGetDiscountsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDiscountsQuery, GetDiscountsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetDiscountsQuery, GetDiscountsQueryVariables>(GetDiscountsDocument, options);
+        }
+export function useGetDiscountsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetDiscountsQuery, GetDiscountsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetDiscountsQuery, GetDiscountsQueryVariables>(GetDiscountsDocument, options);
+        }
+export type GetDiscountsQueryHookResult = ReturnType<typeof useGetDiscountsQuery>;
+export type GetDiscountsLazyQueryHookResult = ReturnType<typeof useGetDiscountsLazyQuery>;
+export type GetDiscountsSuspenseQueryHookResult = ReturnType<typeof useGetDiscountsSuspenseQuery>;
+export type GetDiscountsQueryResult = Apollo.QueryResult<GetDiscountsQuery, GetDiscountsQueryVariables>;
 export const GetOrderDocument = gql`
     query GetOrder($id: String!) {
   order(id: $id) {
