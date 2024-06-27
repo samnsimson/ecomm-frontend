@@ -101,15 +101,32 @@ export const BillingInfoSchema: z.ZodType<BillingInfoInput> = z.object({
 
 const currentDate = normalizeDate(new Date());
 const DateSchema = z.coerce.date().optional().nullable();
-export const CouponSchema = z.object({
-    title: z.string().min(3),
-    code: z.string().min(3).max(7),
-    description: z.string().optional(),
-    type: z.enum(Object.values(CouponType) as [CouponType, ...CouponType[]]),
-    usageType: z.enum(Object.values(CouponUsageType) as [CouponUsageType, ...CouponUsageType[]]),
-    validFrom: DateSchema.refine((date) => !date || normalizeDate(date) >= currentDate, { message: 'Date cannot be in the past' }),
-    validThrough: DateSchema.refine((date) => !date || normalizeDate(date) >= currentDate, { message: 'Date cannot be in the past' }),
-    amount: z.coerce.number().min(0).optional().nullable(),
-    percentage: z.coerce.number().min(0).optional().nullable(),
-    enabled: z.boolean().optional().nullable(),
-});
+export const CouponSchema = z
+    .object({
+        title: z.string().min(3),
+        code: z.string().min(3).max(7),
+        description: z.string().optional(),
+        type: z.enum(Object.values(CouponType) as [CouponType, ...CouponType[]]),
+        usageType: z.enum(Object.values(CouponUsageType) as [CouponUsageType, ...CouponUsageType[]]),
+        validFrom: DateSchema.refine((date) => !date || normalizeDate(date) >= currentDate, { message: 'Date cannot be in the past' }),
+        validThrough: DateSchema.refine((date) => !date || normalizeDate(date) >= currentDate, { message: 'Date cannot be in the past' }),
+        amount: z.coerce.number().min(0).optional().nullable(),
+        percentage: z.coerce.number().min(0).optional().nullable(),
+        enabled: z.boolean().optional().nullable(),
+    })
+    .superRefine((data, ctx) => {
+        if (data.type === CouponType.Flat && (data.amount === null || data.amount === undefined)) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: 'Amount is required',
+                path: ['amount'],
+            });
+        }
+        if (data.type === CouponType.Flat && (data.percentage === null || data.percentage === undefined)) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: 'Percentage is required',
+                path: ['percentage'],
+            });
+        }
+    });

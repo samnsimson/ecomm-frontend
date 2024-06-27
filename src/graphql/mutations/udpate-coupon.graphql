@@ -1,0 +1,5 @@
+mutation UpdateCoupon($input: UpdateCouponInput!) {
+    updateCoupon(updateCouponInput: $input) {
+        ...CouponField
+    }
+}

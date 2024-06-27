@@ -1,18 +1,18 @@
 import { DocumentNode, print } from 'graphql';
 import axios from 'axios';
 import { auth } from '../auth';
+import { GraphQLErrors } from '@apollo/client/errors';
 
 export const gql = {
     fetch: async <TData, TVariables>(document: DocumentNode, variables?: TVariables): Promise<{ data: TData }> => {
         try {
             const url = String(process.env.GRAPHQL_URL);
-            const response = await axios.post(url, { query: print(document), variables });
+            const response = await axios.post<{ data: TData; errors: GraphQLErrors }>(url, { query: print(document), variables });
             const { data, errors } = response.data;
-            if (errors && errors.length > 0) throw new Error(errors.map((error: { message: string }) => error.message).join('\n'));
-            if (!data) throw new Error('No data returned from GraphQL endpoint');
+            if (errors) throw errors.map((err) => ({ ...err.extensions }));
             return { data };
         } catch (error: any) {
-            throw new Error(`GraphQL request failed: ${error.message}`);
+            throw new Error(JSON.stringify(error));
         }
     },
     request: async <TData, TVariables>(document: DocumentNode, variables?: TVariables): Promise<{ data: TData }> => {
@@ -21,14 +21,12 @@ export const gql = {
             const session = await auth();
             const accessToken = session ? session.user.accessToken : null;
             const headers = { ...(accessToken && { authorization: `Bearer ${accessToken}` }) };
-            const response = await axios.post(url, { query: print(document), variables }, { headers });
+            const response = await axios.post<{ data: TData; errors: GraphQLErrors }>(url, { query: print(document), variables }, { headers });
             const { data, errors } = response.data;
-            if (errors && errors.length > 0) throw new Error(errors.map((error: { message: string }) => error.message).join('\n'));
-            if (!data) throw new Error('No data returned from GraphQL endpoint');
+            if (errors) throw errors.map((err) => ({ ...err.extensions }));
             return { data };
         } catch (error: any) {
-            console.log('🚀 ~ error:', JSON.stringify(error));
-            throw new Error(`GraphQL request failed: ${error.message}`);
+            throw new Error(JSON.stringify(error));
         }
     },
 };

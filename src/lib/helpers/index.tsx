@@ -1,4 +1,5 @@
 import { GetProductQuery } from '@/graphql/generated';
+import { format, parseISO } from 'date-fns';
 import moment from 'moment';
 
 export const getProductProperty = (product: GetProductQuery['product']) => {
@@ -7,13 +8,18 @@ export const getProductProperty = (product: GetProductQuery['product']) => {
 };
 
 export const localDate = (date: string) => {
-    return moment(date).utc().local().format('LL');
+    if (!date) return '-';
+    const dateString = new Date(date);
+    const formattedDate = format(dateString, 'MMMM d, yyyy');
+    return formattedDate;
 };
 
 export const localTime = (date: string) => {
+    if (!date) return '-';
     return moment(date).utc().local().format('LLL');
 };
 
 export const relativeTime = (date: string) => {
+    if (!date) return '-';
     return moment(localTime(date), 'LLL').fromNow();
 };

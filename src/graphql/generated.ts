@@ -1261,6 +1261,13 @@ export type SignupMutationVariables = Exact<{
 
 export type SignupMutation = { __typename?: 'Mutation', signup: { __typename?: 'SignupResponse', id: string, email: string, username: string, accessToken?: string | null, refreshToken?: string | null } };
 
+export type UpdateCouponMutationVariables = Exact<{
+  input: UpdateCouponInput;
+}>;
+
+
+export type UpdateCouponMutation = { __typename?: 'Mutation', updateCoupon: { __typename?: 'Coupon', id: string, title: string, description?: string | null, code: string, type?: CouponType | null, usageType?: CouponUsageType | null, amount?: number | null, percentage?: number | null, enabled?: boolean | null, lastUsedAt?: any | null, validFrom?: any | null, validThrough?: any | null, createdAt: any, updatedAt: any } };
+
 export type UpdateOrderMutationVariables = Exact<{
   input: UpdateOrderInput;
 }>;
@@ -1958,6 +1965,39 @@ export function useSignupMutation(baseOptions?: Apollo.MutationHookOptions<Signu
 export type SignupMutationHookResult = ReturnType<typeof useSignupMutation>;
 export type SignupMutationResult = Apollo.MutationResult<SignupMutation>;
 export type SignupMutationOptions = Apollo.BaseMutationOptions<SignupMutation, SignupMutationVariables>;
+export const UpdateCouponDocument = gql`
+    mutation UpdateCoupon($input: UpdateCouponInput!) {
+  updateCoupon(updateCouponInput: $input) {
+    ...CouponField
+  }
+}
+    ${CouponFieldFragmentDoc}`;
+export type UpdateCouponMutationFn = Apollo.MutationFunction<UpdateCouponMutation, UpdateCouponMutationVariables>;
+
+/**
+ * __useUpdateCouponMutation__
+ *
+ * To run a mutation, you first call `useUpdateCouponMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCouponMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCouponMutation, { data, loading, error }] = useUpdateCouponMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateCouponMutation(baseOptions?: Apollo.MutationHookOptions<UpdateCouponMutation, UpdateCouponMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateCouponMutation, UpdateCouponMutationVariables>(UpdateCouponDocument, options);
+      }
+export type UpdateCouponMutationHookResult = ReturnType<typeof useUpdateCouponMutation>;
+export type UpdateCouponMutationResult = Apollo.MutationResult<UpdateCouponMutation>;
+export type UpdateCouponMutationOptions = Apollo.BaseMutationOptions<UpdateCouponMutation, UpdateCouponMutationVariables>;
 export const UpdateOrderDocument = gql`
     mutation UpdateOrder($input: UpdateOrderInput!) {
   updateOrder(updateOrderInput: $input) {

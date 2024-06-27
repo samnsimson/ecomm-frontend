@@ -28,12 +28,12 @@ export const Drawer: FC<DrawerProps & PropsWithChildren> = ({ children, trigger,
     return (
         <Sheet {...props}>
             <SheetTrigger asChild>{trigger}</SheetTrigger>
-            <SheetContent side={side} className={cn('max-w-auto divide-y bg-card p-0', drawerVariants({ size }))}>
-                <SheetHeader className="flex flex-col space-y-1 p-6">
+            <SheetContent side={side} className={cn('max-w-auto flex flex-col gap-0 divide-y bg-card p-0', drawerVariants({ size }))}>
+                <SheetHeader className="flex h-[100px] flex-col space-y-1 p-6">
                     <SheetTitle>{title}</SheetTitle>
                     {description && <SheetDescription>{description}</SheetDescription>}
                 </SheetHeader>
-                <div className="p-6">{children}</div>
+                <div className="flex-1 overflow-y-scroll p-6">{children}</div>
             </SheetContent>
         </Sheet>
     );
