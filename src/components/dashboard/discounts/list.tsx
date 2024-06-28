@@ -23,8 +23,8 @@ type DiscountList = {
     type: DiscountType;
     amount: number;
     percentage: number;
-    validFrom: number;
-    validThrough: number;
+    validFrom: Date;
+    validThrough: Date;
     enabled: boolean;
 };
 

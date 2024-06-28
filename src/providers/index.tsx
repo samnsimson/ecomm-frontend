@@ -18,6 +18,7 @@ import {
 const Providers: FC<PropsWithChildren & Record<string, any>> = async ({ children, params }) => {
     const { data: categoryData } = await gql.request<GetCategoriesQuery, GetCategoriesQueryVariables>(GetCategoriesDocument);
     const { data: shippingData } = await gql.request<GetShippingsQuery, GetShippingsQueryVariables>(GetShippingsDocument);
+
     return (
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <NextSessionProvider>

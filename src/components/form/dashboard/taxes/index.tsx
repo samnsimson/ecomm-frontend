@@ -8,18 +8,29 @@ import { TaxTypes } from '@/graphql/generated';
 import { TaxesSchema } from '@/lib/zod/schemas';
 import { useTaxes } from '@/providers/tax.provider';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { FC, HTMLAttributes, useState } from 'react';
+import { FC, HTMLAttributes, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-interface TaxesFormProps extends HTMLAttributes<HTMLDivElement> {
-    [x: string]: any;
+interface BaseTaxesFormProps extends HTMLAttributes<HTMLDivElement> {
+    action: 'create' | 'update';
 }
+
+interface CreateTaxesFormProps extends BaseTaxesFormProps {
+    action: 'create';
+}
+
+interface UpdateTaxesFormProps extends BaseTaxesFormProps {
+    action: 'update';
+    id: string;
+}
+
+type TaxesFormProps = CreateTaxesFormProps | UpdateTaxesFormProps;
 
 type FormType = z.infer<typeof TaxesSchema>;
 
-export const TaxesForm: FC<TaxesFormProps> = ({ ...props }) => {
-    const { createTax } = useTaxes();
+export const TaxesForm: FC<TaxesFormProps> = ({ action, id, ...props }) => {
+    const { taxes, create, update } = useTaxes();
     const form = useForm<FormType>({ resolver: zodResolver(TaxesSchema) });
     const [type, setType] = useState(TaxTypes.Percentage);
 
@@ -30,12 +41,27 @@ export const TaxesForm: FC<TaxesFormProps> = ({ ...props }) => {
     };
 
     const handleSubmit = async (data: FormType) => {
-        createTax({ ...data, enabled: false }).finally(() => form.reset());
+        try {
+            if (action === 'create') await create({ ...data, enabled: false });
+            if (action === 'update') await update({ id, ...data });
+        } catch (error) {
+            console.log('🚀 ~ handleSubmit ~ error:', error);
+        }
     };
+
+    useEffect(() => {
+        if (action === 'update') {
+            const tax = taxes.find((x) => x.id === id);
+            if (tax) {
+                Object.entries(tax).map(([key, val]) => form.setValue(key as any, val));
+                setType(tax.type);
+            }
+        }
+    }, [action, id, form, taxes]);
 
     return (
         <Form {...form} {...props}>
-            <form onSubmit={form.handleSubmit(handleSubmit)} className="grid grid-cols-3 gap-6">
+            <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
                 <FormField
                     name="title"
                     control={form.control}
@@ -83,43 +109,40 @@ export const TaxesForm: FC<TaxesFormProps> = ({ ...props }) => {
                         </FormItem>
                     )}
                 />
-                <FormField
-                    name="amount"
-                    control={form.control}
-                    render={({ field: { value, ...field } }) => (
-                        <FormItem>
-                            <FormLabel>Tax Amount</FormLabel>
-                            <FormControl>
-                                <Input
-                                    type="number"
-                                    min={0}
-                                    value={value ?? 0}
-                                    disabled={type === TaxTypes.Percentage}
-                                    className="disabled:bg-muted"
-                                    {...field}
-                                />
-                            </FormControl>
-                            <FormDescription>If Tax Type = &quot;Flat&quot;</FormDescription>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    name="percentage"
-                    control={form.control}
-                    render={({ field: { value, ...field } }) => (
-                        <FormItem>
-                            <FormLabel>Tax Percentage</FormLabel>
-                            <FormControl>
-                                <Input type="number" min={0} value={value ?? 0} disabled={type === TaxTypes.Flat} className="disabled:bg-border" {...field} />
-                            </FormControl>
-                            <FormDescription>If Tax Type = &quot;Percentage&quot;</FormDescription>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <Button size="lg" type="submit" className="col-span-3">
-                    Create Tax
+                {type === TaxTypes.Flat && (
+                    <FormField
+                        name="amount"
+                        control={form.control}
+                        render={({ field: { value, ...field } }) => (
+                            <FormItem>
+                                <FormLabel>Tax Amount</FormLabel>
+                                <FormControl>
+                                    <Input type="number" min={0} value={value ?? 0} {...field} />
+                                </FormControl>
+                                <FormDescription>If Tax Type = &quot;Flat&quot;</FormDescription>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                )}
+                {type === TaxTypes.Percentage && (
+                    <FormField
+                        name="percentage"
+                        control={form.control}
+                        render={({ field: { value, ...field } }) => (
+                            <FormItem>
+                                <FormLabel>Tax Percentage</FormLabel>
+                                <FormControl>
+                                    <Input type="number" min={0} value={value ?? 0} {...field} />
+                                </FormControl>
+                                <FormDescription>If Tax Type = &quot;Percentage&quot;</FormDescription>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                )}
+                <Button size="lg" type="submit" className="w-full">
+                    {action === 'create' ? 'Create' : 'Update'} Tax
                 </Button>
             </form>
         </Form>

@@ -1,48 +1,55 @@
 'use client';
-import { CreateTaxInput, GetTaxesQuery, UpdateTaxInput, useCreateTaxMutation, useGetTaxesQuery, useUpdateTaxMutation } from '@/graphql/generated';
-import { FC, PropsWithChildren, createContext, useContext } from 'react';
-import { toast } from 'sonner';
+import { CreateTaxInput, GetTaxesQuery, Tax, UpdateTaxInput, useCreateTaxMutation, useGetTaxesLazyQuery, useUpdateTaxMutation } from '@/graphql/generated';
+import { FC, PropsWithChildren, createContext, useContext, useState } from 'react';
 
 type TaxContext = {
     loading: boolean;
     taxes: GetTaxesQuery['taxes'];
-    createTax: (data: CreateTaxInput) => Promise<void>;
-    updateTax: (data: UpdateTaxInput) => Promise<void>;
+    create: (data: CreateTaxInput) => Promise<void>;
+    update: (data: UpdateTaxInput) => Promise<void>;
 };
 
 export const TaxContext = createContext<TaxContext>({
     taxes: [],
     loading: false,
-    createTax: async () => {},
-    updateTax: async () => {},
+    create: async () => {},
+    update: async () => {},
 });
 
-export const TaxProvider: FC<PropsWithChildren> = ({ children }) => {
-    const { data: taxes, loading, refetch } = useGetTaxesQuery();
-    const [create] = useCreateTaxMutation();
-    const [update] = useUpdateTaxMutation();
+export const TaxProvider: FC<PropsWithChildren & { initialData: Tax[] }> = ({ children, initialData = [] }) => {
+    const [loading, setLoading] = useState(false);
+    const [getTaxes, { refetch }] = useGetTaxesLazyQuery();
+    const [createTax] = useCreateTaxMutation();
+    const [updateTax] = useUpdateTaxMutation();
+    const [taxes, setTaxes] = useState<Tax[]>(initialData);
 
-    const createTax = async (data: CreateTaxInput) => {
+    const create = async (input: CreateTaxInput) => {
         try {
-            await create({ variables: { input: { ...data, enabled: false } } });
-            toast.success('Success', { description: 'Tax created successfully!' });
-            refetch();
+            setLoading(true);
+            const { errors } = await createTax({ variables: { input } });
+            if (errors) throw new Error('Error creating tax');
+            const { data } = await refetch();
+            if (data) setTaxes(data.taxes);
         } catch (error) {
-            toast.error('Oops!', { description: 'Something went wrong' });
+        } finally {
+            setLoading(false);
         }
     };
 
-    const updateTax = async (data: UpdateTaxInput) => {
+    const update = async (input: UpdateTaxInput) => {
         try {
-            await update({ variables: { input: data } });
-            toast.success('Success', { description: 'Tax updated successfully!' });
-            refetch();
+            setLoading(true);
+            const { errors } = await updateTax({ variables: { input } });
+            if (errors) throw new Error('Error updating tax');
+            const { data } = await refetch();
+            if (data) setTaxes(data.taxes);
         } catch (error) {
-            toast.error('Oops!', { description: 'Something went wrong' });
+        } finally {
+            setLoading(false);
         }
     };
 
-    return <TaxContext.Provider value={{ loading, taxes: taxes ? taxes.taxes : [], createTax, updateTax }}>{children}</TaxContext.Provider>;
+    return <TaxContext.Provider value={{ loading, taxes, create, update }}>{children}</TaxContext.Provider>;
 };
 
 export const useTaxes = () => useContext(TaxContext);
