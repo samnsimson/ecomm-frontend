@@ -7,6 +7,9 @@ import { AddToCart } from '../add-to-cart';
 import { Button } from '../ui/button';
 import { HeartIcon } from 'lucide-react';
 import { getProductProperty } from '@/lib/helpers';
+import { SectionTitle } from '../dashboard/section-title';
+import { RetailPrice, SalePrice } from '../price';
+import Link from 'next/link';
 
 interface ProductViewProps extends HTMLAttributes<HTMLDivElement> {
     product: GetProductQuery['product'];
@@ -14,7 +17,7 @@ interface ProductViewProps extends HTMLAttributes<HTMLDivElement> {
 
 export const ProductView: FC<ProductViewProps> = ({ product, ...props }) => {
     return (
-        <div {...props}>
+        <div {...props} className="space-y-10">
             <div className="grid grid-cols-2 gap-6">
                 <div className="col-span-1 flex flex-col space-y-6">
                     <AspectRatio ratio={1 / 1}>
@@ -79,6 +82,33 @@ export const ProductView: FC<ProductViewProps> = ({ product, ...props }) => {
                         </CardContent>
                     </Card>
                 </div>
+            </div>
+            <div className="grid grid-cols-4 gap-6">
+                <div className="col-span-4">
+                    <SectionTitle title="Related Products" />
+                </div>
+                {product.realtedProducts.map((rp) => (
+                    <Card key={rp.id}>
+                        <CardContent className="flex flex-col space-y-3 p-3">
+                            <AspectRatio ratio={1 / 1} className="bg-muted" />
+                            <Link href={`/shop/${rp.slug}`} className="group prose">
+                                <h3 className="m-0 group-hover:text-primary">{rp.title}</h3>
+                                <p className="m-0 line-clamp-2 text-sm leading-5">{rp.description}</p>
+                            </Link>
+                        </CardContent>
+                        <CardFooter className="flex items-center justify-between p-3">
+                            <div className="flex items-center space-x-3 font-semibold">
+                                <SalePrice price={rp.salePrice} />
+                                <RetailPrice price={rp.retailPrice} />
+                            </div>
+                            <div className="flex items-center space-x-3">
+                                <Button variant="warning" size="icon">
+                                    <HeartIcon size={18} />
+                                </Button>
+                            </div>
+                        </CardFooter>
+                    </Card>
+                ))}
             </div>
         </div>
     );

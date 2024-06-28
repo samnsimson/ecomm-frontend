@@ -44,7 +44,7 @@ const createData = (discounts: Discount[]): DiscountList[] => {
 
 const columnDefs = (update: (input: UpdateDiscountInput) => Promise<void>): ColumnDef<DiscountList>[] => {
     return [
-        { accessorKey: 'title', header: 'Title' },
+        { accessorKey: 'title', header: 'Title', meta: { columnClassName: 'font-semibold' } },
         {
             accessorKey: 'type',
             header: 'Type',

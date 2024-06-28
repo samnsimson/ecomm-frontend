@@ -48,7 +48,7 @@ const couponData = (coupons: Array<Coupon>): Array<CouponList> => {
 };
 
 const columnDef = (update: (input: UpdateCouponInput) => Promise<void>): Array<ColumnDef<CouponList>> => [
-    { accessorKey: 'title', header: 'Title' },
+    { accessorKey: 'title', header: 'Title', meta: { columnClassName: 'font-semibold' } },
     { accessorKey: 'code', header: 'Code' },
     {
         accessorKey: 'type',

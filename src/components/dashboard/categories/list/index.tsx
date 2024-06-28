@@ -22,7 +22,7 @@ const categoryData = (categories: GetCategoriesQuery['categories']) => {
 };
 
 const columnDefs: Array<ColumnDef<CategoryList>> = [
-    { accessorKey: 'title', header: 'Title' },
+    { accessorKey: 'title', header: 'Title', meta: { columnClassName: 'font-semibold' } },
     { accessorKey: 'description', header: 'Description' },
     {
         header: 'Action',

@@ -29,4 +29,13 @@ fragment ProductFields on Product {
         amount
         enabled
     }
+    realtedProducts {
+        id
+        title
+        slug
+        description
+        salePrice
+        retailPrice
+        brand
+    }
 }
