@@ -1,3 +1,4 @@
+'use client';
 import { cn } from '@/lib/utils';
 import { FC, HTMLAttributes, ReactNode } from 'react';
 import { SectionTitle } from '../dashboard/section-title';

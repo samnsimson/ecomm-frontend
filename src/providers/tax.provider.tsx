@@ -31,6 +31,7 @@ export const TaxProvider: FC<PropsWithChildren & { initialData: Tax[] }> = ({ ch
             const { data } = await refetch();
             if (data) setTaxes(data.taxes);
         } catch (error) {
+            console.log('🚀 ~ create ~ error:', error);
         } finally {
             setLoading(false);
         }
@@ -44,6 +45,7 @@ export const TaxProvider: FC<PropsWithChildren & { initialData: Tax[] }> = ({ ch
             const { data } = await refetch();
             if (data) setTaxes(data.taxes);
         } catch (error) {
+            console.log('🚀 ~ update ~ error:', error);
         } finally {
             setLoading(false);
         }

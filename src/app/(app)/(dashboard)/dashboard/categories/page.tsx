@@ -4,6 +4,9 @@ import { CategoryForm } from '@/components/form/dashboard/categories';
 import { Page } from '@/components/page';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { GetCategoriesDocument, GetCategoriesQuery, GetCategoriesQueryVariables } from '@/graphql/generated';
+import { gql } from '@/lib/graphql-client';
+import { CategoryProvider } from '@/providers/caetgory.provider';
 import { PlusIcon } from 'lucide-react';
 import { NextPage } from 'next';
 import { FC } from 'react';
@@ -25,18 +28,21 @@ const ActionButton: FC = () => {
 };
 
 const CategoriesPage: NextPage = async ({ searchParams }: any) => {
+    const { data } = await gql.request<GetCategoriesQuery, GetCategoriesQueryVariables>(GetCategoriesDocument);
     return (
-        <Page title="Categories" description="Manage all you categories" action={<ActionButton />}>
-            <Card>
-                <CardHeader>
-                    <CardTitle>All Categories</CardTitle>
-                    <CardDescription>View and manage all product categories</CardDescription>
-                </CardHeader>
-                <CardContent className="p-0">
-                    <ListCategories />
-                </CardContent>
-            </Card>
-        </Page>
+        <CategoryProvider inititalCategories={data.categories}>
+            <Page title="Categories" description="Manage all you categories" action={<ActionButton />}>
+                <Card>
+                    <CardHeader>
+                        <CardTitle>All Categories</CardTitle>
+                        <CardDescription>View and manage all product categories</CardDescription>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                        <ListCategories />
+                    </CardContent>
+                </Card>
+            </Page>
+        </CategoryProvider>
     );
 };
 export default CategoriesPage;

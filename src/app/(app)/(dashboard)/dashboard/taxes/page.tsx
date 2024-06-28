@@ -11,18 +11,17 @@ import { PlusIcon } from 'lucide-react';
 import { NextPage } from 'next';
 import { FC } from 'react';
 
+const TriggerComp: FC = () => {
+    return (
+        <Button size="lg" startContent={<PlusIcon />}>
+            Create new tax
+        </Button>
+    );
+};
+
 const PageAction: FC = () => {
     return (
-        <Drawer
-            title="Create Taxes"
-            description="Create your taxes here"
-            size="medium"
-            trigger={
-                <Button size="lg" startContent={<PlusIcon />}>
-                    Create new tax
-                </Button>
-            }
-        >
+        <Drawer title="Create Taxes" description="Create your taxes here" size="medium" trigger={<TriggerComp />}>
             <TaxesForm action="create" />
         </Drawer>
     );

@@ -8,8 +8,10 @@ import { TaxTypes } from '@/graphql/generated';
 import { TaxesSchema } from '@/lib/zod/schemas';
 import { useTaxes } from '@/providers/tax.provider';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { capitalize } from 'lodash';
 import { FC, HTMLAttributes, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { z } from 'zod';
 
 interface BaseTaxesFormProps extends HTMLAttributes<HTMLDivElement> {
@@ -44,7 +46,9 @@ export const TaxesForm: FC<TaxesFormProps> = ({ action, id, ...props }) => {
         try {
             if (action === 'create') await create({ ...data, enabled: false });
             if (action === 'update') await update({ id, ...data });
+            toast.success('Success', { description: `Tax ${capitalize(action)}d Successfully` });
         } catch (error) {
+            toast.error('Error');
             console.log('🚀 ~ handleSubmit ~ error:', error);
         }
     };

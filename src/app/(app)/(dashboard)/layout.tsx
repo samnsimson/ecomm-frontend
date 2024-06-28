@@ -96,7 +96,7 @@ const accountNavs: Array<SideNavList> = [
     },
 ];
 
-const DashboardLayout: FC<PropsWithChildren> = ({ children, ...props }) => {
+const DashboardLayout: FC<PropsWithChildren> = ({ children }) => {
     return (
         <Container className="flex space-x-6 py-6">
             <div className="w-1/4 space-y-6">
