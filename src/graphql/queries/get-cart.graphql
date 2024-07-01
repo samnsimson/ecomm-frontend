@@ -1,8 +1,10 @@
-query Cart($input: [ProductInfo!]!) {
-    cart(input: $input) {
+query Cart($input: CartInput!, $userId: String) {
+    cart(cartInput: $input, userId: $userId) {
         total
         subTotal
         isDeductionsEligible
+        discount
+        coupon
         taxes {
             total
             breakup {

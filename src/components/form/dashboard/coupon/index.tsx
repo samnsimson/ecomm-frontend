@@ -13,7 +13,6 @@ import { LoaderIcon } from 'lucide-react';
 import { FC, HTMLAttributes, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { capitalize } from 'lodash';
 
 interface CouponBaseProps extends HTMLAttributes<HTMLFormElement> {
     action: 'create' | 'edit';

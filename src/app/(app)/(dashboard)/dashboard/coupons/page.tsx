@@ -1,6 +1,6 @@
 import { CouponsList } from '@/components/coupons/list';
 import { Drawer } from '@/components/drawer';
-import { CouponForm } from '@/components/form/coupon';
+import { CouponForm } from '@/components/form/dashboard/coupon';
 import { Page } from '@/components/page';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';

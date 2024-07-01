@@ -9,7 +9,7 @@ import { Switch } from '../ui/switch';
 import { DollarSignIcon, PercentIcon } from 'lucide-react';
 import { Badge } from '../ui/badge';
 import { Drawer } from '../drawer';
-import { CouponForm } from '../form/coupon';
+import { CouponForm } from '../form/dashboard/coupon';
 
 interface CouponsListProps extends HTMLAttributes<HTMLDivElement> {
     [x: string]: any;

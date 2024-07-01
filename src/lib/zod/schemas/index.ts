@@ -141,3 +141,7 @@ export const DiscountSchema = z.object({
     validThrough: DateSchema.refine((date) => !date || normalizeDate(date) >= currentDate, { message: 'Date cannot be in the past' }),
     enabled: z.boolean().optional().nullable(),
 });
+
+export const ApplyCouponSchema = z.object({
+    code: z.string().min(3).max(7),
+});

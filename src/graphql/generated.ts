@@ -20,7 +20,6 @@ export type Scalars = {
 
 export type ApplyCouponDto = {
   code: Scalars['String']['input'];
-  orderId: Scalars['String']['input'];
 };
 
 export type BillingInfoDto = {
@@ -55,6 +54,11 @@ export type Cart = {
   user: User;
 };
 
+export type CartInput = {
+  couponCode?: InputMaybe<Scalars['String']['input']>;
+  products: Array<ProductInfo>;
+};
+
 export type CartItem = {
   __typename?: 'CartItem';
   cart: Cart;
@@ -69,6 +73,8 @@ export type CartItem = {
 
 export type CartProductOutput = {
   __typename?: 'CartProductOutput';
+  coupon?: Maybe<Scalars['Int']['output']>;
+  discount?: Maybe<Scalars['Int']['output']>;
   isDeductionsEligible: Scalars['Boolean']['output'];
   products: Array<ProductOutput>;
   subTotal: Scalars['Int']['output'];
@@ -346,7 +352,7 @@ export type LoginResponse = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  applyCoupon: Scalars['String']['output'];
+  applyCoupon: Coupon;
   createCategory: Category;
   createCoupon: Coupon;
   createDeliveryInfo: DeliveryInfoDto;
@@ -783,7 +789,8 @@ export type Query = {
 
 
 export type QueryCartArgs = {
-  input: Array<ProductInfo>;
+  cartInput: CartInput;
+  userId?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -1367,11 +1374,12 @@ export type UpdateTaxMutationVariables = Exact<{
 export type UpdateTaxMutation = { __typename?: 'Mutation', updateTax: { __typename?: 'Tax', id: string, title: string, description: string, type: TaxTypes, amount?: number | null, percentage?: number | null, enabled?: boolean | null, createdAt: any, updatedAt: any } };
 
 export type CartQueryVariables = Exact<{
-  input: Array<ProductInfo> | ProductInfo;
+  input: CartInput;
+  userId?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type CartQuery = { __typename?: 'Query', cart: { __typename?: 'CartProductOutput', total: number, subTotal: number, isDeductionsEligible: boolean, taxes?: { __typename?: 'CartTaxes', total: number, breakup: Array<{ __typename?: 'CartTaxBreakup', title: string, description: string, amount?: number | null, percentage?: number | null, total: number }> } | null, products: Array<{ __typename?: 'ProductOutput', id: string, title: string, slug: string, salePrice: number, retailPrice: number, quantity: number, total: number }> } };
+export type CartQuery = { __typename?: 'Query', cart: { __typename?: 'CartProductOutput', total: number, subTotal: number, isDeductionsEligible: boolean, discount?: number | null, coupon?: number | null, taxes?: { __typename?: 'CartTaxes', total: number, breakup: Array<{ __typename?: 'CartTaxBreakup', title: string, description: string, amount?: number | null, percentage?: number | null, total: number }> } | null, products: Array<{ __typename?: 'ProductOutput', id: string, title: string, slug: string, salePrice: number, retailPrice: number, quantity: number, total: number }> } };
 
 export type GetCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2409,11 +2417,13 @@ export type UpdateTaxMutationHookResult = ReturnType<typeof useUpdateTaxMutation
 export type UpdateTaxMutationResult = Apollo.MutationResult<UpdateTaxMutation>;
 export type UpdateTaxMutationOptions = Apollo.BaseMutationOptions<UpdateTaxMutation, UpdateTaxMutationVariables>;
 export const CartDocument = gql`
-    query Cart($input: [ProductInfo!]!) {
-  cart(input: $input) {
+    query Cart($input: CartInput!, $userId: String) {
+  cart(cartInput: $input, userId: $userId) {
     total
     subTotal
     isDeductionsEligible
+    discount
+    coupon
     taxes {
       total
       breakup {
@@ -2450,6 +2460,7 @@ export const CartDocument = gql`
  * const { data, loading, error } = useCartQuery({
  *   variables: {
  *      input: // value for 'input'
+ *      userId: // value for 'userId'
  *   },
  * });
  */
