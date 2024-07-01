@@ -47,6 +47,7 @@ export type BillingInfoInput = {
 
 export type Cart = {
   __typename?: 'Cart';
+  couponCode?: Maybe<Scalars['String']['output']>;
   createdAt: Scalars['DateTime']['output'];
   id: Scalars['ID']['output'];
   items: Array<CartItem>;
@@ -55,6 +56,7 @@ export type Cart = {
 };
 
 export type CartInput = {
+  cartId?: InputMaybe<Scalars['String']['input']>;
   couponCode?: InputMaybe<Scalars['String']['input']>;
   products: Array<ProductInfo>;
 };
@@ -73,7 +75,7 @@ export type CartItem = {
 
 export type CartProductOutput = {
   __typename?: 'CartProductOutput';
-  coupon?: Maybe<Scalars['Int']['output']>;
+  coupon?: Maybe<CouponDto>;
   discount?: Maybe<Scalars['Int']['output']>;
   isDeductionsEligible: Scalars['Boolean']['output'];
   products: Array<ProductOutput>;
@@ -134,6 +136,12 @@ export type Coupon = {
   usageType?: Maybe<CouponUsageType>;
   validFrom?: Maybe<Scalars['DateTime']['output']>;
   validThrough?: Maybe<Scalars['DateTime']['output']>;
+};
+
+export type CouponDto = {
+  __typename?: 'CouponDTO';
+  code: Scalars['String']['output'];
+  total: Scalars['Int']['output'];
 };
 
 export enum CouponType {
@@ -1379,7 +1387,7 @@ export type CartQueryVariables = Exact<{
 }>;
 
 
-export type CartQuery = { __typename?: 'Query', cart: { __typename?: 'CartProductOutput', total: number, subTotal: number, isDeductionsEligible: boolean, discount?: number | null, coupon?: number | null, taxes?: { __typename?: 'CartTaxes', total: number, breakup: Array<{ __typename?: 'CartTaxBreakup', title: string, description: string, amount?: number | null, percentage?: number | null, total: number }> } | null, products: Array<{ __typename?: 'ProductOutput', id: string, title: string, slug: string, salePrice: number, retailPrice: number, quantity: number, total: number }> } };
+export type CartQuery = { __typename?: 'Query', cart: { __typename?: 'CartProductOutput', total: number, subTotal: number, isDeductionsEligible: boolean, discount?: number | null, coupon?: { __typename?: 'CouponDTO', code: string, total: number } | null, taxes?: { __typename?: 'CartTaxes', total: number, breakup: Array<{ __typename?: 'CartTaxBreakup', title: string, description: string, amount?: number | null, percentage?: number | null, total: number }> } | null, products: Array<{ __typename?: 'ProductOutput', id: string, title: string, slug: string, salePrice: number, retailPrice: number, quantity: number, total: number }> } };
 
 export type GetCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2423,7 +2431,10 @@ export const CartDocument = gql`
     subTotal
     isDeductionsEligible
     discount
-    coupon
+    coupon {
+      code
+      total
+    }
     taxes {
       total
       breakup {

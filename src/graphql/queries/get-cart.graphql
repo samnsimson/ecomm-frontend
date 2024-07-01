@@ -4,7 +4,10 @@ query Cart($input: CartInput!, $userId: String) {
         subTotal
         isDeductionsEligible
         discount
-        coupon
+        coupon {
+            code
+            total
+        }
         taxes {
             total
             breakup {

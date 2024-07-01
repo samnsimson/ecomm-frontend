@@ -4,18 +4,23 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from '@/components/ui/input';
 import { ApplyCouponSchema } from '@/lib/zod/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { FC, HTMLAttributes } from 'react';
+import { FC, HTMLAttributes, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 interface ApplyCouponFormProps extends HTMLAttributes<HTMLDivElement> {
     onCouponApply: (data: FormData) => void;
+    appliedCoupon: string | undefined | null;
 }
 
 type FormData = z.infer<typeof ApplyCouponSchema>;
 
-export const ApplyCouponForm: FC<ApplyCouponFormProps> = ({ onCouponApply, ...props }) => {
+export const ApplyCouponForm: FC<ApplyCouponFormProps> = ({ appliedCoupon, onCouponApply, ...props }) => {
     const form = useForm<FormData>({ resolver: zodResolver(ApplyCouponSchema), mode: 'onBlur' });
+
+    useEffect(() => {
+        appliedCoupon && form.setValue('code', appliedCoupon);
+    }, [appliedCoupon, form]);
 
     return (
         <Form {...form} {...props}>

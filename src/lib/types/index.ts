@@ -57,6 +57,7 @@ export type CartData = {
     discountAmount: number;
     shippingAmount: number;
     couponAmount: number;
+    couponCode: string | null | undefined;
     cartItems: Array<CartDataItem>;
 };
 
