@@ -12,6 +12,7 @@ export const gql = {
             if (errors) throw errors.map((err) => ({ ...err.extensions }));
             return { data };
         } catch (error: any) {
+            console.log('🚀 ~ error:', error);
             throw new Error(JSON.stringify(error));
         }
     },
@@ -23,7 +24,8 @@ export const gql = {
             const headers = { ...(accessToken && { authorization: `Bearer ${accessToken}` }) };
             const response = await axios.post<{ data: TData; errors: GraphQLErrors }>(url, { query: print(document), variables }, { headers });
             const { data, errors } = response.data;
-            if (errors) throw errors.map((err) => ({ ...err.extensions }));
+            console.log('🚀 ~ errors:', errors);
+            if (errors) throw errors.map((err) => ({ ...err.extensions, message: err.message }));
             return { data };
         } catch (error: any) {
             throw new Error(JSON.stringify(error));

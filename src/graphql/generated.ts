@@ -127,6 +127,13 @@ export type CreateCartInput = {
   userId: Scalars['String']['input'];
 };
 
+export type CreateCartItemInput = {
+  cartId: Scalars['String']['input'];
+  price: Scalars['Int']['input'];
+  productId: Scalars['String']['input'];
+  quantity: Scalars['Int']['input'];
+};
+
 export type CreateCategoryInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   products?: InputMaybe<Array<ProductIds>>;
@@ -341,6 +348,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   applyCoupon: Coupon;
   createCart: Cart;
+  createCartItem: Cart;
   createCategory: Category;
   createCoupon: Coupon;
   createDeliveryInfo: DeliveryInfoDto;
@@ -393,6 +401,11 @@ export type MutationApplyCouponArgs = {
 
 export type MutationCreateCartArgs = {
   createCartInput: CreateCartInput;
+};
+
+
+export type MutationCreateCartItemArgs = {
+  createCartItemInput: CreateCartItemInput;
 };
 
 
@@ -1220,6 +1233,13 @@ export type OrderFieldsFragment = { __typename?: 'Order', id: string, total: num
 
 export type ProductFieldsFragment = { __typename?: 'Product', id: string, title: string, description?: string | null, slug?: string | null, salePrice: number, retailPrice: number, brand?: string | null, dimensions: { __typename?: 'DimensionsResponse', width: number, height: number, depth: number }, categories?: Array<{ __typename?: 'Category', id: string, title: string, description?: string | null }> | null, reviews?: Array<{ __typename?: 'Review', id: string, review: string, rating: number }> | null, shipping?: { __typename?: 'Shipping', id: string, title: string, type: ShippingType, percentage: number, amount: number, enabled: boolean } | null, realtedProducts: Array<{ __typename?: 'Product', id: string, title: string, slug?: string | null, description?: string | null, salePrice: number, retailPrice: number, brand?: string | null }> };
 
+export type CreateCartItemMutationVariables = Exact<{
+  input: CreateCartItemInput;
+}>;
+
+
+export type CreateCartItemMutation = { __typename?: 'Mutation', createCartItem: { __typename?: 'Cart', id: string, createdAt: any, updatedAt: any, coupon?: string | null, couponAmount?: number | null, discountAmount?: number | null, shippingAmonunt?: number | null, taxAmount?: number | null, subTotal: string, total: number, items: Array<{ __typename?: 'CartItem', id: string, price: number, quantity: number, total?: number | null, createdAt: any, updatedAt: any, product: { __typename?: 'Product', id: string, title: string, slug?: string | null, description?: string | null, salePrice: number, retailPrice: number } }>, user: { __typename?: 'User', id: string } } };
+
 export type CreateCartMutationVariables = Exact<{
   input: CreateCartInput;
 }>;
@@ -1661,6 +1681,39 @@ export const ProductFieldsFragmentDoc = gql`
   }
 }
     `;
+export const CreateCartItemDocument = gql`
+    mutation CreateCartItem($input: CreateCartItemInput!) {
+  createCartItem(createCartItemInput: $input) {
+    ...CartFields
+  }
+}
+    ${CartFieldsFragmentDoc}`;
+export type CreateCartItemMutationFn = Apollo.MutationFunction<CreateCartItemMutation, CreateCartItemMutationVariables>;
+
+/**
+ * __useCreateCartItemMutation__
+ *
+ * To run a mutation, you first call `useCreateCartItemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCartItemMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCartItemMutation, { data, loading, error }] = useCreateCartItemMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateCartItemMutation(baseOptions?: Apollo.MutationHookOptions<CreateCartItemMutation, CreateCartItemMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateCartItemMutation, CreateCartItemMutationVariables>(CreateCartItemDocument, options);
+      }
+export type CreateCartItemMutationHookResult = ReturnType<typeof useCreateCartItemMutation>;
+export type CreateCartItemMutationResult = Apollo.MutationResult<CreateCartItemMutation>;
+export type CreateCartItemMutationOptions = Apollo.BaseMutationOptions<CreateCartItemMutation, CreateCartItemMutationVariables>;
 export const CreateCartDocument = gql`
     mutation CreateCart($input: CreateCartInput!) {
   createCart(createCartInput: $input) {

@@ -11,7 +11,7 @@ import { auth } from '@/lib/auth';
 const Providers: FC<PropsWithChildren & Record<string, any>> = async ({ children, params }) => {
     const session = await auth();
     const { data: shippingData } = await gql.request<GetShippingsQuery, GetShippingsQueryVariables>(GetShippingsDocument);
-    const { data: cartData } = await gql.fetch<GetCartQuery, GetCartQueryVariables>(GetCartDocument, { ...(session && { userId: session.user.id }) });
+    const { data: cartData } = await gql.request<GetCartQuery, GetCartQueryVariables>(GetCartDocument, { ...(session && { userId: session.user.id }) });
     return (
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <NextSessionProvider>

@@ -71,9 +71,6 @@ export const apolloClient = (session: Session | null, updateSession: UpdateSessi
         link: ApolloLink.from([auth, error, http]),
         cache: new InMemoryCache({
             typePolicies: {
-                ProductOutput: {
-                    keyFields: ['id', 'quantity'],
-                },
                 Order: {
                     keyFields: ['id'],
                 },
