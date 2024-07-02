@@ -1,31 +1,5 @@
-query Cart($input: CartInput!, $userId: String) {
-    cart(cartInput: $input, userId: $userId) {
-        total
-        subTotal
-        isDeductionsEligible
-        discount
-        coupon {
-            code
-            total
-        }
-        taxes {
-            total
-            breakup {
-                title
-                description
-                amount
-                percentage
-                total
-            }
-        }
-        products {
-            id
-            title
-            slug
-            salePrice
-            retailPrice
-            quantity
-            total
-        }
+query GetCart($userId: String, $cartId: String) {
+    cart(userId: $userId, cartId: $cartId) {
+        ...CartFields
     }
 }

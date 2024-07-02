@@ -1,0 +1,31 @@
+fragment CartFields on Cart {
+    id
+    createdAt
+    updatedAt
+    coupon
+    couponAmount
+    discountAmount
+    shippingAmonunt
+    taxAmount
+    subTotal
+    total
+    items {
+        id
+        price
+        quantity
+        total
+        createdAt
+        updatedAt
+        product {
+            id
+            title
+            slug
+            description
+            salePrice
+            retailPrice
+        }
+    }
+    user {
+        id
+    }
+}

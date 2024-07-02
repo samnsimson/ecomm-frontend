@@ -1,0 +1,5 @@
+mutation RemoveCartItem($input: RemoveCartItemInput!) {
+    removeCartItem(removeCartItemInput: $input) {
+        ...CartFields
+    }
+}

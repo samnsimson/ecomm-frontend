@@ -1,12 +1,10 @@
 'use client';
 import { ApplyCouponForm } from '@/components/form/coupon/apply';
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { CartQuery, useCartLazyQuery } from '@/graphql/generated';
-import { useStore } from '@/store';
+import { useCart } from '@/providers/cart.provider';
 import { MinusIcon, PlusIcon, XIcon } from 'lucide-react';
-import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { FC, HTMLAttributes, useEffect, useState } from 'react';
+import { FC, HTMLAttributes } from 'react';
 
 interface CartListProps extends HTMLAttributes<HTMLTableElement> {
     [x: string]: any;
@@ -29,30 +27,7 @@ const CartQuantity: FC<{ quantity: number; add: () => void; remove: () => void }
 };
 
 export const CartList: FC<CartListProps> = ({ ...props }) => {
-    const { data: session } = useSession();
-    const { cart, cartData, addToCart, removeFromCart, setCartData } = useStore((state) => state);
-    const [cartItem, setCartItem] = useState<CartQuery['cart']>({ total: 0, subTotal: 0, isDeductionsEligible: false, products: [] });
-    const [getCartProducts, { loading, error }] = useCartLazyQuery();
-
-    useEffect(() => {
-        const input = { products: cart.map(({ id, quantity }) => ({ id, quantity })), couponCode: cartData?.couponCode };
-        getCartProducts({ variables: { input, userId: session?.user.id } }).then(({ data }) => {
-            if (data) {
-                setCartItem(data.cart);
-                // setCartData({
-                //     total: data.cart.total ?? 0,
-                //     subTotal: data.cart.subTotal ?? 0,
-                //     discountAmount: data.cart.discount ?? 0,
-                //     taxAmount: data.cart?.taxes?.total ?? 0,
-                //     couponAmount: data.cart?.coupon?.total ?? 0,
-                //     couponCode: data.cart.coupon?.code,
-                //     shippingAmount: 0,
-                //     cartItems: data.cart.products.map((pdt) => ({ id: pdt.id, price: pdt.salePrice, quantity: pdt.quantity, total: pdt.total })),
-                // });
-            }
-        });
-    }, [cart, cartData, session, getCartProducts]);
-
+    const { cart, updateCartItem, removeCartItem } = useCart();
     return (
         <Table {...props}>
             <TableHeader className="bg-muted">
@@ -64,69 +39,75 @@ export const CartList: FC<CartListProps> = ({ ...props }) => {
                     <TableHead className="w-[100px] text-right">Subtotal</TableHead>
                 </TableRow>
             </TableHeader>
-            <TableBody>
-                {cartItem.products.map((cart) => (
-                    <TableRow key={cart.id}>
-                        <TableCell onClick={() => removeFromCart(cart.id, cart.quantity)} className="group cursor-pointer">
-                            <XIcon className="text-muted-foreground group-hover:text-destructive" size={18} />
+            {!!cart && (
+                <TableBody>
+                    {cart.items.map((item) => (
+                        <TableRow key={item.id}>
+                            <TableCell onClick={() => removeCartItem({ cartId: cart.id, itemId: item.id })} className="group cursor-pointer">
+                                <XIcon className="text-muted-foreground group-hover:text-destructive" size={18} />
+                            </TableCell>
+                            <TableCell className="font-medium">
+                                <Link href={`/shop/${item.product.slug}`} className="hover:text-primary">
+                                    {item.product.title}
+                                </Link>
+                            </TableCell>
+                            <TableCell className="text-right">${item.product.salePrice}</TableCell>
+                            <TableCell>
+                                <CartQuantity
+                                    quantity={item.quantity}
+                                    add={() => updateCartItem({ cartId: cart.id, itemId: item.id, quantity: item.quantity + 1 })}
+                                    remove={() => removeCartItem({ itemId: item.id, cartId: cart.id })}
+                                />
+                            </TableCell>
+                            <TableCell className="text-right">${item.total}</TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            )}
+            {!!cart && (
+                <TableFooter>
+                    <TableRow>
+                        <TableCell className="py-4 align-top" colSpan={2} rowSpan={5}>
+                            <ApplyCouponForm appliedCoupon={cart.coupon} onCouponApply={() => {}} />
                         </TableCell>
-                        <TableCell className="font-medium">
-                            <Link href={`/shop/${cart.slug}`} className="hover:text-primary">
-                                {cart.title}
-                            </Link>
+                        <TableCell className="py-2 text-right font-semibold" colSpan={2}>
+                            Sub Total
                         </TableCell>
-                        <TableCell className="text-right">${cart.salePrice}</TableCell>
-                        <TableCell>
-                            <CartQuantity quantity={cart.quantity} add={() => addToCart(cart.id, 1)} remove={() => removeFromCart(cart.id, 1)} />
-                        </TableCell>
-                        <TableCell className="text-right">${cart.total}</TableCell>
+                        <TableCell className="py-2 text-right text-base font-semibold">${cart.subTotal}</TableCell>
                     </TableRow>
-                ))}
-            </TableBody>
-            <TableFooter>
-                <TableRow>
-                    <TableCell className="py-4 align-top" colSpan={2} rowSpan={5}>
-                        <ApplyCouponForm
-                            appliedCoupon={cartData?.couponCode}
-                            onCouponApply={({ code }) => cartData && setCartData({ ...cartData, couponCode: code })}
-                        />
-                    </TableCell>
-                    <TableCell className="py-2 text-right font-semibold" colSpan={2}>
-                        Sub Total
-                    </TableCell>
-                    <TableCell className="py-2 text-right text-base font-semibold">${cartItem.subTotal}</TableCell>
-                </TableRow>
-                {!!cartItem['discount'] && (
+                    {!!cart['discountAmount'] && (
+                        <TableRow>
+                            <TableCell className="py-2 text-right font-semibold" colSpan={2}>
+                                Discount
+                            </TableCell>
+                            <TableCell className="py-2 text-right text-base font-semibold">- ${cart.discountAmount}</TableCell>
+                        </TableRow>
+                    )}
+                    {!!cart['couponAmount'] && (
+                        <TableRow>
+                            <TableCell className="py-2 text-right font-semibold" colSpan={2}>
+                                Coupon
+                            </TableCell>
+                            <TableCell className="py-2 text-right text-base font-semibold">- ${cart.couponAmount}</TableCell>
+                        </TableRow>
+                    )}
+                    {!!cart['taxAmount'] && (
+                        <TableRow>
+                            <TableCell className="py-2 text-right font-semibold" colSpan={2}>
+                                Taxes
+                            </TableCell>
+                            <TableCell className="py-2 text-right text-base font-semibold">${cart.taxAmount}</TableCell>
+                        </TableRow>
+                    )}
+
                     <TableRow>
                         <TableCell className="py-2 text-right font-semibold" colSpan={2}>
-                            Discount
+                            Total
                         </TableCell>
-                        <TableCell className="py-2 text-right text-base font-semibold">- ${cartItem.discount}</TableCell>
+                        <TableCell className="py-2 text-right text-base font-semibold">${cart.total}</TableCell>
                     </TableRow>
-                )}
-                {!!cartItem['coupon'] && (
-                    <TableRow>
-                        <TableCell className="py-2 text-right font-semibold" colSpan={2}>
-                            Coupon
-                        </TableCell>
-                        <TableCell className="py-2 text-right text-base font-semibold">- ${cartItem.coupon.total}</TableCell>
-                    </TableRow>
-                )}
-                {cartItem['taxes'] && (
-                    <TableRow>
-                        <TableCell className="py-2 text-right font-semibold" colSpan={2}>
-                            Taxes
-                        </TableCell>
-                        <TableCell className="py-2 text-right text-base font-semibold">${cartItem.taxes.total}</TableCell>
-                    </TableRow>
-                )}
-                <TableRow>
-                    <TableCell className="py-2 text-right font-semibold" colSpan={2}>
-                        Total
-                    </TableCell>
-                    <TableCell className="py-2 text-right text-base font-semibold">${cartItem.total}</TableCell>
-                </TableRow>
-            </TableFooter>
+                </TableFooter>
+            )}
         </Table>
     );
 };

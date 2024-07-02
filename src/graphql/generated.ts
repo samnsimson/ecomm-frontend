@@ -47,18 +47,18 @@ export type BillingInfoInput = {
 
 export type Cart = {
   __typename?: 'Cart';
-  couponCode?: Maybe<Scalars['String']['output']>;
+  coupon?: Maybe<Scalars['String']['output']>;
+  couponAmount?: Maybe<Scalars['Int']['output']>;
   createdAt: Scalars['DateTime']['output'];
+  discountAmount?: Maybe<Scalars['Int']['output']>;
   id: Scalars['ID']['output'];
   items: Array<CartItem>;
+  shippingAmonunt?: Maybe<Scalars['Int']['output']>;
+  subTotal: Scalars['String']['output'];
+  taxAmount?: Maybe<Scalars['Int']['output']>;
+  total: Scalars['Int']['output'];
   updatedAt: Scalars['DateTime']['output'];
   user: User;
-};
-
-export type CartInput = {
-  cartId?: InputMaybe<Scalars['String']['input']>;
-  couponCode?: InputMaybe<Scalars['String']['input']>;
-  products: Array<ProductInfo>;
 };
 
 export type CartItem = {
@@ -71,32 +71,6 @@ export type CartItem = {
   quantity: Scalars['Int']['output'];
   total?: Maybe<Scalars['Int']['output']>;
   updatedAt: Scalars['DateTime']['output'];
-};
-
-export type CartProductOutput = {
-  __typename?: 'CartProductOutput';
-  coupon?: Maybe<CouponDto>;
-  discount?: Maybe<Scalars['Int']['output']>;
-  isDeductionsEligible: Scalars['Boolean']['output'];
-  products: Array<ProductOutput>;
-  subTotal: Scalars['Int']['output'];
-  taxes?: Maybe<CartTaxes>;
-  total: Scalars['Int']['output'];
-};
-
-export type CartTaxBreakup = {
-  __typename?: 'CartTaxBreakup';
-  amount?: Maybe<Scalars['Int']['output']>;
-  description: Scalars['String']['output'];
-  percentage?: Maybe<Scalars['Int']['output']>;
-  title: Scalars['String']['output'];
-  total: Scalars['Int']['output'];
-};
-
-export type CartTaxes = {
-  __typename?: 'CartTaxes';
-  breakup: Array<CartTaxBreakup>;
-  total: Scalars['Int']['output'];
 };
 
 export type CategoriesInput = {
@@ -138,12 +112,6 @@ export type Coupon = {
   validThrough?: Maybe<Scalars['DateTime']['output']>;
 };
 
-export type CouponDto = {
-  __typename?: 'CouponDTO';
-  code: Scalars['String']['output'];
-  total: Scalars['Int']['output'];
-};
-
 export enum CouponType {
   Flat = 'FLAT',
   Percentage = 'PERCENTAGE'
@@ -153,6 +121,11 @@ export enum CouponUsageType {
   MultiUse = 'MULTI_USE',
   SingleUse = 'SINGLE_USE'
 }
+
+export type CreateCartInput = {
+  items: Array<Item>;
+  userId: Scalars['String']['input'];
+};
 
 export type CreateCategoryInput = {
   description?: InputMaybe<Scalars['String']['input']>;
@@ -341,6 +314,12 @@ export enum DiscountType {
   Percentage = 'PERCENTAGE'
 }
 
+export type Item = {
+  id: Scalars['String']['input'];
+  price: Scalars['Int']['input'];
+  quantity: Scalars['Int']['input'];
+};
+
 export type LoginInput = {
   password: Scalars['String']['input'];
   username: Scalars['String']['input'];
@@ -361,6 +340,7 @@ export type LoginResponse = {
 export type Mutation = {
   __typename?: 'Mutation';
   applyCoupon: Coupon;
+  createCart: Cart;
   createCategory: Category;
   createCoupon: Coupon;
   createDeliveryInfo: DeliveryInfoDto;
@@ -375,6 +355,7 @@ export type Mutation = {
   createTax: Tax;
   login: LoginResponse;
   refresh: RefreshTokenResponse;
+  removeCartItem: Cart;
   removeCategory: Category;
   removeCoupon: Coupon;
   removeDeliveryInfo: DeliveryInfo;
@@ -389,6 +370,7 @@ export type Mutation = {
   removeUser: DeltedUser;
   saveSetting: Setting;
   signup: SignupResponse;
+  updateCartItem: Cart;
   updateCategory: Category;
   updateCoupon: Coupon;
   updateDeliveryInfo: DeliveryInfo;
@@ -406,6 +388,11 @@ export type Mutation = {
 
 export type MutationApplyCouponArgs = {
   applyCouponInput: ApplyCouponDto;
+};
+
+
+export type MutationCreateCartArgs = {
+  createCartInput: CreateCartInput;
 };
 
 
@@ -480,6 +467,11 @@ export type MutationRefreshArgs = {
 };
 
 
+export type MutationRemoveCartItemArgs = {
+  removeCartItemInput: RemoveCartItemInput;
+};
+
+
 export type MutationRemoveCategoryArgs = {
   id: Scalars['Int']['input'];
 };
@@ -548,6 +540,11 @@ export type MutationSaveSettingArgs = {
 export type MutationSignupArgs = {
   autoLogin?: InputMaybe<Scalars['Boolean']['input']>;
   signupInput: CreateUserInput;
+};
+
+
+export type MutationUpdateCartItemArgs = {
+  updateCartItemInput: UpdateCartItemInput;
 };
 
 
@@ -731,22 +728,6 @@ export type ProductIds = {
   id: Scalars['String']['input'];
 };
 
-export type ProductInfo = {
-  id: Scalars['String']['input'];
-  quantity: Scalars['Int']['input'];
-};
-
-export type ProductOutput = {
-  __typename?: 'ProductOutput';
-  id: Scalars['String']['output'];
-  quantity: Scalars['Int']['output'];
-  retailPrice: Scalars['Int']['output'];
-  salePrice: Scalars['Int']['output'];
-  slug: Scalars['String']['output'];
-  title: Scalars['String']['output'];
-  total: Scalars['Int']['output'];
-};
-
 export type Profile = {
   __typename?: 'Profile';
   addressOne: Scalars['String']['output'];
@@ -766,7 +747,7 @@ export type Profile = {
 
 export type Query = {
   __typename?: 'Query';
-  cart: CartProductOutput;
+  cart: Cart;
   categories: Array<Category>;
   category: Category;
   coupon: Coupon;
@@ -797,7 +778,7 @@ export type Query = {
 
 
 export type QueryCartArgs = {
-  cartInput: CartInput;
+  cartId?: InputMaybe<Scalars['String']['input']>;
   userId?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -942,6 +923,11 @@ export type RefreshTokenResponse = {
   accessToken: Scalars['String']['output'];
 };
 
+export type RemoveCartItemInput = {
+  cartId: Scalars['String']['input'];
+  itemId: Scalars['String']['input'];
+};
+
 export type Review = {
   __typename?: 'Review';
   createdAt: Scalars['DateTime']['output'];
@@ -1071,6 +1057,13 @@ export enum TaxTypes {
   Flat = 'FLAT',
   Percentage = 'PERCENTAGE'
 }
+
+export type UpdateCartItemInput = {
+  cartId: Scalars['String']['input'];
+  itemId: Scalars['String']['input'];
+  price?: InputMaybe<Scalars['Int']['input']>;
+  quantity?: InputMaybe<Scalars['Int']['input']>;
+};
 
 export type UpdateCategoryInput = {
   description?: InputMaybe<Scalars['String']['input']>;
@@ -1217,6 +1210,8 @@ export enum UserRole {
   User = 'USER'
 }
 
+export type CartFieldsFragment = { __typename?: 'Cart', id: string, createdAt: any, updatedAt: any, coupon?: string | null, couponAmount?: number | null, discountAmount?: number | null, shippingAmonunt?: number | null, taxAmount?: number | null, subTotal: string, total: number, items: Array<{ __typename?: 'CartItem', id: string, price: number, quantity: number, total?: number | null, createdAt: any, updatedAt: any, product: { __typename?: 'Product', id: string, title: string, slug?: string | null, description?: string | null, salePrice: number, retailPrice: number } }>, user: { __typename?: 'User', id: string } };
+
 export type CouponFieldFragment = { __typename?: 'Coupon', id: string, title: string, description?: string | null, code: string, type?: CouponType | null, usageType?: CouponUsageType | null, amount?: number | null, percentage?: number | null, enabled?: boolean | null, lastUsedAt?: any | null, validFrom?: any | null, validThrough?: any | null, createdAt: any, updatedAt: any };
 
 export type DiscountFieldsFragment = { __typename?: 'Discount', id: string, title: string, description?: string | null, type: DiscountType, amount?: number | null, percentage?: number | null, validFrom?: any | null, validThrough?: any | null, enabled?: boolean | null, createdAt: any, updatedAt: any };
@@ -1224,6 +1219,13 @@ export type DiscountFieldsFragment = { __typename?: 'Discount', id: string, titl
 export type OrderFieldsFragment = { __typename?: 'Order', id: string, total: number, status?: OrderStatus | null, subTotal: number, createdAt: any, updatedAt: any, processedAt?: any | null, shippedAt?: any | null, fulfilledAt?: any | null, cancelledAt?: any | null, taxAmount?: number | null, shippingAmount?: number | null, couponAmount?: number | null, discountAmount?: number | null, billingAddress: { __typename?: 'BillingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string }, shippingAddress: { __typename?: 'ShippingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string }, user: { __typename?: 'User', username: string, email: string, phone: string }, items: Array<{ __typename?: 'OrderItem', id: string, quantity: number, price: number, total?: number | null, product: { __typename?: 'Product', title: string, slug?: string | null } }>, payment: { __typename?: 'Payment', id: string, amount: number, type: PaymentType, provider: PaymentProvider, status: PaymentStatus } };
 
 export type ProductFieldsFragment = { __typename?: 'Product', id: string, title: string, description?: string | null, slug?: string | null, salePrice: number, retailPrice: number, brand?: string | null, dimensions: { __typename?: 'DimensionsResponse', width: number, height: number, depth: number }, categories?: Array<{ __typename?: 'Category', id: string, title: string, description?: string | null }> | null, reviews?: Array<{ __typename?: 'Review', id: string, review: string, rating: number }> | null, shipping?: { __typename?: 'Shipping', id: string, title: string, type: ShippingType, percentage: number, amount: number, enabled: boolean } | null, realtedProducts: Array<{ __typename?: 'Product', id: string, title: string, slug?: string | null, description?: string | null, salePrice: number, retailPrice: number, brand?: string | null }> };
+
+export type CreateCartMutationVariables = Exact<{
+  input: CreateCartInput;
+}>;
+
+
+export type CreateCartMutation = { __typename?: 'Mutation', createCart: { __typename?: 'Cart', id: string, createdAt: any, updatedAt: any, coupon?: string | null, couponAmount?: number | null, discountAmount?: number | null, shippingAmonunt?: number | null, taxAmount?: number | null, subTotal: string, total: number, items: Array<{ __typename?: 'CartItem', id: string, price: number, quantity: number, total?: number | null, createdAt: any, updatedAt: any, product: { __typename?: 'Product', id: string, title: string, slug?: string | null, description?: string | null, salePrice: number, retailPrice: number } }>, user: { __typename?: 'User', id: string } } };
 
 export type CreateCategoryMutationVariables = Exact<{
   input: CreateCategoryInput;
@@ -1303,6 +1305,13 @@ export type RefreshTokenMutationVariables = Exact<{
 
 export type RefreshTokenMutation = { __typename?: 'Mutation', refresh: { __typename?: 'RefreshTokenResponse', accessToken: string } };
 
+export type RemoveCartItemMutationVariables = Exact<{
+  input: RemoveCartItemInput;
+}>;
+
+
+export type RemoveCartItemMutation = { __typename?: 'Mutation', removeCartItem: { __typename?: 'Cart', id: string, createdAt: any, updatedAt: any, coupon?: string | null, couponAmount?: number | null, discountAmount?: number | null, shippingAmonunt?: number | null, taxAmount?: number | null, subTotal: string, total: number, items: Array<{ __typename?: 'CartItem', id: string, price: number, quantity: number, total?: number | null, createdAt: any, updatedAt: any, product: { __typename?: 'Product', id: string, title: string, slug?: string | null, description?: string | null, salePrice: number, retailPrice: number } }>, user: { __typename?: 'User', id: string } } };
+
 export type SaveSettingsMutationVariables = Exact<{
   input: SettingsInput;
 }>;
@@ -1331,6 +1340,13 @@ export type UpdateOrderMutationVariables = Exact<{
 
 
 export type UpdateOrderMutation = { __typename?: 'Mutation', updateOrder: { __typename?: 'Order', id: string } };
+
+export type UpdateCartItemMutationVariables = Exact<{
+  input: UpdateCartItemInput;
+}>;
+
+
+export type UpdateCartItemMutation = { __typename?: 'Mutation', updateCartItem: { __typename?: 'Cart', id: string, createdAt: any, updatedAt: any, coupon?: string | null, couponAmount?: number | null, discountAmount?: number | null, shippingAmonunt?: number | null, taxAmount?: number | null, subTotal: string, total: number, items: Array<{ __typename?: 'CartItem', id: string, price: number, quantity: number, total?: number | null, createdAt: any, updatedAt: any, product: { __typename?: 'Product', id: string, title: string, slug?: string | null, description?: string | null, salePrice: number, retailPrice: number } }>, user: { __typename?: 'User', id: string } } };
 
 export type UpdateCategoryMutationVariables = Exact<{
   input: UpdateCategoryInput;
@@ -1381,13 +1397,13 @@ export type UpdateTaxMutationVariables = Exact<{
 
 export type UpdateTaxMutation = { __typename?: 'Mutation', updateTax: { __typename?: 'Tax', id: string, title: string, description: string, type: TaxTypes, amount?: number | null, percentage?: number | null, enabled?: boolean | null, createdAt: any, updatedAt: any } };
 
-export type CartQueryVariables = Exact<{
-  input: CartInput;
+export type GetCartQueryVariables = Exact<{
   userId?: InputMaybe<Scalars['String']['input']>;
+  cartId?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type CartQuery = { __typename?: 'Query', cart: { __typename?: 'CartProductOutput', total: number, subTotal: number, isDeductionsEligible: boolean, discount?: number | null, coupon?: { __typename?: 'CouponDTO', code: string, total: number } | null, taxes?: { __typename?: 'CartTaxes', total: number, breakup: Array<{ __typename?: 'CartTaxBreakup', title: string, description: string, amount?: number | null, percentage?: number | null, total: number }> } | null, products: Array<{ __typename?: 'ProductOutput', id: string, title: string, slug: string, salePrice: number, retailPrice: number, quantity: number, total: number }> } };
+export type GetCartQuery = { __typename?: 'Query', cart: { __typename?: 'Cart', id: string, createdAt: any, updatedAt: any, coupon?: string | null, couponAmount?: number | null, discountAmount?: number | null, shippingAmonunt?: number | null, taxAmount?: number | null, subTotal: string, total: number, items: Array<{ __typename?: 'CartItem', id: string, price: number, quantity: number, total?: number | null, createdAt: any, updatedAt: any, product: { __typename?: 'Product', id: string, title: string, slug?: string | null, description?: string | null, salePrice: number, retailPrice: number } }>, user: { __typename?: 'User', id: string } } };
 
 export type GetCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1480,6 +1496,39 @@ export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetUsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', id: string, username: string, email: string, phone: string, emailVerified?: boolean | null, phoneVerified?: boolean | null, orders?: Array<{ __typename?: 'Order', id: string, total: number, status?: OrderStatus | null, subTotal: number, createdAt: any, updatedAt: any, processedAt?: any | null, shippedAt?: any | null, fulfilledAt?: any | null, cancelledAt?: any | null, taxAmount?: number | null, shippingAmount?: number | null, couponAmount?: number | null, discountAmount?: number | null, billingAddress: { __typename?: 'BillingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string }, shippingAddress: { __typename?: 'ShippingInfoDto', addressOne: string, addressTwo: string, city: string, state: string, country: string, zipcode: string }, user: { __typename?: 'User', username: string, email: string, phone: string }, items: Array<{ __typename?: 'OrderItem', id: string, quantity: number, price: number, total?: number | null, product: { __typename?: 'Product', title: string, slug?: string | null } }>, payment: { __typename?: 'Payment', id: string, amount: number, type: PaymentType, provider: PaymentProvider, status: PaymentStatus } }> | null, profile?: { __typename?: 'Profile', id: string, firstName: string, lastName?: string | null, addressOne: string, city: string, state: string, country: string, zipcode: string, profileImage?: string | null } | null }> };
 
+export const CartFieldsFragmentDoc = gql`
+    fragment CartFields on Cart {
+  id
+  createdAt
+  updatedAt
+  coupon
+  couponAmount
+  discountAmount
+  shippingAmonunt
+  taxAmount
+  subTotal
+  total
+  items {
+    id
+    price
+    quantity
+    total
+    createdAt
+    updatedAt
+    product {
+      id
+      title
+      slug
+      description
+      salePrice
+      retailPrice
+    }
+  }
+  user {
+    id
+  }
+}
+    `;
 export const CouponFieldFragmentDoc = gql`
     fragment CouponField on Coupon {
   id
@@ -1612,6 +1661,39 @@ export const ProductFieldsFragmentDoc = gql`
   }
 }
     `;
+export const CreateCartDocument = gql`
+    mutation CreateCart($input: CreateCartInput!) {
+  createCart(createCartInput: $input) {
+    ...CartFields
+  }
+}
+    ${CartFieldsFragmentDoc}`;
+export type CreateCartMutationFn = Apollo.MutationFunction<CreateCartMutation, CreateCartMutationVariables>;
+
+/**
+ * __useCreateCartMutation__
+ *
+ * To run a mutation, you first call `useCreateCartMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCartMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCartMutation, { data, loading, error }] = useCreateCartMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateCartMutation(baseOptions?: Apollo.MutationHookOptions<CreateCartMutation, CreateCartMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateCartMutation, CreateCartMutationVariables>(CreateCartDocument, options);
+      }
+export type CreateCartMutationHookResult = ReturnType<typeof useCreateCartMutation>;
+export type CreateCartMutationResult = Apollo.MutationResult<CreateCartMutation>;
+export type CreateCartMutationOptions = Apollo.BaseMutationOptions<CreateCartMutation, CreateCartMutationVariables>;
 export const CreateCategoryDocument = gql`
     mutation CreateCategory($input: CreateCategoryInput!) {
   createCategory(createCategoryInput: $input) {
@@ -2015,6 +2097,39 @@ export function useRefreshTokenMutation(baseOptions?: Apollo.MutationHookOptions
 export type RefreshTokenMutationHookResult = ReturnType<typeof useRefreshTokenMutation>;
 export type RefreshTokenMutationResult = Apollo.MutationResult<RefreshTokenMutation>;
 export type RefreshTokenMutationOptions = Apollo.BaseMutationOptions<RefreshTokenMutation, RefreshTokenMutationVariables>;
+export const RemoveCartItemDocument = gql`
+    mutation RemoveCartItem($input: RemoveCartItemInput!) {
+  removeCartItem(removeCartItemInput: $input) {
+    ...CartFields
+  }
+}
+    ${CartFieldsFragmentDoc}`;
+export type RemoveCartItemMutationFn = Apollo.MutationFunction<RemoveCartItemMutation, RemoveCartItemMutationVariables>;
+
+/**
+ * __useRemoveCartItemMutation__
+ *
+ * To run a mutation, you first call `useRemoveCartItemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveCartItemMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeCartItemMutation, { data, loading, error }] = useRemoveCartItemMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useRemoveCartItemMutation(baseOptions?: Apollo.MutationHookOptions<RemoveCartItemMutation, RemoveCartItemMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveCartItemMutation, RemoveCartItemMutationVariables>(RemoveCartItemDocument, options);
+      }
+export type RemoveCartItemMutationHookResult = ReturnType<typeof useRemoveCartItemMutation>;
+export type RemoveCartItemMutationResult = Apollo.MutationResult<RemoveCartItemMutation>;
+export type RemoveCartItemMutationOptions = Apollo.BaseMutationOptions<RemoveCartItemMutation, RemoveCartItemMutationVariables>;
 export const SaveSettingsDocument = gql`
     mutation SaveSettings($input: SettingsInput!) {
   saveSetting(settingsInput: $input) {
@@ -2165,6 +2280,39 @@ export function useUpdateOrderMutation(baseOptions?: Apollo.MutationHookOptions<
 export type UpdateOrderMutationHookResult = ReturnType<typeof useUpdateOrderMutation>;
 export type UpdateOrderMutationResult = Apollo.MutationResult<UpdateOrderMutation>;
 export type UpdateOrderMutationOptions = Apollo.BaseMutationOptions<UpdateOrderMutation, UpdateOrderMutationVariables>;
+export const UpdateCartItemDocument = gql`
+    mutation UpdateCartItem($input: UpdateCartItemInput!) {
+  updateCartItem(updateCartItemInput: $input) {
+    ...CartFields
+  }
+}
+    ${CartFieldsFragmentDoc}`;
+export type UpdateCartItemMutationFn = Apollo.MutationFunction<UpdateCartItemMutation, UpdateCartItemMutationVariables>;
+
+/**
+ * __useUpdateCartItemMutation__
+ *
+ * To run a mutation, you first call `useUpdateCartItemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCartItemMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCartItemMutation, { data, loading, error }] = useUpdateCartItemMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateCartItemMutation(baseOptions?: Apollo.MutationHookOptions<UpdateCartItemMutation, UpdateCartItemMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateCartItemMutation, UpdateCartItemMutationVariables>(UpdateCartItemDocument, options);
+      }
+export type UpdateCartItemMutationHookResult = ReturnType<typeof useUpdateCartItemMutation>;
+export type UpdateCartItemMutationResult = Apollo.MutationResult<UpdateCartItemMutation>;
+export type UpdateCartItemMutationOptions = Apollo.BaseMutationOptions<UpdateCartItemMutation, UpdateCartItemMutationVariables>;
 export const UpdateCategoryDocument = gql`
     mutation UpdateCategory($input: UpdateCategoryInput!) {
   updateCategory(updateCategoryInput: $input) {
@@ -2424,73 +2572,47 @@ export function useUpdateTaxMutation(baseOptions?: Apollo.MutationHookOptions<Up
 export type UpdateTaxMutationHookResult = ReturnType<typeof useUpdateTaxMutation>;
 export type UpdateTaxMutationResult = Apollo.MutationResult<UpdateTaxMutation>;
 export type UpdateTaxMutationOptions = Apollo.BaseMutationOptions<UpdateTaxMutation, UpdateTaxMutationVariables>;
-export const CartDocument = gql`
-    query Cart($input: CartInput!, $userId: String) {
-  cart(cartInput: $input, userId: $userId) {
-    total
-    subTotal
-    isDeductionsEligible
-    discount
-    coupon {
-      code
-      total
-    }
-    taxes {
-      total
-      breakup {
-        title
-        description
-        amount
-        percentage
-        total
-      }
-    }
-    products {
-      id
-      title
-      slug
-      salePrice
-      retailPrice
-      quantity
-      total
-    }
+export const GetCartDocument = gql`
+    query GetCart($userId: String, $cartId: String) {
+  cart(userId: $userId, cartId: $cartId) {
+    ...CartFields
   }
 }
-    `;
+    ${CartFieldsFragmentDoc}`;
 
 /**
- * __useCartQuery__
+ * __useGetCartQuery__
  *
- * To run a query within a React component, call `useCartQuery` and pass it any options that fit your needs.
- * When your component renders, `useCartQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetCartQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCartQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useCartQuery({
+ * const { data, loading, error } = useGetCartQuery({
  *   variables: {
- *      input: // value for 'input'
  *      userId: // value for 'userId'
+ *      cartId: // value for 'cartId'
  *   },
  * });
  */
-export function useCartQuery(baseOptions: Apollo.QueryHookOptions<CartQuery, CartQueryVariables> & ({ variables: CartQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+export function useGetCartQuery(baseOptions?: Apollo.QueryHookOptions<GetCartQuery, GetCartQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<CartQuery, CartQueryVariables>(CartDocument, options);
+        return Apollo.useQuery<GetCartQuery, GetCartQueryVariables>(GetCartDocument, options);
       }
-export function useCartLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CartQuery, CartQueryVariables>) {
+export function useGetCartLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCartQuery, GetCartQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<CartQuery, CartQueryVariables>(CartDocument, options);
+          return Apollo.useLazyQuery<GetCartQuery, GetCartQueryVariables>(GetCartDocument, options);
         }
-export function useCartSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<CartQuery, CartQueryVariables>) {
+export function useGetCartSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetCartQuery, GetCartQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<CartQuery, CartQueryVariables>(CartDocument, options);
+          return Apollo.useSuspenseQuery<GetCartQuery, GetCartQueryVariables>(GetCartDocument, options);
         }
-export type CartQueryHookResult = ReturnType<typeof useCartQuery>;
-export type CartLazyQueryHookResult = ReturnType<typeof useCartLazyQuery>;
-export type CartSuspenseQueryHookResult = ReturnType<typeof useCartSuspenseQuery>;
-export type CartQueryResult = Apollo.QueryResult<CartQuery, CartQueryVariables>;
+export type GetCartQueryHookResult = ReturnType<typeof useGetCartQuery>;
+export type GetCartLazyQueryHookResult = ReturnType<typeof useGetCartLazyQuery>;
+export type GetCartSuspenseQueryHookResult = ReturnType<typeof useGetCartSuspenseQuery>;
+export type GetCartQueryResult = Apollo.QueryResult<GetCartQuery, GetCartQueryVariables>;
 export const GetCategoriesDocument = gql`
     query GetCategories {
   categories {

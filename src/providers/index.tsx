@@ -5,17 +5,19 @@ import { NextSessionProvider } from './session.provider';
 import { ShippingProvider } from './shipping.provider';
 import { CartProvider } from './cart.provider';
 import { gql } from '@/lib/graphql-client';
-import { GetShippingsDocument, GetShippingsQuery, GetShippingsQueryVariables } from '@/graphql/generated';
+import { GetCartDocument, GetCartQuery, GetCartQueryVariables, GetShippingsDocument, GetShippingsQuery, GetShippingsQueryVariables } from '@/graphql/generated';
+import { auth } from '@/lib/auth';
 
 const Providers: FC<PropsWithChildren & Record<string, any>> = async ({ children, params }) => {
+    const session = await auth();
     const { data: shippingData } = await gql.request<GetShippingsQuery, GetShippingsQueryVariables>(GetShippingsDocument);
-
+    const { data: cartData } = await gql.fetch<GetCartQuery, GetCartQueryVariables>(GetCartDocument, { ...(session && { userId: session.user.id }) });
     return (
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <NextSessionProvider>
                 <ApolloClientProvider>
                     <ShippingProvider initialShippingData={shippingData.shippings}>
-                        <CartProvider>{children}</CartProvider>
+                        <CartProvider initialData={cartData.cart}>{children}</CartProvider>
                     </ShippingProvider>
                 </ApolloClientProvider>
             </NextSessionProvider>
