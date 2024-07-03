@@ -24,7 +24,6 @@ export const gql = {
             const headers = { ...(accessToken && { authorization: `Bearer ${accessToken}` }) };
             const response = await axios.post<{ data: TData; errors: GraphQLErrors }>(url, { query: print(document), variables }, { headers });
             const { data, errors } = response.data;
-            console.log('🚀 ~ errors:', errors);
             if (errors) throw errors.map((err) => ({ ...err.extensions, message: err.message }));
             return { data };
         } catch (error: any) {

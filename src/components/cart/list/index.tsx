@@ -2,32 +2,17 @@
 import { ApplyCouponForm } from '@/components/form/coupon/apply';
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useCart } from '@/providers/cart.provider';
-import { MinusIcon, PlusIcon, XIcon } from 'lucide-react';
+import { XIcon } from 'lucide-react';
 import Link from 'next/link';
 import { FC, HTMLAttributes } from 'react';
+import { CartQuantity } from '../quantityButton';
 
 interface CartListProps extends HTMLAttributes<HTMLTableElement> {
     [x: string]: any;
 }
 
-const CartQuantity: FC<{ quantity: number; add: () => void; remove: () => void }> = ({ quantity, add, remove }) => {
-    return (
-        <div className="flex items-center justify-between">
-            <div className="rounded bg-secondary p-1" onClick={remove}>
-                <MinusIcon size={18} />
-            </div>
-            <div className="flex-1 text-center">
-                <p className="my-0">{quantity}</p>
-            </div>
-            <div className="rounded bg-secondary p-1" onClick={add}>
-                <PlusIcon size={18} />
-            </div>
-        </div>
-    );
-};
-
 export const CartList: FC<CartListProps> = ({ ...props }) => {
-    const { cart, updateCartItem, removeCartItem } = useCart();
+    const { cart, removeCartItem } = useCart();
     return (
         <Table {...props}>
             <TableHeader className="bg-muted">
@@ -35,7 +20,7 @@ export const CartList: FC<CartListProps> = ({ ...props }) => {
                     <TableHead className="w-[40px]"></TableHead>
                     <TableHead>Name</TableHead>
                     <TableHead className="w-[100px] text-right">Price</TableHead>
-                    <TableHead className="w-[140px] text-right">Quantity</TableHead>
+                    <TableHead className="w-[140px] text-center">Quantity</TableHead>
                     <TableHead className="w-[100px] text-right">Subtotal</TableHead>
                 </TableRow>
             </TableHeader>
@@ -53,11 +38,7 @@ export const CartList: FC<CartListProps> = ({ ...props }) => {
                             </TableCell>
                             <TableCell className="text-right">${item.product.salePrice}</TableCell>
                             <TableCell>
-                                <CartQuantity
-                                    quantity={item.quantity}
-                                    add={() => updateCartItem({ cartId: cart.id, itemId: item.id, quantity: item.quantity + 1 })}
-                                    remove={() => removeCartItem({ itemId: item.id, cartId: cart.id })}
-                                />
+                                <CartQuantity quantity={item.quantity} productId={item.product.id} itemId={item.id} price={item.product.salePrice} />
                             </TableCell>
                             <TableCell className="text-right">${item.total}</TableCell>
                         </TableRow>

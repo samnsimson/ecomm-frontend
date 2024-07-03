@@ -5,10 +5,11 @@ fragment CartFields on Cart {
     coupon
     couponAmount
     discountAmount
-    shippingAmonunt
+    shippingAmount
     taxAmount
     subTotal
     total
+    guestId
     items {
         id
         price

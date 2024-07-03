@@ -12,8 +12,10 @@ import {
     useRemoveCartItemMutation,
     useUpdateCartItemMutation,
 } from '@/graphql/generated';
+import { Store } from '@/lib/types';
+import { useStore } from '@/store';
 import { useSession } from 'next-auth/react';
-import { FC, PropsWithChildren, createContext, useContext, useState } from 'react';
+import { FC, PropsWithChildren, createContext, useContext, useEffect, useLayoutEffect, useState } from 'react';
 
 type CartContextType = {
     cart: GetCartQuery['cart'] | null | undefined;
@@ -33,7 +35,8 @@ const CartContext = createContext<CartContextType>({
 
 export const CartProvider: FC<PropsWithChildren & { initialData: GetCartQuery['cart'] | null | undefined }> = ({ children, initialData }) => {
     const { data: session } = useSession();
-    const [_, { refetch }] = useGetCartLazyQuery();
+    const { guestId, setGuestId } = useStore<Store>((state) => state);
+    const [getCart, { refetch }] = useGetCartLazyQuery();
     const [create] = useCreateCartMutation();
     const [updateItem] = useUpdateCartItemMutation();
     const [removeItem] = useRemoveCartItemMutation();
@@ -41,40 +44,50 @@ export const CartProvider: FC<PropsWithChildren & { initialData: GetCartQuery['c
     const [cart, setCart] = useState<GetCartQuery['cart'] | null | undefined>(initialData);
 
     const refreshData = async () => {
-        const props: { userId?: string; cartId?: string } = {};
+        const props: { userId?: string; cartId?: string; guestId?: string } = {};
         if (session) props['userId'] = session.user.id;
         if (cart) props['cartId'] = cart.id;
-        const cartData = await refetch(props);
-        return cartData;
+        if (guestId) props['guestId'] = guestId;
+        return await refetch(props);
     };
 
     const createCart = async (input: CreateCartInput) => {
-        const { errors } = await create({ variables: { input } });
+        const { data, errors } = await create({ variables: { input } });
         if (errors) console.log(errors);
+        if (data) setGuestId(data.createCart.guestId);
         const { data: cart } = await refreshData();
         if (cart) setCart(cart.cart);
     };
 
     const createCartItem = async (input: CreateCartItemInput) => {
-        const { errors } = await createItem({ variables: { input } });
+        const { data, errors } = await createItem({ variables: { input } });
         if (errors) console.log(errors);
+        if (data) setGuestId(data.createCartItem.guestId);
         const { data: cart } = await refreshData();
         if (cart) setCart(cart.cart);
     };
 
     const updateCartItem = async (input: UpdateCartItemInput) => {
-        const { errors } = await updateItem({ variables: { input } });
+        const { data, errors } = await updateItem({ variables: { input } });
         if (errors) console.log(errors);
+        if (data) setGuestId(data.updateCartItem.guestId);
         const { data: cart } = await refreshData();
         if (cart) setCart(cart.cart);
     };
 
     const removeCartItem = async (input: RemoveCartItemInput) => {
-        const { errors } = await removeItem({ variables: { input } });
+        const { data, errors } = await removeItem({ variables: { input } });
         if (errors) console.log(errors);
+        if (data) setGuestId(data.removeCartItem.guestId);
         const { data: cart } = await refreshData();
         if (cart) setCart(cart.cart);
     };
+
+    useLayoutEffect(() => {
+        if (initialData) return;
+        if (!guestId) return;
+        getCart({ variables: { guestId } }).then(({ data }) => data && setCart(data.cart));
+    }, [getCart, guestId, initialData]);
 
     return <CartContext.Provider value={{ cart, createCart, createCartItem, updateCartItem, removeCartItem }}>{children}</CartContext.Provider>;
 };

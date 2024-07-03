@@ -67,6 +67,7 @@ export type StoreState = {
     cartData: CartData | undefined;
     orderId: string | undefined;
     paymentId: string | undefined;
+    guestId: string | null | undefined;
 };
 
 export type StoreActions = {
@@ -77,6 +78,8 @@ export type StoreActions = {
     setOrderId: (id: string | undefined) => void;
     setPaymentId: (id: string | undefined) => void;
     emptyCart: () => void;
+    setGuestId: (id: string | null | undefined) => void;
+    removeGuestId: () => void;
 };
 
 export type Store = StoreState & StoreActions;

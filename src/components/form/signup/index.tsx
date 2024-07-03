@@ -26,8 +26,6 @@ export const SingupForm: FC<SingupFormProps> = ({ ...props }) => {
     const signUp = async (input: SignupSchema) => {
         try {
             const { data, errors } = await mutation({ variables: { input } });
-            console.log('🚀 ~ signUp ~ errors:', errors);
-            console.log('🚀 ~ signUp ~ data:', data);
         } catch (error) {
             console.log('🚀 ~ signUp ~ error:', error);
         }

@@ -1,5 +1,5 @@
-query GetCart($userId: String, $cartId: String) {
-    cart(userId: $userId, cartId: $cartId) {
+query GetCart($userId: String, $cartId: String, $guestId: String) {
+    cart(userId: $userId, cartId: $cartId, guestId: $guestId) {
         ...CartFields
     }
 }

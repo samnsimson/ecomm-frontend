@@ -7,7 +7,6 @@ import { VariantProps } from 'class-variance-authority';
 import { useCart } from '@/providers/cart.provider';
 import { useSession } from 'next-auth/react';
 import { v4 as uuid } from 'uuid';
-import { GetCartQuery } from '@/graphql/generated';
 
 interface AddToCartProps extends HTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
     product: { id: string; quantity: number; salePrice: number };
@@ -17,12 +16,12 @@ interface AddToCartProps extends HTMLAttributes<HTMLButtonElement>, VariantProps
 export const AddToCart: FC<AddToCartProps> = ({ className, fullWidth, product, ...props }) => {
     const { data: session } = useSession();
     const { cart, createCart, createCartItem, removeCartItem } = useCart();
-    const [item, setItem] = useState<GetCartQuery['cart']['items'][0] | undefined>(undefined);
+    const [item, setItem] = useState<any>(undefined);
 
     const handleAddToCart = async () => {
         if (!cart && !item) {
             const item = { id: product.id, price: product.salePrice, quantity: product.quantity };
-            await createCart({ userId: session ? session.user.id : uuid(), items: [item] });
+            await createCart({ ...(session && { userId: session.user.id }), items: [item] });
         } else if (cart && !item) {
             await createCartItem({ cartId: cart.id, productId: product.id, price: product.salePrice, quantity: product.quantity });
         } else if (cart && item) {

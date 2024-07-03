@@ -51,14 +51,15 @@ export type Cart = {
   couponAmount?: Maybe<Scalars['Int']['output']>;
   createdAt: Scalars['DateTime']['output'];
   discountAmount?: Maybe<Scalars['Int']['output']>;
+  guestId?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   items: Array<CartItem>;
-  shippingAmonunt?: Maybe<Scalars['Int']['output']>;
-  subTotal: Scalars['String']['output'];
+  shippingAmount?: Maybe<Scalars['Int']['output']>;
+  subTotal: Scalars['Int']['output'];
   taxAmount?: Maybe<Scalars['Int']['output']>;
   total: Scalars['Int']['output'];
   updatedAt: Scalars['DateTime']['output'];
-  user: User;
+  user?: Maybe<User>;
 };
 
 export type CartItem = {
@@ -123,8 +124,9 @@ export enum CouponUsageType {
 }
 
 export type CreateCartInput = {
+  guestId?: InputMaybe<Scalars['String']['input']>;
   items: Array<Item>;
-  userId: Scalars['String']['input'];
+  userId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type CreateCartItemInput = {
@@ -760,7 +762,7 @@ export type Profile = {
 
 export type Query = {
   __typename?: 'Query';
-  cart: Cart;
+  cart?: Maybe<Cart>;
   categories: Array<Category>;
   category: Category;
   coupon: Coupon;
@@ -792,6 +794,7 @@ export type Query = {
 
 export type QueryCartArgs = {
   cartId?: InputMaybe<Scalars['String']['input']>;
+  guestId?: InputMaybe<Scalars['String']['input']>;
   userId?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -1074,8 +1077,8 @@ export enum TaxTypes {
 export type UpdateCartItemInput = {
   cartId: Scalars['String']['input'];
   itemId: Scalars['String']['input'];
-  price?: InputMaybe<Scalars['Int']['input']>;
-  quantity?: InputMaybe<Scalars['Int']['input']>;
+  price: Scalars['Int']['input'];
+  quantity: Scalars['Int']['input'];
 };
 
 export type UpdateCategoryInput = {
@@ -1223,7 +1226,7 @@ export enum UserRole {
   User = 'USER'
 }
 
-export type CartFieldsFragment = { __typename?: 'Cart', id: string, createdAt: any, updatedAt: any, coupon?: string | null, couponAmount?: number | null, discountAmount?: number | null, shippingAmonunt?: number | null, taxAmount?: number | null, subTotal: string, total: number, items: Array<{ __typename?: 'CartItem', id: string, price: number, quantity: number, total?: number | null, createdAt: any, updatedAt: any, product: { __typename?: 'Product', id: string, title: string, slug?: string | null, description?: string | null, salePrice: number, retailPrice: number } }>, user: { __typename?: 'User', id: string } };
+export type CartFieldsFragment = { __typename?: 'Cart', id: string, createdAt: any, updatedAt: any, coupon?: string | null, couponAmount?: number | null, discountAmount?: number | null, shippingAmount?: number | null, taxAmount?: number | null, subTotal: number, total: number, guestId?: string | null, items: Array<{ __typename?: 'CartItem', id: string, price: number, quantity: number, total?: number | null, createdAt: any, updatedAt: any, product: { __typename?: 'Product', id: string, title: string, slug?: string | null, description?: string | null, salePrice: number, retailPrice: number } }>, user?: { __typename?: 'User', id: string } | null };
 
 export type CouponFieldFragment = { __typename?: 'Coupon', id: string, title: string, description?: string | null, code: string, type?: CouponType | null, usageType?: CouponUsageType | null, amount?: number | null, percentage?: number | null, enabled?: boolean | null, lastUsedAt?: any | null, validFrom?: any | null, validThrough?: any | null, createdAt: any, updatedAt: any };
 
@@ -1238,14 +1241,14 @@ export type CreateCartItemMutationVariables = Exact<{
 }>;
 
 
-export type CreateCartItemMutation = { __typename?: 'Mutation', createCartItem: { __typename?: 'Cart', id: string, createdAt: any, updatedAt: any, coupon?: string | null, couponAmount?: number | null, discountAmount?: number | null, shippingAmonunt?: number | null, taxAmount?: number | null, subTotal: string, total: number, items: Array<{ __typename?: 'CartItem', id: string, price: number, quantity: number, total?: number | null, createdAt: any, updatedAt: any, product: { __typename?: 'Product', id: string, title: string, slug?: string | null, description?: string | null, salePrice: number, retailPrice: number } }>, user: { __typename?: 'User', id: string } } };
+export type CreateCartItemMutation = { __typename?: 'Mutation', createCartItem: { __typename?: 'Cart', id: string, createdAt: any, updatedAt: any, coupon?: string | null, couponAmount?: number | null, discountAmount?: number | null, shippingAmount?: number | null, taxAmount?: number | null, subTotal: number, total: number, guestId?: string | null, items: Array<{ __typename?: 'CartItem', id: string, price: number, quantity: number, total?: number | null, createdAt: any, updatedAt: any, product: { __typename?: 'Product', id: string, title: string, slug?: string | null, description?: string | null, salePrice: number, retailPrice: number } }>, user?: { __typename?: 'User', id: string } | null } };
 
 export type CreateCartMutationVariables = Exact<{
   input: CreateCartInput;
 }>;
 
 
-export type CreateCartMutation = { __typename?: 'Mutation', createCart: { __typename?: 'Cart', id: string, createdAt: any, updatedAt: any, coupon?: string | null, couponAmount?: number | null, discountAmount?: number | null, shippingAmonunt?: number | null, taxAmount?: number | null, subTotal: string, total: number, items: Array<{ __typename?: 'CartItem', id: string, price: number, quantity: number, total?: number | null, createdAt: any, updatedAt: any, product: { __typename?: 'Product', id: string, title: string, slug?: string | null, description?: string | null, salePrice: number, retailPrice: number } }>, user: { __typename?: 'User', id: string } } };
+export type CreateCartMutation = { __typename?: 'Mutation', createCart: { __typename?: 'Cart', id: string, createdAt: any, updatedAt: any, coupon?: string | null, couponAmount?: number | null, discountAmount?: number | null, shippingAmount?: number | null, taxAmount?: number | null, subTotal: number, total: number, guestId?: string | null, items: Array<{ __typename?: 'CartItem', id: string, price: number, quantity: number, total?: number | null, createdAt: any, updatedAt: any, product: { __typename?: 'Product', id: string, title: string, slug?: string | null, description?: string | null, salePrice: number, retailPrice: number } }>, user?: { __typename?: 'User', id: string } | null } };
 
 export type CreateCategoryMutationVariables = Exact<{
   input: CreateCategoryInput;
@@ -1330,7 +1333,7 @@ export type RemoveCartItemMutationVariables = Exact<{
 }>;
 
 
-export type RemoveCartItemMutation = { __typename?: 'Mutation', removeCartItem: { __typename?: 'Cart', id: string, createdAt: any, updatedAt: any, coupon?: string | null, couponAmount?: number | null, discountAmount?: number | null, shippingAmonunt?: number | null, taxAmount?: number | null, subTotal: string, total: number, items: Array<{ __typename?: 'CartItem', id: string, price: number, quantity: number, total?: number | null, createdAt: any, updatedAt: any, product: { __typename?: 'Product', id: string, title: string, slug?: string | null, description?: string | null, salePrice: number, retailPrice: number } }>, user: { __typename?: 'User', id: string } } };
+export type RemoveCartItemMutation = { __typename?: 'Mutation', removeCartItem: { __typename?: 'Cart', id: string, createdAt: any, updatedAt: any, coupon?: string | null, couponAmount?: number | null, discountAmount?: number | null, shippingAmount?: number | null, taxAmount?: number | null, subTotal: number, total: number, guestId?: string | null, items: Array<{ __typename?: 'CartItem', id: string, price: number, quantity: number, total?: number | null, createdAt: any, updatedAt: any, product: { __typename?: 'Product', id: string, title: string, slug?: string | null, description?: string | null, salePrice: number, retailPrice: number } }>, user?: { __typename?: 'User', id: string } | null } };
 
 export type SaveSettingsMutationVariables = Exact<{
   input: SettingsInput;
@@ -1366,7 +1369,7 @@ export type UpdateCartItemMutationVariables = Exact<{
 }>;
 
 
-export type UpdateCartItemMutation = { __typename?: 'Mutation', updateCartItem: { __typename?: 'Cart', id: string, createdAt: any, updatedAt: any, coupon?: string | null, couponAmount?: number | null, discountAmount?: number | null, shippingAmonunt?: number | null, taxAmount?: number | null, subTotal: string, total: number, items: Array<{ __typename?: 'CartItem', id: string, price: number, quantity: number, total?: number | null, createdAt: any, updatedAt: any, product: { __typename?: 'Product', id: string, title: string, slug?: string | null, description?: string | null, salePrice: number, retailPrice: number } }>, user: { __typename?: 'User', id: string } } };
+export type UpdateCartItemMutation = { __typename?: 'Mutation', updateCartItem: { __typename?: 'Cart', id: string, createdAt: any, updatedAt: any, coupon?: string | null, couponAmount?: number | null, discountAmount?: number | null, shippingAmount?: number | null, taxAmount?: number | null, subTotal: number, total: number, guestId?: string | null, items: Array<{ __typename?: 'CartItem', id: string, price: number, quantity: number, total?: number | null, createdAt: any, updatedAt: any, product: { __typename?: 'Product', id: string, title: string, slug?: string | null, description?: string | null, salePrice: number, retailPrice: number } }>, user?: { __typename?: 'User', id: string } | null } };
 
 export type UpdateCategoryMutationVariables = Exact<{
   input: UpdateCategoryInput;
@@ -1420,10 +1423,11 @@ export type UpdateTaxMutation = { __typename?: 'Mutation', updateTax: { __typena
 export type GetCartQueryVariables = Exact<{
   userId?: InputMaybe<Scalars['String']['input']>;
   cartId?: InputMaybe<Scalars['String']['input']>;
+  guestId?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type GetCartQuery = { __typename?: 'Query', cart: { __typename?: 'Cart', id: string, createdAt: any, updatedAt: any, coupon?: string | null, couponAmount?: number | null, discountAmount?: number | null, shippingAmonunt?: number | null, taxAmount?: number | null, subTotal: string, total: number, items: Array<{ __typename?: 'CartItem', id: string, price: number, quantity: number, total?: number | null, createdAt: any, updatedAt: any, product: { __typename?: 'Product', id: string, title: string, slug?: string | null, description?: string | null, salePrice: number, retailPrice: number } }>, user: { __typename?: 'User', id: string } } };
+export type GetCartQuery = { __typename?: 'Query', cart?: { __typename?: 'Cart', id: string, createdAt: any, updatedAt: any, coupon?: string | null, couponAmount?: number | null, discountAmount?: number | null, shippingAmount?: number | null, taxAmount?: number | null, subTotal: number, total: number, guestId?: string | null, items: Array<{ __typename?: 'CartItem', id: string, price: number, quantity: number, total?: number | null, createdAt: any, updatedAt: any, product: { __typename?: 'Product', id: string, title: string, slug?: string | null, description?: string | null, salePrice: number, retailPrice: number } }>, user?: { __typename?: 'User', id: string } | null } | null };
 
 export type GetCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1524,10 +1528,11 @@ export const CartFieldsFragmentDoc = gql`
   coupon
   couponAmount
   discountAmount
-  shippingAmonunt
+  shippingAmount
   taxAmount
   subTotal
   total
+  guestId
   items {
     id
     price
@@ -2626,8 +2631,8 @@ export type UpdateTaxMutationHookResult = ReturnType<typeof useUpdateTaxMutation
 export type UpdateTaxMutationResult = Apollo.MutationResult<UpdateTaxMutation>;
 export type UpdateTaxMutationOptions = Apollo.BaseMutationOptions<UpdateTaxMutation, UpdateTaxMutationVariables>;
 export const GetCartDocument = gql`
-    query GetCart($userId: String, $cartId: String) {
-  cart(userId: $userId, cartId: $cartId) {
+    query GetCart($userId: String, $cartId: String, $guestId: String) {
+  cart(userId: $userId, cartId: $cartId, guestId: $guestId) {
     ...CartFields
   }
 }
@@ -2647,6 +2652,7 @@ export const GetCartDocument = gql`
  *   variables: {
  *      userId: // value for 'userId'
  *      cartId: // value for 'cartId'
+ *      guestId: // value for 'guestId'
  *   },
  * });
  */

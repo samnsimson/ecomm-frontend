@@ -1,8 +1,7 @@
 'use client';
-import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableFooter, TableRow } from '@/components/ui/table';
-import { Store } from '@/lib/types';
-import { useStore } from '@/store';
+import { useCart } from '@/providers/cart.provider';
+import { MinusIcon } from 'lucide-react';
 import { FC, HTMLAttributes } from 'react';
 
 interface OrderPreviewProps extends HTMLAttributes<HTMLTableElement> {
@@ -10,39 +9,43 @@ interface OrderPreviewProps extends HTMLAttributes<HTMLTableElement> {
 }
 
 export const OrderPreview: FC<OrderPreviewProps> = ({ ...props }) => {
-    const { cartData } = useStore<Store>((state) => state);
+    const { cart } = useCart();
     return (
-        <div>
+        cart && (
             <Table {...props}>
                 <TableBody>
                     <TableRow>
                         <TableCell>Sub total</TableCell>
-                        <TableCell className="text-right font-semibold">${cartData?.subTotal}</TableCell>
+                        <TableCell className="text-right font-semibold">${cart.subTotal}</TableCell>
                     </TableRow>
                     <TableRow>
                         <TableCell>Tax</TableCell>
-                        <TableCell className="text-right font-semibold">${cartData?.taxAmount}</TableCell>
+                        <TableCell className="text-right font-semibold">${cart.taxAmount}</TableCell>
                     </TableRow>
                     <TableRow>
                         <TableCell>Shipping</TableCell>
-                        <TableCell className="text-right font-semibold">${cartData?.shippingAmount}</TableCell>
+                        <TableCell className="text-right font-semibold">${cart.shippingAmount}</TableCell>
                     </TableRow>
                     <TableRow>
-                        <TableCell>Discount</TableCell>
-                        <TableCell className="text-right font-semibold">${cartData?.discountAmount}</TableCell>
+                        <TableCell className="flex items-center">
+                            Discount ( <MinusIcon size={14} /> )
+                        </TableCell>
+                        <TableCell className="text-right font-semibold">${cart.discountAmount}</TableCell>
                     </TableRow>
                     <TableRow>
-                        <TableCell>Coupon</TableCell>
-                        <TableCell className="text-right font-semibold">${cartData?.couponAmount}</TableCell>
+                        <TableCell className="flex items-center">
+                            Coupon ( <MinusIcon size={14} /> )
+                        </TableCell>
+                        <TableCell className="text-right font-semibold">${cart.couponAmount}</TableCell>
                     </TableRow>
                 </TableBody>
                 <TableFooter className="bg-primary">
                     <TableRow className="prose">
                         <TableCell className="text-primary-foreground">Total</TableCell>
-                        <TableCell className="text-right font-semibold text-primary-foreground">${cartData?.total}</TableCell>
+                        <TableCell className="text-right font-semibold text-primary-foreground">${cart.total}</TableCell>
                     </TableRow>
                 </TableFooter>
             </Table>
-        </div>
+        )
     );
 };
